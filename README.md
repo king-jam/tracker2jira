@@ -4,4 +4,4 @@ This is a project to mirror a Pivotal Tracker and JIRA Project behind a firewall
 
 ![alt text][high-level]
 
-[high-level]: s://github.com/king-jam/tracker2jira/raw/Arch/High-Level%20Arch.png "Theory of Operation"
+[high-level]: https://github.com/king-jam/tracker2jira/raw/Arch/High-Level%20Arch.png "Theory of Operation"
