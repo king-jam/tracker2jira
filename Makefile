@@ -29,7 +29,7 @@ SWAGGER_CLIENT_DIR =
 
 
 .PHONY: all
-all: fmt lint vendor | $(BASE) ; $(info $(M) building executable…) @ ## Build program binary
+all: fmt lint vendor swagger-client | $(BASE) ; $(info $(M) building executable…) @ ## Build program binary
 	$Q cd $(BASE) && $(GO) build \
 		-tags release \
 		$(LDFLAGS) \
