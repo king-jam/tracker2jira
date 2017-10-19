@@ -6,7 +6,7 @@ You can obtain one at http://mozilla.org/MPL/2.0/.
 Copyright (c) 2017, MPL James R. King james.r.king4[at]gmail.com
 -->
 
-# **Tracker 2 JIRA** [![Build Status](https://travis-ci.org/king-jam/tracker2jira.svg?branch=master)](https://travis-ci.org/king-jam/tracker2jira)[![Go Report Card](https://goreportcard.com/badge/github.com/king-jam/tracker2jira)](https://goreportcard.com/report/github.com/king-jam/tracker2jira)
+# **Tracker 2 JIRA** [![Build Status](https://travis-ci.org/king-jam/tracker2jira.svg?branch=master)](https://travis-ci.org/king-jam/tracker2jira)  [![Go Report Card](https://goreportcard.com/badge/github.com/king-jam/tracker2jira)](https://goreportcard.com/report/github.com/king-jam/tracker2jira)
 
 **Tracker2JIRA** is  unidirectional mirror service for those who want to use Pivotal Tracker (public or private) but are required to use JIRA internal to an organization where traditional hooks don't work or custom workflows exist.
 
