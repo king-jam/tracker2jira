@@ -1,9 +1,9 @@
 # Stole this example from: https://github.com/vincentbernat/hellogopher/tree/feature/dep
 
-BINARYNAME = t2j
+BINARYNAME = tracker2jira
 PACKAGE  = github.com/king-jam/tracker2jira
 DATE    ?= $(shell date +%FT%T%z)
-VERSION ?= $(shell git describe --tags --always --dirty --match=v* 2> /dev/null || \
+COMMITHASH ?= $(shell git describe --tags --always --dirty --match=v* 2> /dev/null || \
 			cat $(CURDIR)/.version 2> /dev/null || echo v0)
 GOPATH   = $(CURDIR)/.gopath~
 BIN      = $(GOPATH)/bin
@@ -19,11 +19,20 @@ V = 0
 Q = $(if $(filter 1,$V),,@)
 M = $(shell printf "\033[34;1m▶\033[0m")
 
+LDFLAGS = -ldflags '-X $(PACKAGE)/cli.BuildDate=$(DATE) \
+		-X $(PACKAGE)/cli.CommitHash=$(COMMITHASH)' \
+
+SWAGGER_SERVER_DIR =
+
+SWAGGER_CLIENT_DIR =
+
+
+
 .PHONY: all
 all: fmt lint vendor | $(BASE) ; $(info $(M) building executable…) @ ## Build program binary
 	$Q cd $(BASE) && $(GO) build \
 		-tags release \
-		-ldflags '-X $(PACKAGE)/cmd.Version=$(VERSION) -X $(PACKAGE)/cmd.BuildDate=$(DATE)' \
+		$(LDFLAGS) \
 		-o bin/$(BINARYNAME) main.go
 
 $(BASE): ; $(info $(M) setting GOPATH…)
@@ -33,28 +42,32 @@ $(BASE): ; $(info $(M) setting GOPATH…)
 # Tools
 
 GODEP = $(BIN)/dep
-$(BIN)/dep: | $(BASE) ; $(info $(M) building go dep…)
+$(BIN)/dep: | $(BASE) ; $(info $(M) building go dep...)
 	$Q go get github.com/golang/dep/cmd/dep
 
 GOLINT = $(BIN)/golint
-$(BIN)/golint: | $(BASE) ; $(info $(M) building golint…)
+$(BIN)/golint: | $(BASE) ; $(info $(M) building golint...)
 	$Q go get github.com/golang/lint/golint
 
 GOCOVMERGE = $(BIN)/gocovmerge
-$(BIN)/gocovmerge: | $(BASE) ; $(info $(M) building gocovmerge…)
+$(BIN)/gocovmerge: | $(BASE) ; $(info $(M) building gocovmerge...)
 	$Q go get github.com/wadey/gocovmerge
 
 GOCOV = $(BIN)/gocov
-$(BIN)/gocov: | $(BASE) ; $(info $(M) building gocov…)
+$(BIN)/gocov: | $(BASE) ; $(info $(M) building gocov...)
 	$Q go get github.com/axw/gocov/...
 
 GOCOVXML = $(BIN)/gocov-xml
-$(bIN)/gocov-xml: | $(BASE) ; $(info $(M) building gocov-xml…)
+$(bIN)/gocov-xml: | $(BASE) ; $(info $(M) building gocov-xml...)
 	$Q go get github.com/AlekSi/gocov-xml
 
 GO2XUNIT = $(BIN)/go2xunit
-$(BIN)/go2xunit: | $(BASE) ; $(info $(M) building go2xunit…)
+$(BIN)/go2xunit: | $(BASE) ; $(info $(M) building go2xunit...)
 	$Q go get github.com/tebeka/go2xunit
+
+SWAGGER = $(BIN)/swagger
+$(BIN)/swagger: | $(BASE) ; $(info $(M) building swagger...)
+	$Q go get github.com/go-swagger/go-swagger/cmd/swagger
 
 # Tests
 
@@ -123,6 +136,14 @@ else
 endif
 	@ln -nsf . vendor/src
 	@touch vendor
+
+# Code Generation
+
+swagger-server: $(BASE) $(SWAGGER) ; $(info $(M) generating swagger server...) @ ## Generates server
+	$Q cd $(BASE)/rest && $(SWAGGER) generate server --exclude-main -A t2j -s server -f swagger.yaml
+
+swagger-client: $(BASE) $(SWAGGER) ; $(info $(M) generating swagger client...) @ ## Generates client
+	$Q cd $(BASE)/rest && $(SWAGGER) generate client -A t2j -f swagger.yaml
 
 # Misc
 

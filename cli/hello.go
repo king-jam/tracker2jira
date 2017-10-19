@@ -1,4 +1,4 @@
-package cmd
+package cli
 
 import (
 	"os"
@@ -16,7 +16,7 @@ var helloCmd = &cobra.Command{
 	Use:   "hello",
 	Short: "Say hello",
 	Long:  `Print a nice hello message on the standard output.`,
-	Run: func(cmd *cobra.Command, args []string) {
+	Run: func(cli *cobra.Command, args []string) {
 		hello.Hello(os.Stdout)
 	},
 }

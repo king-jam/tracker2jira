@@ -1,4 +1,4 @@
-package cmd
+package cli
 
 import (
 	"fmt"
@@ -8,10 +8,12 @@ import (
 )
 
 var (
-	// Version contains the current version.
-	Version = "dev"
 	// BuildDate contains a string with the build date.
 	BuildDate = "unknown"
+	// CommitHash contains a string with the git commit hash.
+	CommitHash = "unknown"
+	// ReleaseVersion contains a string with the compiled release version.
+	ReleaseVersion = "dev"
 )
 
 func init() {
@@ -21,9 +23,9 @@ func init() {
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "Print version",
-	Long:  `Display version and build information about hellogopher.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Printf("hellogopher %s\n", Version)
+	Long:  `Display version and build information about tracker2jira.`,
+	Run: func(cli *cobra.Command, args []string) {
+		fmt.Printf("tracker2jira %s\n", CommitHash)
 		fmt.Printf("  Build date: %s\n", BuildDate)
 		fmt.Printf("  Built with: %s\n", runtime.Version())
 	},
