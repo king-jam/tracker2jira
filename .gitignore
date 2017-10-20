@@ -16,5 +16,8 @@
 # Project-local GOPATH
 .gopath~/
 
+#Old dep vendor paths
+_vendor*/
+
 #Binary Output Folder
 bin/
