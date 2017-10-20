@@ -2,7 +2,7 @@
 
 /*
 Package server Tracker 2 JIRA
-Placeholder for the desscription of this thing.
+Pivotal Tracker to JIRA synchronization service.
 
 Terms Of Service:
 
@@ -13,7 +13,7 @@ https://github.com/king-jam/tracker2jira/blob/master/docs/TOS.md
       http
       https
     Host: localhost
-    BasePath: /t2j
+    BasePath: /
     Version: 0.0.1
     License: Mozilla Public License 2.0 https://www.mozilla.org/en-US/MPL/2.0/
     Contact: <james.r.king4@gmail.com>

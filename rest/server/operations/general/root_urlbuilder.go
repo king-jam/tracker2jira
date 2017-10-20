@@ -38,9 +38,6 @@ func (o *RootURL) Build() (*url.URL, error) {
 	var _path = "/"
 
 	_basePath := o._basePath
-	if _basePath == "" {
-		_basePath = "/t2j"
-	}
 	result.Path = golangswaggerpaths.Join(_basePath, _path)
 
 	return &result, nil

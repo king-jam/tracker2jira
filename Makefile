@@ -19,8 +19,8 @@ V = 0
 Q = $(if $(filter 1,$V),,@)
 M = $(shell printf "\033[34;1m▶\033[0m")
 
-LDFLAGS = -ldflags '-X $(PACKAGE)/cli.BuildDate=$(DATE) \
-		-X $(PACKAGE)/cli.CommitHash=$(COMMITHASH)' \
+LDFLAGS = -ldflags '-X $(PACKAGE)/version.BuildDate=$(DATE) \
+		-X $(PACKAGE)/version.CommitHash=$(COMMITHASH)' \
 
 SWAGGER_SERVER_DIR =
 
@@ -143,7 +143,7 @@ swagger-server: $(BASE) $(SWAGGER) ; $(info $(M) generating swagger server...) @
 	$Q cd $(BASE)/rest && $(SWAGGER) generate server --exclude-main -A t2j -s server -f swagger.yaml
 
 swagger-client: $(BASE) $(SWAGGER) ; $(info $(M) generating swagger client...) @ ## Generates client
-	$Q cd $(BASE)/rest && $(SWAGGER) generate client -A t2j -f swagger.yaml
+	$Q cd $(BASE)/rest && $(SWAGGER) generate client -A t2j -f swagger.yaml 2> /dev/null
 
 # Misc
 

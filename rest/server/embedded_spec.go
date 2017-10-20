@@ -20,7 +20,7 @@ func init() {
   ],
   "swagger": "2.0",
   "info": {
-    "description": "Placeholder for the desscription of this thing.",
+    "description": "Pivotal Tracker to JIRA synchronization service.",
     "title": "Tracker 2 JIRA",
     "termsOfService": "https://github.com/king-jam/tracker2jira/blob/master/docs/TOS.md",
     "contact": {
@@ -32,7 +32,6 @@ func init() {
     },
     "version": "0.0.1"
   },
-  "basePath": "/t2j",
   "paths": {
     "/": {
       "get": {
@@ -48,57 +47,251 @@ func init() {
         }
       }
     },
-    "/config": {
+    "/projects": {
       "get": {
         "tags": [
-          "general"
+          "projects"
         ],
-        "summary": "Get the current running configuration",
+        "summary": "Returns all the projects.",
+        "operationId": "getProjects",
         "responses": {
           "200": {
-            "description": "The current configuration"
+            "description": "The list of current projects",
+            "schema": {
+              "$ref": "#/definitions/Projects"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
           }
         }
       },
-      "patch": {
-        "tags": [
-          "general"
-        ],
-        "summary": "Update the current running configuration",
-        "responses": {
-          "200": {
-            "description": "Configuration Changed"
-          }
-        }
-      }
-    },
-    "/login": {
       "post": {
+        "description": "Post a new project config",
         "consumes": [
           "application/json"
         ],
         "tags": [
-          "general"
+          "projects"
         ],
-        "summary": "Logs in and returns authentication type based on parameters",
-        "operationId": "login",
+        "summary": "Adds a project configuration",
+        "operationId": "addANewProject",
         "parameters": [
           {
-            "description": "A JSON obect containing the login and password",
-            "name": "loginRequest",
+            "description": "Project definition",
+            "name": "body",
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/LoginRequest"
+              "$ref": "#/definitions/Project"
             }
           }
         ],
         "responses": {
-          "200": {
-            "description": "Successful Login"
+          "201": {
+            "description": "Created"
           },
           "400": {
-            "description": "Invalid username/password"
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/projects/{projectID}": {
+      "get": {
+        "description": "getting project object",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "projects"
+        ],
+        "summary": "gets the project from ID",
+        "operationId": "getProjectByID",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "ID of project to return",
+            "name": "projectID",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
+          },
+          "404": {
+            "description": "Project not found"
+          }
+        }
+      }
+    },
+    "/tasks": {
+      "get": {
+        "tags": [
+          "projects"
+        ],
+        "summary": "Returns all the tasks.",
+        "operationId": "getTasks",
+        "responses": {
+          "200": {
+            "description": "The list of current tasks",
+            "schema": {
+              "$ref": "#/definitions/Tasks"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "post": {
+        "description": "Post a new task config",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "projects"
+        ],
+        "summary": "Adds a task configuration",
+        "operationId": "addANewTask",
+        "parameters": [
+          {
+            "description": "Task definition",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Task"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/tasks/{taskID}": {
+      "get": {
+        "description": "getting task object",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "projects"
+        ],
+        "summary": "gets the task from ID",
+        "operationId": "getTaskByID",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "ID of task to return",
+            "name": "taskID",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/Task"
+            }
+          },
+          "404": {
+            "description": "Task not found"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Returns all the users.",
+        "operationId": "getUsers",
+        "responses": {
+          "200": {
+            "description": "The list of current users",
+            "schema": {
+              "$ref": "#/definitions/Users"
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      },
+      "post": {
+        "description": "Post a new user config",
+        "consumes": [
+          "application/json"
+        ],
+        "tags": [
+          "users"
+        ],
+        "summary": "Adds a new user configuration",
+        "operationId": "addANewUser",
+        "parameters": [
+          {
+            "description": "User definition",
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          }
+        }
+      }
+    },
+    "/users/{userID}": {
+      "get": {
+        "description": "getting user object",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "users"
+        ],
+        "summary": "gets the user from ID",
+        "operationId": "getUserByID",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "ID of user to return",
+            "name": "userID",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/User"
+            }
+          },
+          "404": {
+            "description": "User not found"
           }
         }
       }
@@ -145,6 +338,87 @@ func init() {
           "type": "string"
         }
       }
+    },
+    "Project": {
+      "type": "object",
+      "properties": {
+        "adminUserID": {
+          "type": "string"
+        },
+        "externalID": {
+          "type": "string"
+        },
+        "projectID": {
+          "type": "string"
+        },
+        "projectOverrides": {
+          "type": "object"
+        },
+        "projectType": {
+          "type": "string"
+        },
+        "projectURL": {
+          "type": "string"
+        }
+      }
+    },
+    "Projects": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Project"
+      }
+    },
+    "Task": {
+      "type": "object",
+      "properties": {
+        "currentStateMap": {
+          "type": "object"
+        },
+        "master": {
+          "type": "string"
+        },
+        "slave": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "storyFieldMap": {
+          "type": "object"
+        },
+        "storyTypeMap": {
+          "type": "object"
+        },
+        "taskID": {
+          "type": "string"
+        }
+      }
+    },
+    "Tasks": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/Task"
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "externalCredentials": {
+          "type": "object"
+        },
+        "userID": {
+          "type": "string"
+        },
+        "username": {
+          "type": "string"
+        }
+      }
+    },
+    "Users": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/User"
+      }
     }
   },
   "responses": {
@@ -159,13 +433,6 @@ func init() {
       "schema": {
         "$ref": "#/definitions/Error"
       }
-    }
-  },
-  "securityDefinitions": {
-    "ApiKeyAuth": {
-      "type": "apiKey",
-      "name": "X-API-Key",
-      "in": "header"
     }
   },
   "tags": [

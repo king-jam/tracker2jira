@@ -13,6 +13,8 @@ import (
 
 	"github.com/king-jam/tracker2jira/rest/server/operations"
 	"github.com/king-jam/tracker2jira/rest/server/operations/general"
+	"github.com/king-jam/tracker2jira/rest/server/operations/projects"
+	"github.com/king-jam/tracker2jira/rest/server/operations/users"
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten
@@ -37,14 +39,32 @@ func configureAPI(api *operations.T2jAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
-	api.GeneralGetConfigHandler = general.GetConfigHandlerFunc(func(params general.GetConfigParams) middleware.Responder {
-		return middleware.NotImplemented("operation general.GetConfig has not yet been implemented")
+	api.ProjectsAddANewProjectHandler = projects.AddANewProjectHandlerFunc(func(params projects.AddANewProjectParams) middleware.Responder {
+		return middleware.NotImplemented("operation projects.AddANewProject has not yet been implemented")
 	})
-	api.GeneralPatchConfigHandler = general.PatchConfigHandlerFunc(func(params general.PatchConfigParams) middleware.Responder {
-		return middleware.NotImplemented("operation general.PatchConfig has not yet been implemented")
+	api.ProjectsAddANewTaskHandler = projects.AddANewTaskHandlerFunc(func(params projects.AddANewTaskParams) middleware.Responder {
+		return middleware.NotImplemented("operation projects.AddANewTask has not yet been implemented")
 	})
-	api.GeneralLoginHandler = general.LoginHandlerFunc(func(params general.LoginParams) middleware.Responder {
-		return middleware.NotImplemented("operation general.Login has not yet been implemented")
+	api.UsersAddANewUserHandler = users.AddANewUserHandlerFunc(func(params users.AddANewUserParams) middleware.Responder {
+		return middleware.NotImplemented("operation users.AddANewUser has not yet been implemented")
+	})
+	api.ProjectsGetProjectByIDHandler = projects.GetProjectByIDHandlerFunc(func(params projects.GetProjectByIDParams) middleware.Responder {
+		return middleware.NotImplemented("operation projects.GetProjectByID has not yet been implemented")
+	})
+	api.ProjectsGetProjectsHandler = projects.GetProjectsHandlerFunc(func(params projects.GetProjectsParams) middleware.Responder {
+		return middleware.NotImplemented("operation projects.GetProjects has not yet been implemented")
+	})
+	api.ProjectsGetTaskByIDHandler = projects.GetTaskByIDHandlerFunc(func(params projects.GetTaskByIDParams) middleware.Responder {
+		return middleware.NotImplemented("operation projects.GetTaskByID has not yet been implemented")
+	})
+	api.ProjectsGetTasksHandler = projects.GetTasksHandlerFunc(func(params projects.GetTasksParams) middleware.Responder {
+		return middleware.NotImplemented("operation projects.GetTasks has not yet been implemented")
+	})
+	api.UsersGetUserByIDHandler = users.GetUserByIDHandlerFunc(func(params users.GetUserByIDParams) middleware.Responder {
+		return middleware.NotImplemented("operation users.GetUserByID has not yet been implemented")
+	})
+	api.UsersGetUsersHandler = users.GetUsersHandlerFunc(func(params users.GetUsersParams) middleware.Responder {
+		return middleware.NotImplemented("operation users.GetUsers has not yet been implemented")
 	})
 	api.GeneralRootHandler = general.RootHandlerFunc(func(params general.RootParams) middleware.Responder {
 		return middleware.NotImplemented("operation general.Root has not yet been implemented")

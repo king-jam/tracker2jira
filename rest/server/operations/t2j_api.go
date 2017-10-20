@@ -20,6 +20,8 @@ import (
 	"github.com/go-openapi/swag"
 
 	"github.com/king-jam/tracker2jira/rest/server/operations/general"
+	"github.com/king-jam/tracker2jira/rest/server/operations/projects"
+	"github.com/king-jam/tracker2jira/rest/server/operations/users"
 )
 
 // NewT2jAPI creates a new T2j instance
@@ -37,14 +39,32 @@ func NewT2jAPI(spec *loads.Document) *T2jAPI {
 		BearerAuthenticator: security.BearerAuth,
 		JSONConsumer:        runtime.JSONConsumer(),
 		JSONProducer:        runtime.JSONProducer(),
-		GeneralGetConfigHandler: general.GetConfigHandlerFunc(func(params general.GetConfigParams) middleware.Responder {
-			return middleware.NotImplemented("operation GeneralGetConfig has not yet been implemented")
+		ProjectsAddANewProjectHandler: projects.AddANewProjectHandlerFunc(func(params projects.AddANewProjectParams) middleware.Responder {
+			return middleware.NotImplemented("operation ProjectsAddANewProject has not yet been implemented")
 		}),
-		GeneralPatchConfigHandler: general.PatchConfigHandlerFunc(func(params general.PatchConfigParams) middleware.Responder {
-			return middleware.NotImplemented("operation GeneralPatchConfig has not yet been implemented")
+		ProjectsAddANewTaskHandler: projects.AddANewTaskHandlerFunc(func(params projects.AddANewTaskParams) middleware.Responder {
+			return middleware.NotImplemented("operation ProjectsAddANewTask has not yet been implemented")
 		}),
-		GeneralLoginHandler: general.LoginHandlerFunc(func(params general.LoginParams) middleware.Responder {
-			return middleware.NotImplemented("operation GeneralLogin has not yet been implemented")
+		UsersAddANewUserHandler: users.AddANewUserHandlerFunc(func(params users.AddANewUserParams) middleware.Responder {
+			return middleware.NotImplemented("operation UsersAddANewUser has not yet been implemented")
+		}),
+		ProjectsGetProjectByIDHandler: projects.GetProjectByIDHandlerFunc(func(params projects.GetProjectByIDParams) middleware.Responder {
+			return middleware.NotImplemented("operation ProjectsGetProjectByID has not yet been implemented")
+		}),
+		ProjectsGetProjectsHandler: projects.GetProjectsHandlerFunc(func(params projects.GetProjectsParams) middleware.Responder {
+			return middleware.NotImplemented("operation ProjectsGetProjects has not yet been implemented")
+		}),
+		ProjectsGetTaskByIDHandler: projects.GetTaskByIDHandlerFunc(func(params projects.GetTaskByIDParams) middleware.Responder {
+			return middleware.NotImplemented("operation ProjectsGetTaskByID has not yet been implemented")
+		}),
+		ProjectsGetTasksHandler: projects.GetTasksHandlerFunc(func(params projects.GetTasksParams) middleware.Responder {
+			return middleware.NotImplemented("operation ProjectsGetTasks has not yet been implemented")
+		}),
+		UsersGetUserByIDHandler: users.GetUserByIDHandlerFunc(func(params users.GetUserByIDParams) middleware.Responder {
+			return middleware.NotImplemented("operation UsersGetUserByID has not yet been implemented")
+		}),
+		UsersGetUsersHandler: users.GetUsersHandlerFunc(func(params users.GetUsersParams) middleware.Responder {
+			return middleware.NotImplemented("operation UsersGetUsers has not yet been implemented")
 		}),
 		GeneralRootHandler: general.RootHandlerFunc(func(params general.RootParams) middleware.Responder {
 			return middleware.NotImplemented("operation GeneralRoot has not yet been implemented")
@@ -55,7 +75,7 @@ func NewT2jAPI(spec *loads.Document) *T2jAPI {
 	}
 }
 
-/*T2jAPI Placeholder for the desscription of this thing. */
+/*T2jAPI Pivotal Tracker to JIRA synchronization service. */
 type T2jAPI struct {
 	spec            *loads.Document
 	context         *middleware.Context
@@ -81,12 +101,24 @@ type T2jAPI struct {
 	// JSONProducer registers a producer for a "application/json" mime type
 	JSONProducer runtime.Producer
 
-	// GeneralGetConfigHandler sets the operation handler for the get config operation
-	GeneralGetConfigHandler general.GetConfigHandler
-	// GeneralPatchConfigHandler sets the operation handler for the patch config operation
-	GeneralPatchConfigHandler general.PatchConfigHandler
-	// GeneralLoginHandler sets the operation handler for the login operation
-	GeneralLoginHandler general.LoginHandler
+	// ProjectsAddANewProjectHandler sets the operation handler for the add a new project operation
+	ProjectsAddANewProjectHandler projects.AddANewProjectHandler
+	// ProjectsAddANewTaskHandler sets the operation handler for the add a new task operation
+	ProjectsAddANewTaskHandler projects.AddANewTaskHandler
+	// UsersAddANewUserHandler sets the operation handler for the add a new user operation
+	UsersAddANewUserHandler users.AddANewUserHandler
+	// ProjectsGetProjectByIDHandler sets the operation handler for the get project by ID operation
+	ProjectsGetProjectByIDHandler projects.GetProjectByIDHandler
+	// ProjectsGetProjectsHandler sets the operation handler for the get projects operation
+	ProjectsGetProjectsHandler projects.GetProjectsHandler
+	// ProjectsGetTaskByIDHandler sets the operation handler for the get task by ID operation
+	ProjectsGetTaskByIDHandler projects.GetTaskByIDHandler
+	// ProjectsGetTasksHandler sets the operation handler for the get tasks operation
+	ProjectsGetTasksHandler projects.GetTasksHandler
+	// UsersGetUserByIDHandler sets the operation handler for the get user by ID operation
+	UsersGetUserByIDHandler users.GetUserByIDHandler
+	// UsersGetUsersHandler sets the operation handler for the get users operation
+	UsersGetUsersHandler users.GetUsersHandler
 	// GeneralRootHandler sets the operation handler for the root operation
 	GeneralRootHandler general.RootHandler
 	// GeneralVersionHandler sets the operation handler for the version operation
@@ -154,16 +186,40 @@ func (o *T2jAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
-	if o.GeneralGetConfigHandler == nil {
-		unregistered = append(unregistered, "general.GetConfigHandler")
+	if o.ProjectsAddANewProjectHandler == nil {
+		unregistered = append(unregistered, "projects.AddANewProjectHandler")
 	}
 
-	if o.GeneralPatchConfigHandler == nil {
-		unregistered = append(unregistered, "general.PatchConfigHandler")
+	if o.ProjectsAddANewTaskHandler == nil {
+		unregistered = append(unregistered, "projects.AddANewTaskHandler")
 	}
 
-	if o.GeneralLoginHandler == nil {
-		unregistered = append(unregistered, "general.LoginHandler")
+	if o.UsersAddANewUserHandler == nil {
+		unregistered = append(unregistered, "users.AddANewUserHandler")
+	}
+
+	if o.ProjectsGetProjectByIDHandler == nil {
+		unregistered = append(unregistered, "projects.GetProjectByIDHandler")
+	}
+
+	if o.ProjectsGetProjectsHandler == nil {
+		unregistered = append(unregistered, "projects.GetProjectsHandler")
+	}
+
+	if o.ProjectsGetTaskByIDHandler == nil {
+		unregistered = append(unregistered, "projects.GetTaskByIDHandler")
+	}
+
+	if o.ProjectsGetTasksHandler == nil {
+		unregistered = append(unregistered, "projects.GetTasksHandler")
+	}
+
+	if o.UsersGetUserByIDHandler == nil {
+		unregistered = append(unregistered, "users.GetUserByIDHandler")
+	}
+
+	if o.UsersGetUsersHandler == nil {
+		unregistered = append(unregistered, "users.GetUsersHandler")
 	}
 
 	if o.GeneralRootHandler == nil {
@@ -264,20 +320,50 @@ func (o *T2jAPI) initHandlerCache() {
 		o.handlers = make(map[string]map[string]http.Handler)
 	}
 
-	if o.handlers["GET"] == nil {
-		o.handlers["GET"] = make(map[string]http.Handler)
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/config"] = general.NewGetConfig(o.context, o.GeneralGetConfigHandler)
-
-	if o.handlers["PATCH"] == nil {
-		o.handlers["PATCH"] = make(map[string]http.Handler)
-	}
-	o.handlers["PATCH"]["/config"] = general.NewPatchConfig(o.context, o.GeneralPatchConfigHandler)
+	o.handlers["POST"]["/projects"] = projects.NewAddANewProject(o.context, o.ProjectsAddANewProjectHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/login"] = general.NewLogin(o.context, o.GeneralLoginHandler)
+	o.handlers["POST"]["/tasks"] = projects.NewAddANewTask(o.context, o.ProjectsAddANewTaskHandler)
+
+	if o.handlers["POST"] == nil {
+		o.handlers["POST"] = make(map[string]http.Handler)
+	}
+	o.handlers["POST"]["/users"] = users.NewAddANewUser(o.context, o.UsersAddANewUserHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/projects/{projectID}"] = projects.NewGetProjectByID(o.context, o.ProjectsGetProjectByIDHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/projects"] = projects.NewGetProjects(o.context, o.ProjectsGetProjectsHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/tasks/{taskID}"] = projects.NewGetTaskByID(o.context, o.ProjectsGetTaskByIDHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/tasks"] = projects.NewGetTasks(o.context, o.ProjectsGetTasksHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/users/{userID}"] = users.NewGetUserByID(o.context, o.UsersGetUserByIDHandler)
+
+	if o.handlers["GET"] == nil {
+		o.handlers["GET"] = make(map[string]http.Handler)
+	}
+	o.handlers["GET"]["/users"] = users.NewGetUsers(o.context, o.UsersGetUsersHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)

@@ -12,6 +12,8 @@ import (
 	strfmt "github.com/go-openapi/strfmt"
 
 	"github.com/king-jam/tracker2jira/rest/client/general"
+	"github.com/king-jam/tracker2jira/rest/client/projects"
+	"github.com/king-jam/tracker2jira/rest/client/users"
 )
 
 // Default t2j HTTP client.
@@ -23,7 +25,7 @@ const (
 	DefaultHost string = "localhost"
 	// DefaultBasePath is the default BasePath
 	// found in Meta (info) section of spec file
-	DefaultBasePath string = "/t2j"
+	DefaultBasePath string = "/"
 )
 
 // DefaultSchemes are the default schemes found in Meta (info) section of spec file
@@ -56,6 +58,10 @@ func New(transport runtime.ClientTransport, formats strfmt.Registry) *T2j {
 	cli.Transport = transport
 
 	cli.General = general.New(transport, formats)
+
+	cli.Projects = projects.New(transport, formats)
+
+	cli.Users = users.New(transport, formats)
 
 	return cli
 }
@@ -103,6 +109,10 @@ func (cfg *TransportConfig) WithSchemes(schemes []string) *TransportConfig {
 type T2j struct {
 	General *general.Client
 
+	Projects *projects.Client
+
+	Users *users.Client
+
 	Transport runtime.ClientTransport
 }
 
@@ -111,5 +121,9 @@ func (c *T2j) SetTransport(transport runtime.ClientTransport) {
 	c.Transport = transport
 
 	c.General.SetTransport(transport)
+
+	c.Projects.SetTransport(transport)
+
+	c.Users.SetTransport(transport)
 
 }
