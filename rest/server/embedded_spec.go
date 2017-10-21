@@ -305,7 +305,10 @@ func init() {
         "operationId": "version",
         "responses": {
           "200": {
-            "description": "The current version of the service"
+            "description": "The current version of the service",
+            "schema": {
+              "$ref": "#/definitions/Version"
+            }
           }
         }
       }
@@ -418,6 +421,20 @@ func init() {
       "type": "array",
       "items": {
         "$ref": "#/definitions/User"
+      }
+    },
+    "Version": {
+      "type": "object",
+      "properties": {
+        "buildDate": {
+          "type": "string"
+        },
+        "commitHash": {
+          "type": "string"
+        },
+        "releaseVersion": {
+          "type": "string"
+        }
       }
     }
   },

@@ -9,6 +9,8 @@ import (
 	"net/http"
 
 	"github.com/go-openapi/runtime"
+
+	"github.com/king-jam/tracker2jira/rest/models"
 )
 
 // VersionOKCode is the HTTP code returned for type VersionOK
@@ -19,6 +21,11 @@ const VersionOKCode int = 200
 swagger:response versionOK
 */
 type VersionOK struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.Version `json:"body,omitempty"`
 }
 
 // NewVersionOK creates VersionOK with default headers values
@@ -26,8 +33,25 @@ func NewVersionOK() *VersionOK {
 	return &VersionOK{}
 }
 
+// WithPayload adds the payload to the version o k response
+func (o *VersionOK) WithPayload(payload *models.Version) *VersionOK {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the version o k response
+func (o *VersionOK) SetPayload(payload *models.Version) {
+	o.Payload = payload
+}
+
 // WriteResponse to the client
 func (o *VersionOK) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(200)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
 }

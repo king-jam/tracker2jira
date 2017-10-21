@@ -15,6 +15,7 @@ import (
 	"github.com/king-jam/tracker2jira/rest/server/operations/general"
 	"github.com/king-jam/tracker2jira/rest/server/operations/projects"
 	"github.com/king-jam/tracker2jira/rest/server/operations/users"
+	"github.com/king-jam/tracker2jira/version"
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten
@@ -70,7 +71,7 @@ func configureAPI(api *operations.T2jAPI) http.Handler {
 		return middleware.NotImplemented("operation general.Root has not yet been implemented")
 	})
 	api.GeneralVersionHandler = general.VersionHandlerFunc(func(params general.VersionParams) middleware.Responder {
-		return middleware.NotImplemented("operation general.Version has not yet been implemented")
+		return version.Handler(params)
 	})
 
 	api.ServerShutdown = func() {}

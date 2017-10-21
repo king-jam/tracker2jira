@@ -43,6 +43,8 @@ paths:
       responses:
         200:
           description: "The current version of the service"
+          schema:
+            $ref: "#/definitions/Version"
   # /login:
   #   post:
   #     tags:
@@ -340,3 +342,12 @@ definitions:
         type: "string"
       externalCredentials:
         type: "object"
+  Version:
+    type: "object"
+    properties:
+      buildDate:
+        type: "string"
+      commitHash:
+        type: "string"
+      releaseVersion:
+        type: "string"
