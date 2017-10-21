@@ -25,36 +25,6 @@ type Client struct {
 }
 
 /*
-AddANewUser adds a new user configuration
-
-Post a new user config
-*/
-func (a *Client) AddANewUser(params *AddANewUserParams) (*AddANewUserCreated, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewAddANewUserParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "addANewUser",
-		Method:             "POST",
-		PathPattern:        "/users",
-		ProducesMediaTypes: []string{""},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"http", "https"},
-		Params:             params,
-		Reader:             &AddANewUserReader{formats: a.formats},
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return result.(*AddANewUserCreated), nil
-
-}
-
-/*
 GetUserByID gets the user from ID
 
 getting user object
@@ -109,6 +79,36 @@ func (a *Client) GetUsers(params *GetUsersParams) (*GetUsersOK, error) {
 		return nil, err
 	}
 	return result.(*GetUsersOK), nil
+
+}
+
+/*
+PostUser adds a new user configuration
+
+Post a new user config
+*/
+func (a *Client) PostUser(params *PostUserParams) (*PostUserCreated, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewPostUserParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "postUser",
+		Method:             "POST",
+		PathPattern:        "/users",
+		ProducesMediaTypes: []string{""},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &PostUserReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*PostUserCreated), nil
 
 }
 

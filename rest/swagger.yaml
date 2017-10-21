@@ -99,7 +99,7 @@ paths:
       - "projects"
       summary: "Adds a project configuration"
       description: "Post a new project config"
-      operationId: "addANewProject"
+      operationId: "postProject"
       consumes:
       - "application/json"
       parameters:
@@ -156,7 +156,7 @@ paths:
       - "projects"
       summary: "Adds a task configuration"
       description: "Post a new task config"
-      operationId: "addANewTask"
+      operationId: "postTask"
       consumes:
       - "application/json"
       parameters:
@@ -213,7 +213,7 @@ paths:
       - "users"
       summary: "Adds a new user configuration"
       description: "Post a new user config"
-      operationId: "addANewUser"
+      operationId: "postUser"
       consumes:
       - "application/json"
       parameters:

@@ -75,7 +75,7 @@ func init() {
           "projects"
         ],
         "summary": "Adds a project configuration",
-        "operationId": "addANewProject",
+        "operationId": "postProject",
         "parameters": [
           {
             "description": "Project definition",
@@ -158,7 +158,7 @@ func init() {
           "projects"
         ],
         "summary": "Adds a task configuration",
-        "operationId": "addANewTask",
+        "operationId": "postTask",
         "parameters": [
           {
             "description": "Task definition",
@@ -241,7 +241,7 @@ func init() {
           "users"
         ],
         "summary": "Adds a new user configuration",
-        "operationId": "addANewUser",
+        "operationId": "postUser",
         "parameters": [
           {
             "description": "User definition",

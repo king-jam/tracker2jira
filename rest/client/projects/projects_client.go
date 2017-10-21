@@ -25,66 +25,6 @@ type Client struct {
 }
 
 /*
-AddANewProject adds a project configuration
-
-Post a new project config
-*/
-func (a *Client) AddANewProject(params *AddANewProjectParams) (*AddANewProjectCreated, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewAddANewProjectParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "addANewProject",
-		Method:             "POST",
-		PathPattern:        "/projects",
-		ProducesMediaTypes: []string{""},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"http", "https"},
-		Params:             params,
-		Reader:             &AddANewProjectReader{formats: a.formats},
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return result.(*AddANewProjectCreated), nil
-
-}
-
-/*
-AddANewTask adds a task configuration
-
-Post a new task config
-*/
-func (a *Client) AddANewTask(params *AddANewTaskParams) (*AddANewTaskCreated, error) {
-	// TODO: Validate the params before sending
-	if params == nil {
-		params = NewAddANewTaskParams()
-	}
-
-	result, err := a.transport.Submit(&runtime.ClientOperation{
-		ID:                 "addANewTask",
-		Method:             "POST",
-		PathPattern:        "/tasks",
-		ProducesMediaTypes: []string{""},
-		ConsumesMediaTypes: []string{"application/json"},
-		Schemes:            []string{"http", "https"},
-		Params:             params,
-		Reader:             &AddANewTaskReader{formats: a.formats},
-		Context:            params.Context,
-		Client:             params.HTTPClient,
-	})
-	if err != nil {
-		return nil, err
-	}
-	return result.(*AddANewTaskCreated), nil
-
-}
-
-/*
 GetProjectByID gets the project from ID
 
 getting project object
@@ -197,6 +137,66 @@ func (a *Client) GetTasks(params *GetTasksParams) (*GetTasksOK, error) {
 		return nil, err
 	}
 	return result.(*GetTasksOK), nil
+
+}
+
+/*
+PostProject adds a project configuration
+
+Post a new project config
+*/
+func (a *Client) PostProject(params *PostProjectParams) (*PostProjectCreated, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewPostProjectParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "postProject",
+		Method:             "POST",
+		PathPattern:        "/projects",
+		ProducesMediaTypes: []string{""},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &PostProjectReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*PostProjectCreated), nil
+
+}
+
+/*
+PostTask adds a task configuration
+
+Post a new task config
+*/
+func (a *Client) PostTask(params *PostTaskParams) (*PostTaskCreated, error) {
+	// TODO: Validate the params before sending
+	if params == nil {
+		params = NewPostTaskParams()
+	}
+
+	result, err := a.transport.Submit(&runtime.ClientOperation{
+		ID:                 "postTask",
+		Method:             "POST",
+		PathPattern:        "/tasks",
+		ProducesMediaTypes: []string{""},
+		ConsumesMediaTypes: []string{"application/json"},
+		Schemes:            []string{"http", "https"},
+		Params:             params,
+		Reader:             &PostTaskReader{formats: a.formats},
+		Context:            params.Context,
+		Client:             params.HTTPClient,
+	})
+	if err != nil {
+		return nil, err
+	}
+	return result.(*PostTaskCreated), nil
 
 }
 

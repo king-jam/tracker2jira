@@ -39,15 +39,6 @@ func configureAPI(api *operations.T2jAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
-	api.ProjectsAddANewProjectHandler = projects.AddANewProjectHandlerFunc(func(params projects.AddANewProjectParams) middleware.Responder {
-		return middleware.NotImplemented("operation projects.AddANewProject has not yet been implemented")
-	})
-	api.ProjectsAddANewTaskHandler = projects.AddANewTaskHandlerFunc(func(params projects.AddANewTaskParams) middleware.Responder {
-		return middleware.NotImplemented("operation projects.AddANewTask has not yet been implemented")
-	})
-	api.UsersAddANewUserHandler = users.AddANewUserHandlerFunc(func(params users.AddANewUserParams) middleware.Responder {
-		return middleware.NotImplemented("operation users.AddANewUser has not yet been implemented")
-	})
 	api.ProjectsGetProjectByIDHandler = projects.GetProjectByIDHandlerFunc(func(params projects.GetProjectByIDParams) middleware.Responder {
 		return middleware.NotImplemented("operation projects.GetProjectByID has not yet been implemented")
 	})
@@ -65,6 +56,15 @@ func configureAPI(api *operations.T2jAPI) http.Handler {
 	})
 	api.UsersGetUsersHandler = users.GetUsersHandlerFunc(func(params users.GetUsersParams) middleware.Responder {
 		return middleware.NotImplemented("operation users.GetUsers has not yet been implemented")
+	})
+	api.ProjectsPostProjectHandler = projects.PostProjectHandlerFunc(func(params projects.PostProjectParams) middleware.Responder {
+		return middleware.NotImplemented("operation projects.PostProject has not yet been implemented")
+	})
+	api.ProjectsPostTaskHandler = projects.PostTaskHandlerFunc(func(params projects.PostTaskParams) middleware.Responder {
+		return middleware.NotImplemented("operation projects.PostTask has not yet been implemented")
+	})
+	api.UsersPostUserHandler = users.PostUserHandlerFunc(func(params users.PostUserParams) middleware.Responder {
+		return middleware.NotImplemented("operation users.PostUser has not yet been implemented")
 	})
 	api.GeneralRootHandler = general.RootHandlerFunc(func(params general.RootParams) middleware.Responder {
 		return middleware.NotImplemented("operation general.Root has not yet been implemented")
