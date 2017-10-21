@@ -12,8 +12,6 @@ func init() {
 	boltdb.Register()
 }
 
-const versionPath = "version"
-
 var db *Backend
 
 // Backend ...
@@ -24,8 +22,8 @@ type Backend struct {
 // ConfigureDB ...
 func ConfigureDB() error {
 	kv, err := libkv.NewStore(
-		store.BOLTDB, // or "boltDB"
-		[]string{"/tmp/not_exist_dir/__boltdbtest"},
+		store.BOLTDB,
+		[]string{"/tmp/not_exist_dir/__boltdbtest"}, // make this a config object
 		&store.Config{
 			Bucket: "boltDBTest",
 		},
