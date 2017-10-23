@@ -38,3 +38,12 @@ func PostUser(db *backend.Backend, params users.PostUserParams) middleware.Respo
 		Payload: value,
 	}
 }
+
+// DeleteUser ...
+func DeleteUser(db *backend.Backend, params users.DeleteUserByIDParams) middleware.Responder {
+	err := db.DeleteUser(params.UserID)
+	if err != nil {
+		return &users.DeleteUserByIDNotFound{}
+	}
+	return &users.DeleteUserByIDNoContent{}
+}

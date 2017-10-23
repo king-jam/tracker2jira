@@ -31,7 +31,7 @@ func NewVersion(ctx *middleware.Context, handler VersionHandler) *Version {
 
 /*Version swagger:route GET /version general version
 
-Returns the current version running.
+Returns the version of the running server.
 
 */
 type Version struct {

@@ -21,6 +21,7 @@ import (
 
 	"github.com/king-jam/tracker2jira/rest/server/operations/general"
 	"github.com/king-jam/tracker2jira/rest/server/operations/projects"
+	"github.com/king-jam/tracker2jira/rest/server/operations/tasks"
 	"github.com/king-jam/tracker2jira/rest/server/operations/users"
 )
 
@@ -39,17 +40,26 @@ func NewT2jAPI(spec *loads.Document) *T2jAPI {
 		BearerAuthenticator: security.BearerAuth,
 		JSONConsumer:        runtime.JSONConsumer(),
 		JSONProducer:        runtime.JSONProducer(),
+		ProjectsDeleteProjectByIDHandler: projects.DeleteProjectByIDHandlerFunc(func(params projects.DeleteProjectByIDParams) middleware.Responder {
+			return middleware.NotImplemented("operation ProjectsDeleteProjectByID has not yet been implemented")
+		}),
+		TasksDeleteTaskByIDHandler: tasks.DeleteTaskByIDHandlerFunc(func(params tasks.DeleteTaskByIDParams) middleware.Responder {
+			return middleware.NotImplemented("operation TasksDeleteTaskByID has not yet been implemented")
+		}),
+		UsersDeleteUserByIDHandler: users.DeleteUserByIDHandlerFunc(func(params users.DeleteUserByIDParams) middleware.Responder {
+			return middleware.NotImplemented("operation UsersDeleteUserByID has not yet been implemented")
+		}),
 		ProjectsGetProjectByIDHandler: projects.GetProjectByIDHandlerFunc(func(params projects.GetProjectByIDParams) middleware.Responder {
 			return middleware.NotImplemented("operation ProjectsGetProjectByID has not yet been implemented")
 		}),
 		ProjectsGetProjectsHandler: projects.GetProjectsHandlerFunc(func(params projects.GetProjectsParams) middleware.Responder {
 			return middleware.NotImplemented("operation ProjectsGetProjects has not yet been implemented")
 		}),
-		ProjectsGetTaskByIDHandler: projects.GetTaskByIDHandlerFunc(func(params projects.GetTaskByIDParams) middleware.Responder {
-			return middleware.NotImplemented("operation ProjectsGetTaskByID has not yet been implemented")
+		TasksGetTaskByIDHandler: tasks.GetTaskByIDHandlerFunc(func(params tasks.GetTaskByIDParams) middleware.Responder {
+			return middleware.NotImplemented("operation TasksGetTaskByID has not yet been implemented")
 		}),
-		ProjectsGetTasksHandler: projects.GetTasksHandlerFunc(func(params projects.GetTasksParams) middleware.Responder {
-			return middleware.NotImplemented("operation ProjectsGetTasks has not yet been implemented")
+		TasksGetTasksHandler: tasks.GetTasksHandlerFunc(func(params tasks.GetTasksParams) middleware.Responder {
+			return middleware.NotImplemented("operation TasksGetTasks has not yet been implemented")
 		}),
 		UsersGetUserByIDHandler: users.GetUserByIDHandlerFunc(func(params users.GetUserByIDParams) middleware.Responder {
 			return middleware.NotImplemented("operation UsersGetUserByID has not yet been implemented")
@@ -60,8 +70,8 @@ func NewT2jAPI(spec *loads.Document) *T2jAPI {
 		ProjectsPostProjectHandler: projects.PostProjectHandlerFunc(func(params projects.PostProjectParams) middleware.Responder {
 			return middleware.NotImplemented("operation ProjectsPostProject has not yet been implemented")
 		}),
-		ProjectsPostTaskHandler: projects.PostTaskHandlerFunc(func(params projects.PostTaskParams) middleware.Responder {
-			return middleware.NotImplemented("operation ProjectsPostTask has not yet been implemented")
+		TasksPostTaskHandler: tasks.PostTaskHandlerFunc(func(params tasks.PostTaskParams) middleware.Responder {
+			return middleware.NotImplemented("operation TasksPostTask has not yet been implemented")
 		}),
 		UsersPostUserHandler: users.PostUserHandlerFunc(func(params users.PostUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation UsersPostUser has not yet been implemented")
@@ -101,22 +111,28 @@ type T2jAPI struct {
 	// JSONProducer registers a producer for a "application/json" mime type
 	JSONProducer runtime.Producer
 
+	// ProjectsDeleteProjectByIDHandler sets the operation handler for the delete project by ID operation
+	ProjectsDeleteProjectByIDHandler projects.DeleteProjectByIDHandler
+	// TasksDeleteTaskByIDHandler sets the operation handler for the delete task by ID operation
+	TasksDeleteTaskByIDHandler tasks.DeleteTaskByIDHandler
+	// UsersDeleteUserByIDHandler sets the operation handler for the delete user by ID operation
+	UsersDeleteUserByIDHandler users.DeleteUserByIDHandler
 	// ProjectsGetProjectByIDHandler sets the operation handler for the get project by ID operation
 	ProjectsGetProjectByIDHandler projects.GetProjectByIDHandler
 	// ProjectsGetProjectsHandler sets the operation handler for the get projects operation
 	ProjectsGetProjectsHandler projects.GetProjectsHandler
-	// ProjectsGetTaskByIDHandler sets the operation handler for the get task by ID operation
-	ProjectsGetTaskByIDHandler projects.GetTaskByIDHandler
-	// ProjectsGetTasksHandler sets the operation handler for the get tasks operation
-	ProjectsGetTasksHandler projects.GetTasksHandler
+	// TasksGetTaskByIDHandler sets the operation handler for the get task by ID operation
+	TasksGetTaskByIDHandler tasks.GetTaskByIDHandler
+	// TasksGetTasksHandler sets the operation handler for the get tasks operation
+	TasksGetTasksHandler tasks.GetTasksHandler
 	// UsersGetUserByIDHandler sets the operation handler for the get user by ID operation
 	UsersGetUserByIDHandler users.GetUserByIDHandler
 	// UsersGetUsersHandler sets the operation handler for the get users operation
 	UsersGetUsersHandler users.GetUsersHandler
 	// ProjectsPostProjectHandler sets the operation handler for the post project operation
 	ProjectsPostProjectHandler projects.PostProjectHandler
-	// ProjectsPostTaskHandler sets the operation handler for the post task operation
-	ProjectsPostTaskHandler projects.PostTaskHandler
+	// TasksPostTaskHandler sets the operation handler for the post task operation
+	TasksPostTaskHandler tasks.PostTaskHandler
 	// UsersPostUserHandler sets the operation handler for the post user operation
 	UsersPostUserHandler users.PostUserHandler
 	// GeneralRootHandler sets the operation handler for the root operation
@@ -186,6 +202,18 @@ func (o *T2jAPI) Validate() error {
 		unregistered = append(unregistered, "JSONProducer")
 	}
 
+	if o.ProjectsDeleteProjectByIDHandler == nil {
+		unregistered = append(unregistered, "projects.DeleteProjectByIDHandler")
+	}
+
+	if o.TasksDeleteTaskByIDHandler == nil {
+		unregistered = append(unregistered, "tasks.DeleteTaskByIDHandler")
+	}
+
+	if o.UsersDeleteUserByIDHandler == nil {
+		unregistered = append(unregistered, "users.DeleteUserByIDHandler")
+	}
+
 	if o.ProjectsGetProjectByIDHandler == nil {
 		unregistered = append(unregistered, "projects.GetProjectByIDHandler")
 	}
@@ -194,12 +222,12 @@ func (o *T2jAPI) Validate() error {
 		unregistered = append(unregistered, "projects.GetProjectsHandler")
 	}
 
-	if o.ProjectsGetTaskByIDHandler == nil {
-		unregistered = append(unregistered, "projects.GetTaskByIDHandler")
+	if o.TasksGetTaskByIDHandler == nil {
+		unregistered = append(unregistered, "tasks.GetTaskByIDHandler")
 	}
 
-	if o.ProjectsGetTasksHandler == nil {
-		unregistered = append(unregistered, "projects.GetTasksHandler")
+	if o.TasksGetTasksHandler == nil {
+		unregistered = append(unregistered, "tasks.GetTasksHandler")
 	}
 
 	if o.UsersGetUserByIDHandler == nil {
@@ -214,8 +242,8 @@ func (o *T2jAPI) Validate() error {
 		unregistered = append(unregistered, "projects.PostProjectHandler")
 	}
 
-	if o.ProjectsPostTaskHandler == nil {
-		unregistered = append(unregistered, "projects.PostTaskHandler")
+	if o.TasksPostTaskHandler == nil {
+		unregistered = append(unregistered, "tasks.PostTaskHandler")
 	}
 
 	if o.UsersPostUserHandler == nil {
@@ -320,6 +348,21 @@ func (o *T2jAPI) initHandlerCache() {
 		o.handlers = make(map[string]map[string]http.Handler)
 	}
 
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/projects/{projectID}"] = projects.NewDeleteProjectByID(o.context, o.ProjectsDeleteProjectByIDHandler)
+
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/tasks/{taskID}"] = tasks.NewDeleteTaskByID(o.context, o.TasksDeleteTaskByIDHandler)
+
+	if o.handlers["DELETE"] == nil {
+		o.handlers["DELETE"] = make(map[string]http.Handler)
+	}
+	o.handlers["DELETE"]["/users/{userID}"] = users.NewDeleteUserByID(o.context, o.UsersDeleteUserByIDHandler)
+
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
@@ -333,12 +376,12 @@ func (o *T2jAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/tasks/{taskID}"] = projects.NewGetTaskByID(o.context, o.ProjectsGetTaskByIDHandler)
+	o.handlers["GET"]["/tasks/{taskID}"] = tasks.NewGetTaskByID(o.context, o.TasksGetTaskByIDHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"]["/tasks"] = projects.NewGetTasks(o.context, o.ProjectsGetTasksHandler)
+	o.handlers["GET"]["/tasks"] = tasks.NewGetTasks(o.context, o.TasksGetTasksHandler)
 
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
@@ -358,7 +401,7 @@ func (o *T2jAPI) initHandlerCache() {
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)
 	}
-	o.handlers["POST"]["/tasks"] = projects.NewPostTask(o.context, o.ProjectsPostTaskHandler)
+	o.handlers["POST"]["/tasks"] = tasks.NewPostTask(o.context, o.TasksPostTaskHandler)
 
 	if o.handlers["POST"] == nil {
 		o.handlers["POST"] = make(map[string]http.Handler)

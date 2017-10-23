@@ -1,40 +1,49 @@
 package tasks
 
-// import (
-// 	"github.com/go-openapi/runtime/middleware"
-// 	"github.com/king-jam/tracker2jira/backend"
-// 	"github.com/king-jam/tracker2jira/rest/server/operations/users"
-// )
-//
-// // GetUser ...
-// func GetUser(db *backend.Backend, params users.GetUserByIDParams) middleware.Responder {
-// 	value, err := db.GetUserByID(params.UserID)
-// 	if err != nil {
-// 		return &users.GetUserByIDNotFound{}
-// 	}
-// 	return &users.GetUserByIDOK{
-// 		Payload: value,
-// 	}
-// }
-//
-// // GetUsers ...
-// func GetUsers(db *backend.Backend, params users.GetUsersParams) middleware.Responder {
-// 	values, err := db.GetUsers()
-// 	if err != nil {
-// 		return &users.GetUsersBadRequest{}
-// 	}
-// 	return &users.GetUsersOK{
-// 		Payload: values,
-// 	}
-// }
-//
-// // PostUser ...
-// func PostUser(db *backend.Backend, params users.PostUserParams) middleware.Responder {
-// 	value, err := db.PutUser(params.Body)
-// 	if err != nil {
-// 		return &users.PostUserBadRequest{}
-// 	}
-// 	return &users.PostUserCreated{
-// 		Payload: value,
-// 	}
-// }
+import (
+	"github.com/go-openapi/runtime/middleware"
+	"github.com/king-jam/tracker2jira/backend"
+	"github.com/king-jam/tracker2jira/rest/server/operations/tasks"
+)
+
+// GetTask ...
+func GetTask(db *backend.Backend, params tasks.GetTaskByIDParams) middleware.Responder {
+	value, err := db.GetTaskByID(params.TaskID)
+	if err != nil {
+		return &tasks.GetTaskByIDNotFound{}
+	}
+	return &tasks.GetTaskByIDOK{
+		Payload: value,
+	}
+}
+
+// GetTasks ...
+func GetTasks(db *backend.Backend, params tasks.GetTasksParams) middleware.Responder {
+	values, err := db.GetTasks()
+	if err != nil {
+		return &tasks.GetTasksBadRequest{}
+	}
+	return &tasks.GetTasksOK{
+		Payload: values,
+	}
+}
+
+// PostTask ...
+func PostTask(db *backend.Backend, params tasks.PostTaskParams) middleware.Responder {
+	value, err := db.PutTask(params.Body)
+	if err != nil {
+		return &tasks.PostTaskBadRequest{}
+	}
+	return &tasks.PostTaskAccepted{
+		Payload: value,
+	}
+}
+
+// DeleteTask ...
+func DeleteTask(db *backend.Backend, params tasks.DeleteTaskByIDParams) middleware.Responder {
+	err := db.DeleteTask(params.TaskID)
+	if err != nil {
+		return &tasks.DeleteTaskByIDNotFound{}
+	}
+	return &tasks.DeleteTaskByIDNoContent{}
+}

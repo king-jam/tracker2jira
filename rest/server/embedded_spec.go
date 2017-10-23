@@ -38,11 +38,11 @@ func init() {
         "tags": [
           "general"
         ],
-        "summary": "Returns the default home page",
+        "summary": "Returns the default home page for UI based management.",
         "operationId": "root",
         "responses": {
           "200": {
-            "description": "The default home page for the application"
+            "description": "Successfully returned the default UI."
           }
         }
       }
@@ -89,7 +89,10 @@ func init() {
         ],
         "responses": {
           "201": {
-            "description": "Created"
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/Project"
+            }
           },
           "400": {
             "description": "Bad Request"
@@ -128,12 +131,37 @@ func init() {
             "description": "Project not found"
           }
         }
+      },
+      "delete": {
+        "description": "Delete the project object.",
+        "tags": [
+          "projects"
+        ],
+        "summary": "Delete the project by ID",
+        "operationId": "deleteProjectByID",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "ID of project to delete",
+            "name": "projectID",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "successful operation"
+          },
+          "404": {
+            "description": "Project not found"
+          }
+        }
       }
     },
     "/tasks": {
       "get": {
         "tags": [
-          "projects"
+          "tasks"
         ],
         "summary": "Returns all the tasks.",
         "operationId": "getTasks",
@@ -155,7 +183,7 @@ func init() {
           "application/json"
         ],
         "tags": [
-          "projects"
+          "tasks"
         ],
         "summary": "Adds a task configuration",
         "operationId": "postTask",
@@ -171,8 +199,11 @@ func init() {
           }
         ],
         "responses": {
-          "201": {
-            "description": "Created"
+          "202": {
+            "description": "Accepted",
+            "schema": {
+              "$ref": "#/definitions/Task"
+            }
           },
           "400": {
             "description": "Bad Request"
@@ -187,7 +218,7 @@ func init() {
           "application/json"
         ],
         "tags": [
-          "projects"
+          "tasks"
         ],
         "summary": "gets the task from ID",
         "operationId": "getTaskByID",
@@ -202,13 +233,38 @@ func init() {
         ],
         "responses": {
           "200": {
-            "description": "successful operation",
+            "description": "Accepted operation",
             "schema": {
               "$ref": "#/definitions/Task"
             }
           },
           "404": {
             "description": "Task not found"
+          }
+        }
+      },
+      "delete": {
+        "description": "Delete the task object.",
+        "tags": [
+          "tasks"
+        ],
+        "summary": "Delete the Task by ID",
+        "operationId": "deleteTaskByID",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "ID of task to delete",
+            "name": "taskID",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "successful operation"
+          },
+          "404": {
+            "description": "Project not found"
           }
         }
       }
@@ -297,6 +353,31 @@ func init() {
             "description": "User not found"
           }
         }
+      },
+      "delete": {
+        "description": "Delete the user object.",
+        "tags": [
+          "users"
+        ],
+        "summary": "Delete the user by ID",
+        "operationId": "deleteUserByID",
+        "parameters": [
+          {
+            "type": "string",
+            "description": "ID of user to delete",
+            "name": "userID",
+            "in": "path",
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "successful operation"
+          },
+          "404": {
+            "description": "Project not found"
+          }
+        }
       }
     },
     "/version": {
@@ -304,7 +385,7 @@ func init() {
         "tags": [
           "general"
         ],
-        "summary": "Returns the current version running.",
+        "summary": "Returns the version of the running server.",
         "operationId": "version",
         "responses": {
           "200": {
@@ -460,7 +541,7 @@ func init() {
   },
   "tags": [
     {
-      "description": "General Application Settings \u0026 Information",
+      "description": "General Application Information \u0026 Settings",
       "name": "general",
       "externalDocs": {
         "description": "Documentation",
@@ -470,6 +551,10 @@ func init() {
     {
       "description": "Project configurations that are under management",
       "name": "projects"
+    },
+    {
+      "description": "User Configured Synchronization Jobs",
+      "name": "tasks"
     },
     {
       "description": "Operations about project members",

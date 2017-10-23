@@ -14,7 +14,7 @@ import (
 // RootOKCode is the HTTP code returned for type RootOK
 const RootOKCode int = 200
 
-/*RootOK The default home page for the application
+/*RootOK Successfully returned the default UI.
 
 swagger:response rootOK
 */

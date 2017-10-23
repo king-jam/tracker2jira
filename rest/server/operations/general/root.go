@@ -31,7 +31,7 @@ func NewRoot(ctx *middleware.Context, handler RootHandler) *Root {
 
 /*Root swagger:route GET / general root
 
-Returns the default home page
+Returns the default home page for UI based management.
 
 */
 type Root struct {

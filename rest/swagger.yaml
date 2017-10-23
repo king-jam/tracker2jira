@@ -12,33 +12,35 @@ info:
 #basePath: "/"
 tags:
 - name: "general"
-  description: "General Application Settings & Information"
+  description: "General Application Information & Settings"
   externalDocs:
     description: "Documentation"
     url: "https://github.com/king-jam/tracker2jira/blob/master/docs/README.md"
 - name: "projects"
   description: "Project configurations that are under management"
+- name: "tasks"
+  description: "User Configured Synchronization Jobs"
 - name: "users"
   description: "Operations about project members"
 schemes:
 - "http"
 - "https"
 paths:
-  # The general base routes
+  # The general routes
   /:
     get:
       tags:
       - "general"
-      summary: "Returns the default home page"
+      summary: "Returns the default home page for UI based management."
       operationId: "root"
       responses:
         200:
-          description: "The default home page for the application"
+          description: "Successfully returned the default UI."
   /version:
     get:
       tags:
       - "general"
-      summary: "Returns the current version running."
+      summary: "Returns the version of the running server."
       operationId: "version"
       responses:
         200:
@@ -66,7 +68,8 @@ paths:
   #         description: "Successful Login"
   #       400:
   #         description: "Invalid username/password"
-  #/logout: #stubbed out for now
+
+#  /logout: #stubbed out for now
   # /config:
   #   get:
   #     tags:
@@ -114,9 +117,10 @@ paths:
       responses:
         201:
           description: "Created"
+          schema:
+            $ref: "#/definitions/Project"
         400:
           description: "Bad Request"
-    # delete:
   /projects/{projectID}:
     get:
       tags:
@@ -139,11 +143,27 @@ paths:
             $ref: "#/definitions/Project"
         404:
           description: "Project not found"
-    # delete
+    delete:
+      tags:
+      - "projects"
+      summary: "Delete the project by ID"
+      description: "Delete the project object."
+      operationId: "deleteProjectByID"
+      parameters:
+      - name: "projectID"
+        in: "path"
+        description: "ID of project to delete"
+        required: true
+        type: "string"
+      responses:
+        204:
+          description: "successful operation"
+        404:
+          description: "Project not found"
   /tasks:
     get:
       tags:
-      - "projects"
+      - "tasks"
       summary: "Returns all the tasks."
       operationId: "getTasks"
       responses:
@@ -155,7 +175,7 @@ paths:
           description: "Bad Request"
     post:
       tags:
-      - "projects"
+      - "tasks"
       summary: "Adds a task configuration"
       description: "Post a new task config"
       operationId: "postTask"
@@ -169,15 +189,16 @@ paths:
         schema:
           $ref: "#/definitions/Task"
       responses:
-        201:
-          description: "Created"
+        202:
+          description: "Accepted"
+          schema:
+            $ref: "#/definitions/Task"
         400:
           description: "Bad Request"
-    # delete:
   /tasks/{taskID}:
     get:
       tags:
-      - "projects"
+      - "tasks"
       summary: "gets the task from ID"
       description: "getting task object"
       operationId: "getTaskByID"
@@ -191,12 +212,28 @@ paths:
         type: "string"
       responses:
         200:
-          description: "successful operation"
+          description: "Accepted operation"
           schema:
             $ref: "#/definitions/Task"
         404:
           description: "Task not found"
-    # delete
+    delete:
+      tags:
+      - "tasks"
+      summary: "Delete the Task by ID"
+      description: "Delete the task object."
+      operationId: "deleteTaskByID"
+      parameters:
+      - name: "taskID"
+        in: "path"
+        description: "ID of task to delete"
+        required: true
+        type: "string"
+      responses:
+        204:
+          description: "successful operation"
+        404:
+          description: "Project not found"
   /users:
     get:
       tags:
@@ -232,7 +269,6 @@ paths:
             $ref: "#/definitions/User"
         400:
           description: "Bad Request"
-    # delete:
   /users/{userID}:
     get:
       tags:
@@ -255,13 +291,24 @@ paths:
             $ref: "#/definitions/User"
         404:
           description: "User not found"
-    # delete
-
-# securityDefinitions:
-#   ApiKeyAuth:
-#     type: apiKey
-#     in: header
-#     name: X-API-Key
+    delete:
+      tags:
+      - "users"
+      summary: "Delete the user by ID"
+      description: "Delete the user object."
+      operationId: "deleteUserByID"
+      parameters:
+      - name: "userID"
+        in: "path"
+        description: "ID of user to delete"
+        required: true
+        type: "string"
+      responses:
+        204:
+          description: "successful operation"
+        404:
+          description: "Project not found"
+# definitions & response
 responses:
   NotFound:
     description: The specified resource was not found

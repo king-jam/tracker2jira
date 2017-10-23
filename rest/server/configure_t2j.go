@@ -14,11 +14,14 @@ import (
 	graceful "github.com/tylerb/graceful"
 
 	"github.com/king-jam/tracker2jira/backend"
+	projectHandlers "github.com/king-jam/tracker2jira/handlers/projects"
+	taskHandlers "github.com/king-jam/tracker2jira/handlers/tasks"
 	userHandlers "github.com/king-jam/tracker2jira/handlers/users"
 	"github.com/king-jam/tracker2jira/handlers/version"
 	"github.com/king-jam/tracker2jira/rest/server/operations"
 	"github.com/king-jam/tracker2jira/rest/server/operations/general"
 	"github.com/king-jam/tracker2jira/rest/server/operations/projects"
+	"github.com/king-jam/tracker2jira/rest/server/operations/tasks"
 	"github.com/king-jam/tracker2jira/rest/server/operations/users"
 )
 
@@ -36,6 +39,7 @@ func configureAPI(api *operations.T2jAPI) http.Handler {
 	if err != nil {
 		log.Print(err)
 	}
+
 	// configure the api here
 	api.ServeError = errors.ServeError
 
@@ -49,17 +53,26 @@ func configureAPI(api *operations.T2jAPI) http.Handler {
 
 	api.JSONProducer = runtime.JSONProducer()
 
+	api.ProjectsDeleteProjectByIDHandler = projects.DeleteProjectByIDHandlerFunc(func(params projects.DeleteProjectByIDParams) middleware.Responder {
+		return projectHandlers.DeleteProject(db, params)
+	})
+	api.TasksDeleteTaskByIDHandler = tasks.DeleteTaskByIDHandlerFunc(func(params tasks.DeleteTaskByIDParams) middleware.Responder {
+		return taskHandlers.DeleteTask(db, params)
+	})
+	api.UsersDeleteUserByIDHandler = users.DeleteUserByIDHandlerFunc(func(params users.DeleteUserByIDParams) middleware.Responder {
+		return userHandlers.DeleteUser(db, params)
+	})
 	api.ProjectsGetProjectByIDHandler = projects.GetProjectByIDHandlerFunc(func(params projects.GetProjectByIDParams) middleware.Responder {
-		return middleware.NotImplemented("operation projects.GetProjectByID has not yet been implemented")
+		return projectHandlers.GetProject(db, params)
 	})
 	api.ProjectsGetProjectsHandler = projects.GetProjectsHandlerFunc(func(params projects.GetProjectsParams) middleware.Responder {
-		return middleware.NotImplemented("operation projects.GetProjects has not yet been implemented")
+		return projectHandlers.GetProjects(db, params)
 	})
-	api.ProjectsGetTaskByIDHandler = projects.GetTaskByIDHandlerFunc(func(params projects.GetTaskByIDParams) middleware.Responder {
-		return middleware.NotImplemented("operation projects.GetTaskByID has not yet been implemented")
+	api.TasksGetTaskByIDHandler = tasks.GetTaskByIDHandlerFunc(func(params tasks.GetTaskByIDParams) middleware.Responder {
+		return taskHandlers.GetTask(db, params)
 	})
-	api.ProjectsGetTasksHandler = projects.GetTasksHandlerFunc(func(params projects.GetTasksParams) middleware.Responder {
-		return middleware.NotImplemented("operation projects.GetTasks has not yet been implemented")
+	api.TasksGetTasksHandler = tasks.GetTasksHandlerFunc(func(params tasks.GetTasksParams) middleware.Responder {
+		return taskHandlers.GetTasks(db, params)
 	})
 	api.UsersGetUserByIDHandler = users.GetUserByIDHandlerFunc(func(params users.GetUserByIDParams) middleware.Responder {
 		return userHandlers.GetUser(db, params)
@@ -68,10 +81,10 @@ func configureAPI(api *operations.T2jAPI) http.Handler {
 		return userHandlers.GetUsers(db, params)
 	})
 	api.ProjectsPostProjectHandler = projects.PostProjectHandlerFunc(func(params projects.PostProjectParams) middleware.Responder {
-		return middleware.NotImplemented("operation projects.PostProject has not yet been implemented")
+		return projectHandlers.PostProject(db, params)
 	})
-	api.ProjectsPostTaskHandler = projects.PostTaskHandlerFunc(func(params projects.PostTaskParams) middleware.Responder {
-		return middleware.NotImplemented("operation projects.PostTask has not yet been implemented")
+	api.TasksPostTaskHandler = tasks.PostTaskHandlerFunc(func(params tasks.PostTaskParams) middleware.Responder {
+		return taskHandlers.PostTask(db, params)
 	})
 	api.UsersPostUserHandler = users.PostUserHandlerFunc(func(params users.PostUserParams) middleware.Responder {
 		return userHandlers.PostUser(db, params)
