@@ -351,3 +351,5 @@ definitions:
         type: "string"
       releaseVersion:
         type: "string"
+      runtime:
+        type: "string"

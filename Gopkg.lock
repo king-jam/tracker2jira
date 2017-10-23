@@ -101,7 +101,7 @@
   branch = "master"
   name = "github.com/mailru/easyjson"
   packages = ["buffer","jlexer","jwriter"]
-  revision = "efb36c3268025336c3cdd805e3be5f88d1f62b73"
+  revision = "4d347d79dea0067c945f374f990601decb08abb5"
 
 [[projects]]
   branch = "master"

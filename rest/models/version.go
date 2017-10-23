@@ -25,6 +25,9 @@ type Version struct {
 
 	// release version
 	ReleaseVersion string `json:"releaseVersion,omitempty"`
+
+	// runtime
+	Runtime string `json:"runtime,omitempty"`
 }
 
 /* polymorph Version buildDate false */
@@ -32,6 +35,8 @@ type Version struct {
 /* polymorph Version commitHash false */
 
 /* polymorph Version releaseVersion false */
+
+/* polymorph Version runtime false */
 
 // Validate validates this version
 func (m *Version) Validate(formats strfmt.Registry) error {

@@ -1,6 +1,8 @@
 package version
 
 import (
+	"runtime"
+
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/king-jam/tracker2jira/rest/models"
 	"github.com/king-jam/tracker2jira/rest/server/operations/general"
@@ -22,6 +24,7 @@ func Handler(params general.VersionParams) middleware.Responder {
 			BuildDate:      BuildDate,
 			CommitHash:     CommitHash,
 			ReleaseVersion: ReleaseVersion,
+			Runtime:        runtime.Version(),
 		},
 	}
 }

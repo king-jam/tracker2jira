@@ -11,11 +11,11 @@ import (
 	middleware "github.com/go-openapi/runtime/middleware"
 	graceful "github.com/tylerb/graceful"
 
+	"github.com/king-jam/tracker2jira/handlers/version"
 	"github.com/king-jam/tracker2jira/rest/server/operations"
 	"github.com/king-jam/tracker2jira/rest/server/operations/general"
 	"github.com/king-jam/tracker2jira/rest/server/operations/projects"
 	"github.com/king-jam/tracker2jira/rest/server/operations/users"
-	"github.com/king-jam/tracker2jira/version"
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten

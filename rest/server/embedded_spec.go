@@ -434,6 +434,9 @@ func init() {
         },
         "releaseVersion": {
           "type": "string"
+        },
+        "runtime": {
+          "type": "string"
         }
       }
     }
