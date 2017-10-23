@@ -9,6 +9,8 @@ import (
 	"net/http"
 
 	"github.com/go-openapi/runtime"
+
+	"github.com/king-jam/tracker2jira/rest/models"
 )
 
 // PostUserCreatedCode is the HTTP code returned for type PostUserCreated
@@ -19,6 +21,11 @@ const PostUserCreatedCode int = 201
 swagger:response postUserCreated
 */
 type PostUserCreated struct {
+
+	/*
+	  In: Body
+	*/
+	Payload *models.User `json:"body,omitempty"`
 }
 
 // NewPostUserCreated creates PostUserCreated with default headers values
@@ -26,10 +33,27 @@ func NewPostUserCreated() *PostUserCreated {
 	return &PostUserCreated{}
 }
 
+// WithPayload adds the payload to the post user created response
+func (o *PostUserCreated) WithPayload(payload *models.User) *PostUserCreated {
+	o.Payload = payload
+	return o
+}
+
+// SetPayload sets the payload to the post user created response
+func (o *PostUserCreated) SetPayload(payload *models.User) {
+	o.Payload = payload
+}
+
 // WriteResponse to the client
 func (o *PostUserCreated) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
 	rw.WriteHeader(201)
+	if o.Payload != nil {
+		payload := o.Payload
+		if err := producer.Produce(rw, payload); err != nil {
+			panic(err) // let the recovery middleware deal with this
+		}
+	}
 }
 
 // PostUserBadRequestCode is the HTTP code returned for type PostUserBadRequest

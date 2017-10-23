@@ -17,8 +17,8 @@ var (
 	ReleaseVersion = "dev"
 )
 
-// Handler ...
-func Handler(params general.VersionParams) middleware.Responder {
+// GetVersion ...
+func GetVersion(params general.VersionParams) middleware.Responder {
 	return &general.VersionOK{
 		Payload: &models.Version{
 			BuildDate:      BuildDate,

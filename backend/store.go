@@ -12,27 +12,38 @@ func init() {
 	boltdb.Register()
 }
 
-var db *Backend
+const (
+	baseString = "t2j"
+)
+
+// DB ...
+var DB *Backend
 
 // Backend ...
 type Backend struct {
-	store store.Store
+	store      store.Store
+	instanceID string
 }
 
-// ConfigureDB ...
-func ConfigureDB() error {
+// GetDB ...
+func GetDB() (*Backend, error) {
+	if DB != nil {
+		return DB, nil
+	}
+	instanceID := "1"
 	kv, err := libkv.NewStore(
 		store.BOLTDB,
 		[]string{"/tmp/not_exist_dir/__boltdbtest"}, // make this a config object
 		&store.Config{
-			Bucket: "boltDBTest",
+			Bucket: baseString,
 		},
 	)
 	if err != nil {
 		log.Fatalf("DEAD")
 	}
-	db = &Backend{
-		store: kv,
+	DB = &Backend{
+		store:      kv,
+		instanceID: instanceID,
 	}
-	return nil
+	return DB, nil
 }

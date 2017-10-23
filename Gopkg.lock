@@ -26,6 +26,24 @@
   version = "v1.3.1"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/carbocation/handlers"
+  packages = ["."]
+  revision = "c939c6d9ef31c3d483da9db462b6fd806044ac87"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/carbocation/interpose"
+  packages = ["adaptors","middleware"]
+  revision = "723534742ba3bbda66268b735aaa41634468acc6"
+
+[[projects]]
+  name = "github.com/codegangsta/inject"
+  packages = ["."]
+  revision = "37d7f8432a3e684eef9b2edece76bdfa6ac85b39"
+  version = "v1.0-rc1"
+
+[[projects]]
   name = "github.com/docker/go-units"
   packages = ["."]
   revision = "0dadbb0345b35ec7ef35e228dabb8de89a65bf52"
@@ -36,6 +54,12 @@
   packages = [".","store","store/boltdb"]
   revision = "aabc039ad04deb721e234f99cd1b4aa28ac71a40"
   version = "v0.2.1"
+
+[[projects]]
+  name = "github.com/go-martini/martini"
+  packages = ["."]
+  revision = "49411a5b646861ad29a6ddd5351717a0a9c49b94"
+  version = "v1.0"
 
 [[projects]]
   branch = "master"
@@ -70,7 +94,7 @@
 [[projects]]
   branch = "master"
   name = "github.com/go-openapi/runtime"
-  packages = [".","client","flagext","middleware","middleware/denco","middleware/header","middleware/untyped","security"]
+  packages = [".","flagext","middleware","middleware/denco","middleware/header","middleware/untyped","security"]
   revision = "e8231e16de5bcda9839e03ae07c5c96a1fd82041"
 
 [[projects]]
@@ -99,15 +123,51 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/goods/httpbuf"
+  packages = ["."]
+  revision = "5709e9bb814c932e48b6737e1cf214a6522453a2"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/justinas/nosurf"
+  packages = ["."]
+  revision = "7182011986c42c33f0a79fd4b07e41edc784532b"
+
+[[projects]]
+  branch = "master"
   name = "github.com/mailru/easyjson"
   packages = ["buffer","jlexer","jwriter"]
   revision = "4d347d79dea0067c945f374f990601decb08abb5"
 
 [[projects]]
   branch = "master"
+  name = "github.com/meatballhat/negroni-logrus"
+  packages = ["."]
+  revision = "31067281800f66f57548a7a32d9c6c5f963fef83"
+
+[[projects]]
+  branch = "master"
   name = "github.com/mitchellh/mapstructure"
   packages = ["."]
   revision = "06020f85339e21b2478f756a78e295255ffa4d6a"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/phyber/negroni-gzip"
+  packages = ["gzip"]
+  revision = "8118ae63850fee22b2fe43cea81d3bc149774503"
+
+[[projects]]
+  name = "github.com/satori/go.uuid"
+  packages = ["."]
+  revision = "879c5887cd475cd7864858769793b2ceb0d44feb"
+  version = "v1.1.0"
+
+[[projects]]
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  revision = "f006c2ac4710855cf0f916dd6b77acf6b048dc6e"
+  version = "v1.0.3"
 
 [[projects]]
   name = "github.com/spf13/pflag"
@@ -122,15 +182,27 @@
   version = "v1.2.15"
 
 [[projects]]
+  name = "github.com/urfave/negroni"
+  packages = ["."]
+  revision = "fde5e16d32adc7ad637e9cd9ad21d4ebc6192535"
+  version = "v0.2.0"
+
+[[projects]]
+  branch = "master"
+  name = "golang.org/x/crypto"
+  packages = ["ssh/terminal"]
+  revision = "2509b142fb2b797aa7587dad548f113b2c0f20ce"
+
+[[projects]]
   branch = "master"
   name = "golang.org/x/net"
-  packages = ["context","context/ctxhttp","idna"]
+  packages = ["context","idna"]
   revision = "cd69bc3fc700721b709c3a59e16e24c67b58f6ff"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = ["unix"]
+  packages = ["unix","windows"]
   revision = "8dbc5d05d6edcc104950cc299a1ce6641235bc86"
 
 [[projects]]
@@ -154,6 +226,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9cea03481edaabfff31a164fb02437f4b0bcf5fa5bf4c8a8e89ea8b857305afb"
+  inputs-digest = "dc5c40671065418c8e06f9c5796088f7b0796fa8aeb828b142b93a510b9ec113"
   solver-name = "gps-cdcl"
   solver-version = 1

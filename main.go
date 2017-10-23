@@ -10,6 +10,7 @@ import (
 	loads "github.com/go-openapi/loads"
 	flag "github.com/spf13/pflag"
 
+	"github.com/king-jam/tracker2jira/backend"
 	"github.com/king-jam/tracker2jira/rest/server"
 	"github.com/king-jam/tracker2jira/rest/server/operations"
 )
@@ -18,6 +19,10 @@ import (
 // Make sure not to overwrite this file after you generated it because all your edits would be lost!
 
 func main() {
+	_, err := backend.GetDB()
+	if err != nil {
+		log.Fatalf("DB Init Failed")
+	}
 
 	swaggerSpec, err := loads.Analyzed(server.SwaggerJSON, "")
 	if err != nil {

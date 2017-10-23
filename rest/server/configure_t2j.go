@@ -4,13 +4,17 @@ package server
 
 import (
 	"crypto/tls"
+	"log"
 	"net/http"
 
+	interpose "github.com/carbocation/interpose/middleware"
 	errors "github.com/go-openapi/errors"
 	runtime "github.com/go-openapi/runtime"
 	middleware "github.com/go-openapi/runtime/middleware"
 	graceful "github.com/tylerb/graceful"
 
+	"github.com/king-jam/tracker2jira/backend"
+	userHandlers "github.com/king-jam/tracker2jira/handlers/users"
 	"github.com/king-jam/tracker2jira/handlers/version"
 	"github.com/king-jam/tracker2jira/rest/server/operations"
 	"github.com/king-jam/tracker2jira/rest/server/operations/general"
@@ -27,6 +31,11 @@ func configureFlags(api *operations.T2jAPI) {
 }
 
 func configureAPI(api *operations.T2jAPI) http.Handler {
+	// our DB initialization custom sauce
+	db, err := backend.GetDB()
+	if err != nil {
+		log.Print(err)
+	}
 	// configure the api here
 	api.ServeError = errors.ServeError
 
@@ -34,7 +43,7 @@ func configureAPI(api *operations.T2jAPI) http.Handler {
 	// Expected interface func(string, ...interface{})
 	//
 	// Example:
-	// api.Logger = log.Printf
+	api.Logger = log.Printf
 
 	api.JSONConsumer = runtime.JSONConsumer()
 
@@ -53,10 +62,10 @@ func configureAPI(api *operations.T2jAPI) http.Handler {
 		return middleware.NotImplemented("operation projects.GetTasks has not yet been implemented")
 	})
 	api.UsersGetUserByIDHandler = users.GetUserByIDHandlerFunc(func(params users.GetUserByIDParams) middleware.Responder {
-		return middleware.NotImplemented("operation users.GetUserByID has not yet been implemented")
+		return userHandlers.GetUser(db, params)
 	})
 	api.UsersGetUsersHandler = users.GetUsersHandlerFunc(func(params users.GetUsersParams) middleware.Responder {
-		return middleware.NotImplemented("operation users.GetUsers has not yet been implemented")
+		return userHandlers.GetUsers(db, params)
 	})
 	api.ProjectsPostProjectHandler = projects.PostProjectHandlerFunc(func(params projects.PostProjectParams) middleware.Responder {
 		return middleware.NotImplemented("operation projects.PostProject has not yet been implemented")
@@ -65,13 +74,13 @@ func configureAPI(api *operations.T2jAPI) http.Handler {
 		return middleware.NotImplemented("operation projects.PostTask has not yet been implemented")
 	})
 	api.UsersPostUserHandler = users.PostUserHandlerFunc(func(params users.PostUserParams) middleware.Responder {
-		return middleware.NotImplemented("operation users.PostUser has not yet been implemented")
+		return userHandlers.PostUser(db, params)
 	})
 	api.GeneralRootHandler = general.RootHandlerFunc(func(params general.RootParams) middleware.Responder {
 		return middleware.NotImplemented("operation general.Root has not yet been implemented")
 	})
 	api.GeneralVersionHandler = general.VersionHandlerFunc(func(params general.VersionParams) middleware.Responder {
-		return version.Handler(params)
+		return version.GetVersion(params)
 	})
 
 	api.ServerShutdown = func() {}
@@ -100,5 +109,6 @@ func setupMiddlewares(handler http.Handler) http.Handler {
 // The middleware configuration happens before anything, this middleware also applies to serving the swagger.json document.
 // So this is a good place to plug in a panic handling middleware, logging and metrics
 func setupGlobalMiddleware(handler http.Handler) http.Handler {
-	return handler
+	logViaLogrus := interpose.NegroniLogrus()
+	return logViaLogrus(handler)
 }
