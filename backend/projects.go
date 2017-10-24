@@ -46,7 +46,7 @@ func (b *Backend) GetProjectByID(projectid string) (*models.Project, error) {
 	return project, nil
 }
 
-// PutProject ...
+// PutProject ...// init counter = 0
 func (b *Backend) PutProject(project *models.Project) (*models.Project, error) {
 	uuid := uuid.NewV4()
 	key := b.GetProjectsBase() + uuid.String()

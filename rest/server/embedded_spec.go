@@ -446,6 +446,9 @@ func init() {
         },
         "projectURL": {
           "type": "string"
+        },
+        "projectVersion": {
+          "type": "integer"
         }
       }
     },

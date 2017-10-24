@@ -34,6 +34,9 @@ type Project struct {
 
 	// project URL
 	ProjectURL string `json:"projectURL,omitempty"`
+
+	// project version
+	ProjectVersion int64 `json:"projectVersion,omitempty"`
 }
 
 /* polymorph Project adminUserID false */
@@ -47,6 +50,8 @@ type Project struct {
 /* polymorph Project projectType false */
 
 /* polymorph Project projectURL false */
+
+/* polymorph Project projectVersion false */
 
 // Validate validates this project
 func (m *Project) Validate(formats strfmt.Registry) error {

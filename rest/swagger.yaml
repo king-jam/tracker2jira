@@ -357,6 +357,8 @@ definitions:
         type: "string"
       projectOverrides:
         type: "object"
+      projectVersion:
+        type: "integer"
   Tasks:
     type: "array"
     items:
