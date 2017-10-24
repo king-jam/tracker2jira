@@ -4,6 +4,7 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/king-jam/tracker2jira/backend"
 	"github.com/king-jam/tracker2jira/rest/server/operations/users"
+	uuid "github.com/satori/go.uuid"
 )
 
 // GetUser ...
@@ -30,6 +31,8 @@ func GetUsers(db *backend.Backend, params users.GetUsersParams) middleware.Respo
 
 // PostUser ...
 func PostUser(db *backend.Backend, params users.PostUserParams) middleware.Responder {
+	uuid := uuid.NewV4()
+	params.Body.UserID = uuid.String()
 	value, err := db.PutUser(params.Body)
 	if err != nil {
 		return &users.PostUserBadRequest{}

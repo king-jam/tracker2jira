@@ -4,7 +4,10 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/king-jam/tracker2jira/backend"
 	"github.com/king-jam/tracker2jira/rest/server/operations/tasks"
+	uuid "github.com/satori/go.uuid"
 )
+
+const defaultTaskState = "pending"
 
 // GetTask ...
 func GetTask(db *backend.Backend, params tasks.GetTaskByIDParams) middleware.Responder {
@@ -30,6 +33,9 @@ func GetTasks(db *backend.Backend, params tasks.GetTasksParams) middleware.Respo
 
 // PostTask ...
 func PostTask(db *backend.Backend, params tasks.PostTaskParams) middleware.Responder {
+	uuid := uuid.NewV4()
+	params.Body.TaskID = uuid.String()
+	params.Body.Status = defaultTaskState // set the status to default until scheduled
 	value, err := db.PutTask(params.Body)
 	if err != nil {
 		return &tasks.PostTaskBadRequest{}

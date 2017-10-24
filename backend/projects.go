@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/king-jam/tracker2jira/rest/models"
-	uuid "github.com/satori/go.uuid"
 )
 
 const projectsPath = "projects"
@@ -46,11 +45,9 @@ func (b *Backend) GetProjectByID(projectid string) (*models.Project, error) {
 	return project, nil
 }
 
-// PutProject ...// init counter = 0
+// PutProject ...
 func (b *Backend) PutProject(project *models.Project) (*models.Project, error) {
-	uuid := uuid.NewV4()
-	key := b.GetProjectsBase() + uuid.String()
-	project.ProjectID = uuid.String()
+	key := b.GetProjectsBase() + project.ProjectID
 	value, err := project.MarshalBinary()
 	if err != nil {
 		return nil, err
