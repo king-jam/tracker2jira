@@ -1,3 +1,0 @@
-Install Npm
-
-Install Elm
