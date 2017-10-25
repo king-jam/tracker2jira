@@ -4,11 +4,9 @@ import (
 	"log"
 
 	"github.com/king-jam/tracker2jira/rest/models"
-	uuid "github.com/satori/go.uuid"
 )
 
 const tasksPath = "tasks"
-const defaultTaskState = "pending"
 
 // GetTasks is ...
 func (b *Backend) GetTasks() ([]*models.Task, error) {
@@ -49,10 +47,7 @@ func (b *Backend) GetTaskByID(taskid string) (*models.Task, error) {
 
 // PutTask ...
 func (b *Backend) PutTask(task *models.Task) (*models.Task, error) {
-	uuid := uuid.NewV4()
-	key := b.GetTaskBase() + uuid.String()
-	task.TaskID = uuid.String()
-	task.Status = defaultTaskState // set the status to default until scheduled
+	key := b.GetTaskBase() + task.TaskID
 	value, err := task.MarshalBinary()
 	if err != nil {
 		return nil, err

@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"github.com/king-jam/tracker2jira/rest/models"
-	uuid "github.com/satori/go.uuid"
 )
 
 const usersPath = "users"
@@ -48,9 +47,7 @@ func (b *Backend) GetUserByID(userid string) (*models.User, error) {
 
 // PutUser ...
 func (b *Backend) PutUser(user *models.User) (*models.User, error) {
-	uuid := uuid.NewV4()
-	key := b.GetUserBase() + uuid.String()
-	user.UserID = uuid.String()
+	key := b.GetUserBase() + user.UserID
 	value, err := user.MarshalBinary()
 	if err != nil {
 		return nil, err
