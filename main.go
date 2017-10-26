@@ -11,6 +11,7 @@ import (
 	flag "github.com/spf13/pflag"
 
 	"github.com/king-jam/tracker2jira/backend"
+	"github.com/king-jam/tracker2jira/engine/taskservice"
 	"github.com/king-jam/tracker2jira/rest/server"
 	"github.com/king-jam/tracker2jira/rest/server/operations"
 )
@@ -23,6 +24,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("DB Init Failed")
 	}
+
+	taskservice.NewTaskService()
 
 	swaggerSpec, err := loads.Analyzed(server.SwaggerJSON, "")
 	if err != nil {
