@@ -47,7 +47,7 @@ func (b *Backend) GetTaskByID(taskid string) (*models.Task, error) {
 
 // PutTask ...
 func (b *Backend) PutTask(task *models.Task) (*models.Task, error) {
-	key := b.GetTaskBase() + task.TaskID
+	key := b.GetTaskBase() + task.TaskID.String()
 	value, err := task.MarshalBinary()
 	if err != nil {
 		return nil, err

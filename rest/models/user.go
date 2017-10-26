@@ -21,7 +21,7 @@ type User struct {
 	ExternalCredentials interface{} `json:"externalCredentials,omitempty"`
 
 	// user ID
-	UserID string `json:"userID,omitempty"`
+	UserID strfmt.UUID4 `json:"userID,omitempty"`
 
 	// username
 	Username string `json:"username,omitempty"`

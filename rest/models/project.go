@@ -24,7 +24,7 @@ type Project struct {
 	ExternalID string `json:"externalID,omitempty"`
 
 	// project ID
-	ProjectID string `json:"projectID,omitempty"`
+	ProjectID strfmt.UUID4 `json:"projectID,omitempty"`
 
 	// project overrides
 	ProjectOverrides interface{} `json:"projectOverrides,omitempty"`

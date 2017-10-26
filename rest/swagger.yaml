@@ -346,6 +346,7 @@ definitions:
     type: "object"
     properties:
       projectID:
+        format: "uuid4"
         type: "string"
       projectType:
         type: "string"
@@ -367,6 +368,7 @@ definitions:
     type: "object"
     properties:
       taskID:
+        format: "uuid4"
         type: "string"
       master:
         type: "string"
@@ -388,6 +390,7 @@ definitions:
     type: "object"
     properties:
       userID:
+        format: "uuid4"
         type: "string"
       username:
         type: "string"

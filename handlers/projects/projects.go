@@ -2,6 +2,7 @@ package projects
 
 import (
 	"github.com/go-openapi/runtime/middleware"
+	strfmt "github.com/go-openapi/strfmt"
 	"github.com/king-jam/tracker2jira/backend"
 	"github.com/king-jam/tracker2jira/rest/server/operations/projects"
 	uuid "github.com/satori/go.uuid"
@@ -32,7 +33,7 @@ func GetProjects(db *backend.Backend, params projects.GetProjectsParams) middlew
 // PostProject ...// init to 0 for post create
 func PostProject(db *backend.Backend, params projects.PostProjectParams) middleware.Responder {
 	uuid := uuid.NewV4()
-	params.Body.ProjectID = uuid.String()
+	params.Body.ProjectID = strfmt.UUID4(uuid.String())
 	params.Body.ProjectVersion = 0
 	value, err := db.PutProject(params.Body)
 	if err != nil {
