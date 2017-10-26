@@ -36,7 +36,7 @@ type Task struct {
 	StoryTypeMap interface{} `json:"storyTypeMap,omitempty"`
 
 	// task ID
-	TaskID string `json:"taskID,omitempty"`
+	TaskID strfmt.UUID4 `json:"taskID,omitempty"`
 }
 
 /* polymorph Task currentStateMap false */

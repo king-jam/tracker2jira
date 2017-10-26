@@ -436,7 +436,8 @@ func init() {
           "type": "string"
         },
         "projectID": {
-          "type": "string"
+          "type": "string",
+          "format": "uuid4"
         },
         "projectOverrides": {
           "type": "object"
@@ -480,7 +481,8 @@ func init() {
           "type": "object"
         },
         "taskID": {
-          "type": "string"
+          "type": "string",
+          "format": "uuid4"
         }
       }
     },
@@ -497,7 +499,8 @@ func init() {
           "type": "object"
         },
         "userID": {
-          "type": "string"
+          "type": "string",
+          "format": "uuid4"
         },
         "username": {
           "type": "string"

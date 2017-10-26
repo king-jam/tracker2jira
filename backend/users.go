@@ -47,7 +47,7 @@ func (b *Backend) GetUserByID(userid string) (*models.User, error) {
 
 // PutUser ...
 func (b *Backend) PutUser(user *models.User) (*models.User, error) {
-	key := b.GetUserBase() + user.UserID
+	key := b.GetUserBase() + user.UserID.String()
 	value, err := user.MarshalBinary()
 	if err != nil {
 		return nil, err

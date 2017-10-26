@@ -47,7 +47,7 @@ func (b *Backend) GetProjectByID(projectid string) (*models.Project, error) {
 
 // PutProject ...
 func (b *Backend) PutProject(project *models.Project) (*models.Project, error) {
-	key := b.GetProjectsBase() + project.ProjectID
+	key := b.GetProjectsBase() + project.ProjectID.String()
 	value, err := project.MarshalBinary()
 	if err != nil {
 		return nil, err
