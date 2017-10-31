@@ -4,8 +4,9 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
+
+	log "github.com/sirupsen/logrus"
 
 	loads "github.com/go-openapi/loads"
 	flag "github.com/spf13/pflag"
@@ -22,7 +23,7 @@ import (
 func main() {
 	_, err := backend.GetDB()
 	if err != nil {
-		log.Fatalf("DB Init Failed")
+		log.Fatalln("DB Init Failed")
 	}
 
 	taskservice.NewTaskService()
@@ -60,5 +61,4 @@ func main() {
 	if err := httpServer.Serve(); err != nil {
 		log.Fatalln(err)
 	}
-
 }

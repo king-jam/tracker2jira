@@ -1,9 +1,10 @@
 package taskservice
 
 import (
-	"log"
 	"sync"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/king-jam/tracker2jira/backend"
 	"github.com/king-jam/tracker2jira/rest/models"
@@ -22,9 +23,16 @@ import (
 // start story.go loop function
 // change state to "running"
 
+// Runner ...
+type Runner interface {
+	ScheduleTask(task *models.Task) error
+	CancelTask(task models.Task) error
+	CancelAllTask() error
+}
+
 // TaskScheduler ...
 type TaskScheduler struct {
-	runner *TaskRunner
+	runner Runner
 
 	db        *backend.Backend
 	pollDelay time.Duration
@@ -36,7 +44,7 @@ type TaskScheduler struct {
 }
 
 // NewTaskScheduler ...
-func NewTaskScheduler(runner *TaskRunner) (*TaskScheduler, error) {
+func NewTaskScheduler(runner Runner) (*TaskScheduler, error) {
 	backend, err := backend.GetDB()
 	if err != nil {
 		return &TaskScheduler{}, err
@@ -94,10 +102,10 @@ func (t *TaskScheduler) taskScheduler() {
 }
 
 func (t *TaskScheduler) schedulePendingTasks() {
-	log.Println("SCHEDULING PENDING TASKS")
+	log.Debugf("SCHEDULING PENDING TASKS")
 	tasks, err := t.db.GetTasks()
 	if err != nil {
-		log.Println("DB Access Error for Tasks")
+		log.Warnf("DB Access Error for Tasks")
 	}
 	for _, v := range tasks {
 		if v.Status == "pending" {
@@ -107,10 +115,10 @@ func (t *TaskScheduler) schedulePendingTasks() {
 }
 
 func (t *TaskScheduler) scheduleAllTasks() {
-	log.Println("SCHEDULING ALL TASKS")
+	log.Debugf("SCHEDULING ALL TASKS")
 	tasks, err := t.db.GetTasks()
 	if err != nil {
-		log.Println("DB Access Error for Tasks")
+		log.Warnf("DB Access Error for Tasks")
 	}
 	for _, v := range tasks {
 		t.scheduleTask(v)
@@ -120,6 +128,6 @@ func (t *TaskScheduler) scheduleAllTasks() {
 func (t *TaskScheduler) scheduleTask(task *models.Task) {
 	task.Status = "scheduled"
 	t.db.PutTask(task)
-	log.Printf("Scheduling: %+v", task)
+	log.Debugf("Scheduling: %+v", task)
 	t.runner.ScheduleTask(task)
 }

@@ -4,15 +4,12 @@ package server
 
 import (
 	"crypto/tls"
-	"log"
 	"net/http"
 
 	interpose "github.com/carbocation/interpose/middleware"
 	errors "github.com/go-openapi/errors"
 	runtime "github.com/go-openapi/runtime"
 	middleware "github.com/go-openapi/runtime/middleware"
-	graceful "github.com/tylerb/graceful"
-
 	"github.com/king-jam/tracker2jira/backend"
 	projectHandlers "github.com/king-jam/tracker2jira/handlers/projects"
 	taskHandlers "github.com/king-jam/tracker2jira/handlers/tasks"
@@ -23,6 +20,8 @@ import (
 	"github.com/king-jam/tracker2jira/rest/server/operations/projects"
 	"github.com/king-jam/tracker2jira/rest/server/operations/tasks"
 	"github.com/king-jam/tracker2jira/rest/server/operations/users"
+	log "github.com/sirupsen/logrus"
+	graceful "github.com/tylerb/graceful"
 )
 
 // This file is safe to edit. Once it exists it will not be overwritten
@@ -37,7 +36,7 @@ func configureAPI(api *operations.T2jAPI) http.Handler {
 	// our DB initialization custom sauce
 	db, err := backend.GetDB()
 	if err != nil {
-		log.Print(err)
+		log.Fatalln(err)
 	}
 
 	// configure the api here
@@ -47,7 +46,7 @@ func configureAPI(api *operations.T2jAPI) http.Handler {
 	// Expected interface func(string, ...interface{})
 	//
 	// Example:
-	api.Logger = log.Printf
+	api.Logger = log.Infof
 
 	api.JSONConsumer = runtime.JSONConsumer()
 

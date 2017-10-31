@@ -1,7 +1,7 @@
 package backend
 
 import (
-	"log"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/king-jam/tracker2jira/rest/models"
 )

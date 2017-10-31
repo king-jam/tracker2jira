@@ -1,7 +1,7 @@
 package backend
 
 import (
-	"log"
+	log "github.com/sirupsen/logrus"
 
 	"github.com/docker/libkv"
 	"github.com/docker/libkv/store"

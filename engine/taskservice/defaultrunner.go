@@ -2,9 +2,10 @@ package taskservice
 
 import (
 	"errors"
-	"log"
 	"sync"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 
 	"github.com/king-jam/tracker2jira/backend"
 	"github.com/king-jam/tracker2jira/rest/models"
@@ -74,7 +75,7 @@ func (t *TaskRunner) schedule(delay time.Duration) chan bool {
 
 	go func() {
 		for {
-			log.Println("DOING STATE UPDATE")
+			log.Debugf("DOING STATE UPDATE")
 			select {
 			case <-time.After(delay):
 			case <-stop:

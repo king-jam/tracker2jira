@@ -1,9 +1,15 @@
 package taskservice
 
+// Scheduler ...
+type Scheduler interface {
+	Start() error
+	Stop() error
+}
+
 // TaskService ...
 type TaskService struct {
-	scheduler *TaskScheduler
-	runner    *TaskRunner
+	scheduler Scheduler
+	runner    Runner
 
 	started bool
 }
