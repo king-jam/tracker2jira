@@ -30,6 +30,11 @@ type Runner interface {
 	CancelAllTask() error
 }
 
+// TaskSource ...
+type TaskSource interface {
+	GetTasks() models.Task
+}
+
 // TaskScheduler ...
 type TaskScheduler struct {
 	runner Runner

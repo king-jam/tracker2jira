@@ -13,8 +13,7 @@ import (
 
 // Task ...
 type Task interface {
-	RunTask() error
-	CancelTask() error
+	Run() error
 }
 
 // TaskRunner ...

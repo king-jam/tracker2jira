@@ -376,6 +376,11 @@ definitions:
         type: "string"
       status:
         type: "string"
+        enum:
+        - "pending"
+        - "running"
+        - "stopped"
+        - "failed"
       currentStateMap:
         type: "object"
       storyTypeMap:

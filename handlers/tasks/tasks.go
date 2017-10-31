@@ -4,11 +4,12 @@ import (
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/king-jam/tracker2jira/backend"
+	"github.com/king-jam/tracker2jira/rest/models"
 	"github.com/king-jam/tracker2jira/rest/server/operations/tasks"
 	uuid "github.com/satori/go.uuid"
 )
 
-const defaultTaskState = "pending"
+const defaultTaskState = models.TaskStatusPending
 
 // GetTask ...
 func GetTask(db *backend.Backend, params tasks.GetTaskByIDParams) middleware.Responder {

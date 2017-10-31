@@ -472,7 +472,13 @@ func init() {
           "type": "string"
         },
         "status": {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "pending",
+            "running",
+            "stopped",
+            "failed"
+          ]
         },
         "storyFieldMap": {
           "type": "object"

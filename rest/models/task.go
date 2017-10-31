@@ -6,10 +6,13 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
+
 	strfmt "github.com/go-openapi/strfmt"
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // Task task
@@ -57,9 +60,59 @@ type Task struct {
 func (m *Task) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateStatus(formats); err != nil {
+		// prop
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+var taskTypeStatusPropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["pending","running","stopped","failed"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		taskTypeStatusPropEnum = append(taskTypeStatusPropEnum, v)
+	}
+}
+
+const (
+	// TaskStatusPending captures enum value "pending"
+	TaskStatusPending string = "pending"
+	// TaskStatusRunning captures enum value "running"
+	TaskStatusRunning string = "running"
+	// TaskStatusStopped captures enum value "stopped"
+	TaskStatusStopped string = "stopped"
+	// TaskStatusFailed captures enum value "failed"
+	TaskStatusFailed string = "failed"
+)
+
+// prop value enum
+func (m *Task) validateStatusEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, taskTypeStatusPropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *Task) validateStatus(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Status) { // not required
+		return nil
+	}
+
+	// value enum
+	if err := m.validateStatusEnum("status", "body", m.Status); err != nil {
+		return err
+	}
+
 	return nil
 }
 
