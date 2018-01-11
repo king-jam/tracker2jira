@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
-	"github.com/king-jam/tracker2jira/rest/models"
+	models "github.com/king-jam/tracker2jira/rest/models"
 )
 
 // NewPostTaskParams creates a new PostTaskParams object
@@ -30,7 +30,7 @@ func NewPostTaskParams() PostTaskParams {
 type PostTaskParams struct {
 
 	// HTTP Request Object
-	HTTPRequest *http.Request
+	HTTPRequest *http.Request `json:"-"`
 
 	/*Task definition
 	  Required: true

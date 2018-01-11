@@ -28,7 +28,7 @@ func NewDeleteUserByIDParams() DeleteUserByIDParams {
 type DeleteUserByIDParams struct {
 
 	// HTTP Request Object
-	HTTPRequest *http.Request
+	HTTPRequest *http.Request `json:"-"`
 
 	/*ID of user to delete
 	  Required: true

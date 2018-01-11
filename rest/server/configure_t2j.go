@@ -5,6 +5,7 @@ package server
 import (
 	"crypto/tls"
 	"net/http"
+	"strings"
 
 	interpose "github.com/carbocation/interpose/middleware"
 	errors "github.com/go-openapi/errors"
@@ -88,9 +89,6 @@ func configureAPI(api *operations.T2jAPI) http.Handler {
 	api.UsersPostUserHandler = users.PostUserHandlerFunc(func(params users.PostUserParams) middleware.Responder {
 		return userHandlers.PostUser(db, params)
 	})
-	api.GeneralRootHandler = general.RootHandlerFunc(func(params general.RootParams) middleware.Responder {
-		return middleware.NotImplemented("operation general.Root has not yet been implemented")
-	})
 	api.GeneralVersionHandler = general.VersionHandlerFunc(func(params general.VersionParams) middleware.Responder {
 		return version.GetVersion(params)
 	})
@@ -121,6 +119,19 @@ func setupMiddlewares(handler http.Handler) http.Handler {
 // The middleware configuration happens before anything, this middleware also applies to serving the swagger.json document.
 // So this is a good place to plug in a panic handling middleware, logging and metrics
 func setupGlobalMiddleware(handler http.Handler) http.Handler {
+	uiHandler := uiMiddleware(handler)
 	logViaLogrus := interpose.NegroniLogrus()
-	return logViaLogrus(handler)
+	return logViaLogrus(uiHandler)
+}
+
+// uiMiddleware exposes the UI
+func uiMiddleware(handler http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Serving /
+		if strings.Index(r.URL.Path, "/") == 0 {
+			http.StripPrefix("/", http.FileServer(assetFS())).ServeHTTP(w, r)
+			return
+		}
+		handler.ServeHTTP(w, r)
+	})
 }

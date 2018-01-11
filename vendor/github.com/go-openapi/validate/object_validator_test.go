@@ -32,3 +32,43 @@ func TestItemsMustBeTypeArray(t *testing.T) {
 	res = ov.Validate(dataInvalid)
 	assert.NotEqual(t, 0, len(res.Errors))
 }
+
+func TestItemsMustHaveType(t *testing.T) {
+	ov := new(objectValidator)
+	dataValid := map[string]interface{}{
+		"type":  "array",
+		"items": "dummy",
+	}
+	dataInvalid := map[string]interface{}{
+		"items": "dummy",
+	}
+	res := ov.Validate(dataValid)
+	assert.Equal(t, 0, len(res.Errors))
+	res = ov.Validate(dataInvalid)
+	assert.NotEqual(t, 0, len(res.Errors))
+}
+
+func TestTypeArrayMustHaveItems(t *testing.T) {
+	ov := new(objectValidator)
+	dataValid := map[string]interface{}{
+		"type":  "array",
+		"items": "dummy",
+	}
+	dataInvalid := map[string]interface{}{
+		"type": "array",
+		"key":  "dummy",
+	}
+	res := ov.Validate(dataValid)
+	assert.Equal(t, 0, len(res.Errors))
+	res = ov.Validate(dataInvalid)
+	assert.NotEqual(t, 0, len(res.Errors))
+}
+
+// Test edge cases in object_validator which are difficult
+// to simulate with specs
+// (this one is a trivial, just to check all methods are filled)
+func TestObjectValidator_EdgeCases(t *testing.T) {
+	s := objectValidator{}
+	s.SetPath("path")
+	assert.Equal(t, "path", s.Path)
+}

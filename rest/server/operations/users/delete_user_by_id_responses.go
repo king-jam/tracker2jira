@@ -29,6 +29,8 @@ func NewDeleteUserByIDNoContent() *DeleteUserByIDNoContent {
 // WriteResponse to the client
 func (o *DeleteUserByIDNoContent) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
 	rw.WriteHeader(204)
 }
 
@@ -49,6 +51,8 @@ func NewDeleteUserByIDNotFound() *DeleteUserByIDNotFound {
 
 // WriteResponse to the client
 func (o *DeleteUserByIDNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
 	rw.WriteHeader(404)
 }

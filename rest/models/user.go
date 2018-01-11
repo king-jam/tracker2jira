@@ -10,11 +10,11 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // User user
 // swagger:model User
-
 type User struct {
 
 	// external credentials
@@ -27,19 +27,31 @@ type User struct {
 	Username string `json:"username,omitempty"`
 }
 
-/* polymorph User externalCredentials false */
-
-/* polymorph User userID false */
-
-/* polymorph User username false */
-
 // Validate validates this user
 func (m *User) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateUserID(formats); err != nil {
+		// prop
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *User) validateUserID(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.UserID) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("userID", "body", "uuid4", m.UserID.String(), formats); err != nil {
+		return err
+	}
+
 	return nil
 }
 

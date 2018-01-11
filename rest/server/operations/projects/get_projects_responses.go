@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"github.com/king-jam/tracker2jira/rest/models"
+	models "github.com/king-jam/tracker2jira/rest/models"
 )
 
 // GetProjectsOKCode is the HTTP code returned for type GetProjectsOK
@@ -76,6 +76,8 @@ func NewGetProjectsBadRequest() *GetProjectsBadRequest {
 
 // WriteResponse to the client
 func (o *GetProjectsBadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
 	rw.WriteHeader(400)
 }

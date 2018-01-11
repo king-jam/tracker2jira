@@ -28,7 +28,7 @@ func NewGetTaskByIDParams() GetTaskByIDParams {
 type GetTaskByIDParams struct {
 
 	// HTTP Request Object
-	HTTPRequest *http.Request
+	HTTPRequest *http.Request `json:"-"`
 
 	/*ID of task to return
 	  Required: true

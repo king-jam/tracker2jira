@@ -29,7 +29,7 @@ SWAGGER_CLIENT_DIR =
 
 
 .PHONY: all
-all: fmt lint vendor | $(BASE) ; $(info $(M) building executable…) @ ## Build program binary
+all: fmt vendor | $(BASE) ; $(info $(M) building executable…) @ ## Build program binary
 	$Q cd $(BASE) && $(GO) build \
 		-tags release \
 		$(LDFLAGS) \
@@ -68,6 +68,11 @@ $(BIN)/go2xunit: | $(BASE) ; $(info $(M) building go2xunit...)
 SWAGGER = $(BIN)/swagger
 $(BIN)/swagger: | $(BASE) ; $(info $(M) building swagger...)
 	$Q go get github.com/go-swagger/go-swagger/cmd/swagger
+
+GO_BINDATA_ASSETFS = $(BIN)/go-bindata-assetfs
+$(BIN)/go-bindata-assetfs: | $(BASE) ; $(info $(M) building go-bindata-assetfs...)
+	$Q go get github.com/jteeuwen/go-bindata/...
+	$Q go get github.com/elazarl/go-bindata-assetfs/...
 
 # Tests
 
@@ -139,11 +144,19 @@ endif
 
 # Code Generation
 
+.PHONY: swagger-server
 swagger-server: $(BASE) $(SWAGGER) ; $(info $(M) generating swagger server...) @ ## Generates server
 	$Q cd $(BASE)/rest && $(SWAGGER) generate server --flag-strategy=pflag --exclude-main -A t2j -s server -f swagger.yaml
 
+.PHONY: swagger-client
 swagger-client: $(BASE) $(SWAGGER) ; $(info $(M) generating swagger client...) @ ## Generates client
 	$Q cd $(BASE)/rest && $(SWAGGER) generate client -A t2j -f swagger.yaml 2> /dev/null
+
+# UI controls
+.PHONY: ui
+ui: $(BASE) $(GO_BINDATA_ASSETFS) ; $(info $(M) generating ui assets...) @ ## Generates client
+	$Q cd $(BASE)/ui && $(GO_BINDATA_ASSETFS) -pkg server dist/ && mv bindata_assetfs.go $(BASE)/rest/server/
+
 
 # Misc
 

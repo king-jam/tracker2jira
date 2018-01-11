@@ -28,7 +28,7 @@ func NewGetProjectByIDParams() GetProjectByIDParams {
 type GetProjectByIDParams struct {
 
 	// HTTP Request Object
-	HTTPRequest *http.Request
+	HTTPRequest *http.Request `json:"-"`
 
 	/*ID of project to return
 	  Required: true

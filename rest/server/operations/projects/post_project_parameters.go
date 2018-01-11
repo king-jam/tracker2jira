@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
-	"github.com/king-jam/tracker2jira/rest/models"
+	models "github.com/king-jam/tracker2jira/rest/models"
 )
 
 // NewPostProjectParams creates a new PostProjectParams object
@@ -30,7 +30,7 @@ func NewPostProjectParams() PostProjectParams {
 type PostProjectParams struct {
 
 	// HTTP Request Object
-	HTTPRequest *http.Request
+	HTTPRequest *http.Request `json:"-"`
 
 	/*Project definition
 	  Required: true

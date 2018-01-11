@@ -27,15 +27,6 @@ schemes:
 - "https"
 paths:
   # The general routes
-  /:
-    get:
-      tags:
-      - "general"
-      summary: "Returns the default home page for UI based management."
-      operationId: "root"
-      responses:
-        200:
-          description: "Successfully returned the default UI."
   /version:
     get:
       tags:

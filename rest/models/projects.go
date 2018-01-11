@@ -16,7 +16,6 @@ import (
 
 // Projects projects
 // swagger:model Projects
-
 type Projects []*Project
 
 // Validate validates this projects

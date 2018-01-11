@@ -28,7 +28,7 @@ func NewDeleteProjectByIDParams() DeleteProjectByIDParams {
 type DeleteProjectByIDParams struct {
 
 	// HTTP Request Object
-	HTTPRequest *http.Request
+	HTTPRequest *http.Request `json:"-"`
 
 	/*ID of project to delete
 	  Required: true

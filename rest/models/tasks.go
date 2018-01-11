@@ -16,7 +16,6 @@ import (
 
 // Tasks tasks
 // swagger:model Tasks
-
 type Tasks []*Task
 
 // Validate validates this tasks

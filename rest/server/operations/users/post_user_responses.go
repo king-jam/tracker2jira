@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"github.com/king-jam/tracker2jira/rest/models"
+	models "github.com/king-jam/tracker2jira/rest/models"
 )
 
 // PostUserCreatedCode is the HTTP code returned for type PostUserCreated
@@ -73,6 +73,8 @@ func NewPostUserBadRequest() *PostUserBadRequest {
 
 // WriteResponse to the client
 func (o *PostUserBadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
 	rw.WriteHeader(400)
 }

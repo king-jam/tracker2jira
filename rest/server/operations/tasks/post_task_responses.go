@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"github.com/king-jam/tracker2jira/rest/models"
+	models "github.com/king-jam/tracker2jira/rest/models"
 )
 
 // PostTaskAcceptedCode is the HTTP code returned for type PostTaskAccepted
@@ -73,6 +73,8 @@ func NewPostTaskBadRequest() *PostTaskBadRequest {
 
 // WriteResponse to the client
 func (o *PostTaskBadRequest) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
 	rw.WriteHeader(400)
 }

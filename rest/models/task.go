@@ -17,7 +17,6 @@ import (
 
 // Task task
 // swagger:model Task
-
 type Task struct {
 
 	// current state map
@@ -42,25 +41,16 @@ type Task struct {
 	TaskID strfmt.UUID4 `json:"taskID,omitempty"`
 }
 
-/* polymorph Task currentStateMap false */
-
-/* polymorph Task master false */
-
-/* polymorph Task slave false */
-
-/* polymorph Task status false */
-
-/* polymorph Task storyFieldMap false */
-
-/* polymorph Task storyTypeMap false */
-
-/* polymorph Task taskID false */
-
 // Validate validates this task
 func (m *Task) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateStatus(formats); err != nil {
+		// prop
+		res = append(res, err)
+	}
+
+	if err := m.validateTaskID(formats); err != nil {
 		// prop
 		res = append(res, err)
 	}
@@ -110,6 +100,19 @@ func (m *Task) validateStatus(formats strfmt.Registry) error {
 
 	// value enum
 	if err := m.validateStatusEnum("status", "body", m.Status); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Task) validateTaskID(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.TaskID) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("taskID", "body", "uuid4", m.TaskID.String(), formats); err != nil {
 		return err
 	}
 

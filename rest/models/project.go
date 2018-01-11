@@ -10,11 +10,11 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // Project project
 // swagger:model Project
-
 type Project struct {
 
 	// admin user ID
@@ -39,27 +39,31 @@ type Project struct {
 	ProjectVersion int64 `json:"projectVersion,omitempty"`
 }
 
-/* polymorph Project adminUserID false */
-
-/* polymorph Project externalID false */
-
-/* polymorph Project projectID false */
-
-/* polymorph Project projectOverrides false */
-
-/* polymorph Project projectType false */
-
-/* polymorph Project projectURL false */
-
-/* polymorph Project projectVersion false */
-
 // Validate validates this project
 func (m *Project) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateProjectID(formats); err != nil {
+		// prop
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *Project) validateProjectID(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.ProjectID) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("projectID", "body", "uuid4", m.ProjectID.String(), formats); err != nil {
+		return err
+	}
+
 	return nil
 }
 

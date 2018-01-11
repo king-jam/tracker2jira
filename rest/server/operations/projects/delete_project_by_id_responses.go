@@ -29,6 +29,8 @@ func NewDeleteProjectByIDNoContent() *DeleteProjectByIDNoContent {
 // WriteResponse to the client
 func (o *DeleteProjectByIDNoContent) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
 	rw.WriteHeader(204)
 }
 
@@ -49,6 +51,8 @@ func NewDeleteProjectByIDNotFound() *DeleteProjectByIDNotFound {
 
 // WriteResponse to the client
 func (o *DeleteProjectByIDNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
 	rw.WriteHeader(404)
 }

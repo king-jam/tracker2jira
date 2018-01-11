@@ -28,7 +28,7 @@ func NewDeleteTaskByIDParams() DeleteTaskByIDParams {
 type DeleteTaskByIDParams struct {
 
 	// HTTP Request Object
-	HTTPRequest *http.Request
+	HTTPRequest *http.Request `json:"-"`
 
 	/*ID of task to delete
 	  Required: true

@@ -14,7 +14,6 @@ import (
 
 // Version version
 // swagger:model Version
-
 type Version struct {
 
 	// build date
@@ -29,14 +28,6 @@ type Version struct {
 	// runtime
 	Runtime string `json:"runtime,omitempty"`
 }
-
-/* polymorph Version buildDate false */
-
-/* polymorph Version commitHash false */
-
-/* polymorph Version releaseVersion false */
-
-/* polymorph Version runtime false */
 
 // Validate validates this version
 func (m *Version) Validate(formats strfmt.Registry) error {

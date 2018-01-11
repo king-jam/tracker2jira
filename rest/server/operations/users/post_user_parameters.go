@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
-	"github.com/king-jam/tracker2jira/rest/models"
+	models "github.com/king-jam/tracker2jira/rest/models"
 )
 
 // NewPostUserParams creates a new PostUserParams object
@@ -30,7 +30,7 @@ func NewPostUserParams() PostUserParams {
 type PostUserParams struct {
 
 	// HTTP Request Object
-	HTTPRequest *http.Request
+	HTTPRequest *http.Request `json:"-"`
 
 	/*User definition
 	  Required: true

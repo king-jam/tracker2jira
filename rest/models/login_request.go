@@ -14,7 +14,6 @@ import (
 
 // LoginRequest Login Request Body
 // swagger:model LoginRequest
-
 type LoginRequest struct {
 
 	// name
@@ -23,10 +22,6 @@ type LoginRequest struct {
 	// password
 	Password string `json:"password,omitempty"`
 }
-
-/* polymorph LoginRequest name false */
-
-/* polymorph LoginRequest password false */
 
 // Validate validates this login request
 func (m *LoginRequest) Validate(formats strfmt.Registry) error {

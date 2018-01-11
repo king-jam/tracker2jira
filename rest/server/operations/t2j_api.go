@@ -32,6 +32,8 @@ func NewT2jAPI(spec *loads.Document) *T2jAPI {
 		formats:             strfmt.Default,
 		defaultConsumes:     "application/json",
 		defaultProduces:     "application/json",
+		customConsumers:     make(map[string]runtime.Consumer),
+		customProducers:     make(map[string]runtime.Producer),
 		ServerShutdown:      func() {},
 		spec:                spec,
 		ServeError:          errors.ServeError,
@@ -76,9 +78,6 @@ func NewT2jAPI(spec *loads.Document) *T2jAPI {
 		UsersPostUserHandler: users.PostUserHandlerFunc(func(params users.PostUserParams) middleware.Responder {
 			return middleware.NotImplemented("operation UsersPostUser has not yet been implemented")
 		}),
-		GeneralRootHandler: general.RootHandlerFunc(func(params general.RootParams) middleware.Responder {
-			return middleware.NotImplemented("operation GeneralRoot has not yet been implemented")
-		}),
 		GeneralVersionHandler: general.VersionHandlerFunc(func(params general.VersionParams) middleware.Responder {
 			return middleware.NotImplemented("operation GeneralVersion has not yet been implemented")
 		}),
@@ -91,6 +90,8 @@ type T2jAPI struct {
 	context         *middleware.Context
 	handlers        map[string]map[string]http.Handler
 	formats         strfmt.Registry
+	customConsumers map[string]runtime.Consumer
+	customProducers map[string]runtime.Producer
 	defaultConsumes string
 	defaultProduces string
 	Middleware      func(middleware.Builder) http.Handler
@@ -135,8 +136,6 @@ type T2jAPI struct {
 	TasksPostTaskHandler tasks.PostTaskHandler
 	// UsersPostUserHandler sets the operation handler for the post user operation
 	UsersPostUserHandler users.PostUserHandler
-	// GeneralRootHandler sets the operation handler for the root operation
-	GeneralRootHandler general.RootHandler
 	// GeneralVersionHandler sets the operation handler for the version operation
 	GeneralVersionHandler general.VersionHandler
 
@@ -250,10 +249,6 @@ func (o *T2jAPI) Validate() error {
 		unregistered = append(unregistered, "users.PostUserHandler")
 	}
 
-	if o.GeneralRootHandler == nil {
-		unregistered = append(unregistered, "general.RootHandler")
-	}
-
 	if o.GeneralVersionHandler == nil {
 		unregistered = append(unregistered, "general.VersionHandler")
 	}
@@ -295,6 +290,10 @@ func (o *T2jAPI) ConsumersFor(mediaTypes []string) map[string]runtime.Consumer {
 			result["application/json"] = o.JSONConsumer
 
 		}
+
+		if c, ok := o.customConsumers[mt]; ok {
+			result[mt] = c
+		}
 	}
 	return result
 
@@ -310,6 +309,10 @@ func (o *T2jAPI) ProducersFor(mediaTypes []string) map[string]runtime.Producer {
 		case "application/json":
 			result["application/json"] = o.JSONProducer
 
+		}
+
+		if p, ok := o.customProducers[mt]; ok {
+			result[mt] = p
 		}
 	}
 	return result
@@ -411,11 +414,6 @@ func (o *T2jAPI) initHandlerCache() {
 	if o.handlers["GET"] == nil {
 		o.handlers["GET"] = make(map[string]http.Handler)
 	}
-	o.handlers["GET"][""] = general.NewRoot(o.context, o.GeneralRootHandler)
-
-	if o.handlers["GET"] == nil {
-		o.handlers["GET"] = make(map[string]http.Handler)
-	}
 	o.handlers["GET"]["/version"] = general.NewVersion(o.context, o.GeneralVersionHandler)
 
 }
@@ -431,9 +429,19 @@ func (o *T2jAPI) Serve(builder middleware.Builder) http.Handler {
 	return o.context.APIHandler(builder)
 }
 
-// Init allows you to just initialize the handler cache, you can then recompose the middelware as you see fit
+// Init allows you to just initialize the handler cache, you can then recompose the middleware as you see fit
 func (o *T2jAPI) Init() {
 	if len(o.handlers) == 0 {
 		o.initHandlerCache()
 	}
+}
+
+// RegisterConsumer allows you to add (or override) a consumer for a media type.
+func (o *T2jAPI) RegisterConsumer(mediaType string, consumer runtime.Consumer) {
+	o.customConsumers[mediaType] = consumer
+}
+
+// RegisterProducer allows you to add (or override) a producer for a media type.
+func (o *T2jAPI) RegisterProducer(mediaType string, producer runtime.Producer) {
+	o.customProducers[mediaType] = producer
 }

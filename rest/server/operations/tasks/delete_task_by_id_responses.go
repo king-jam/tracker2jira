@@ -29,6 +29,8 @@ func NewDeleteTaskByIDNoContent() *DeleteTaskByIDNoContent {
 // WriteResponse to the client
 func (o *DeleteTaskByIDNoContent) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
 
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
+
 	rw.WriteHeader(204)
 }
 
@@ -49,6 +51,8 @@ func NewDeleteTaskByIDNotFound() *DeleteTaskByIDNotFound {
 
 // WriteResponse to the client
 func (o *DeleteTaskByIDNotFound) WriteResponse(rw http.ResponseWriter, producer runtime.Producer) {
+
+	rw.Header().Del(runtime.HeaderContentType) //Remove Content-Type on empty responses
 
 	rw.WriteHeader(404)
 }
