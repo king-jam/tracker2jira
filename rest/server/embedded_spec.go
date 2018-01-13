@@ -389,6 +389,28 @@ func init() {
     }
   },
   "definitions": {
+    "Credentials": {
+      "type": "object",
+      "properties": {
+        "password": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "jira_basic",
+            "jira_oauth",
+            "tracker_token"
+          ]
+        },
+        "username": {
+          "type": "string"
+        }
+      }
+    },
     "Error": {
       "type": "object",
       "required": [
@@ -492,7 +514,7 @@ func init() {
       "type": "object",
       "properties": {
         "externalCredentials": {
-          "type": "object"
+          "$ref": "#/definitions/Credentials"
         },
         "userID": {
           "type": "string",
@@ -936,6 +958,28 @@ func init() {
     }
   },
   "definitions": {
+    "Credentials": {
+      "type": "object",
+      "properties": {
+        "password": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "jira_basic",
+            "jira_oauth",
+            "tracker_token"
+          ]
+        },
+        "username": {
+          "type": "string"
+        }
+      }
+    },
     "Error": {
       "type": "object",
       "required": [
@@ -1039,7 +1083,7 @@ func init() {
       "type": "object",
       "properties": {
         "externalCredentials": {
-          "type": "object"
+          "$ref": "#/definitions/Credentials"
         },
         "userID": {
           "type": "string",

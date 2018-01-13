@@ -391,7 +391,22 @@ definitions:
       username:
         type: "string"
       externalCredentials:
-        type: "object"
+        $ref: "#/definitions/Credentials"
+  Credentials:
+    type: "object"
+    properties:
+      type:
+        type: "string"
+        enum:
+        - "jira_basic"
+        - "jira_oauth"
+        - "tracker_token"
+      username:
+        type: "string"
+      password:
+        type: "string"
+      token:
+        type: "string"
   Version:
     type: "object"
     properties:

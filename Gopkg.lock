@@ -14,6 +14,12 @@
   revision = "de5bf2ad457846296e2031421a34e2568e304e35"
 
 [[projects]]
+  name = "github.com/andygrunwald/go-jira"
+  packages = ["."]
+  revision = "acbc88d59582a4885dbd82fd775caa7c15245171"
+  version = "v1.0.0"
+
+[[projects]]
   name = "github.com/asaskevich/govalidator"
   packages = ["."]
   revision = "521b25f4b05fd26bec69d9dedeb8f9c9a83939a8"
@@ -67,6 +73,12 @@
   name = "github.com/elazarl/go-bindata-assetfs"
   packages = ["."]
   revision = "30f82fa23fd844bd5bb1e5f216db87fd77b5eb43"
+
+[[projects]]
+  name = "github.com/fatih/structs"
+  packages = ["."]
+  revision = "a720dfa8df582c51dee1b36feabb906bde1588bd"
+  version = "v1.0"
 
 [[projects]]
   name = "github.com/go-martini/martini"
@@ -141,7 +153,7 @@
   branch = "master"
   name = "github.com/go-openapi/validate"
   packages = ["."]
-  revision = "fa47bbf926a7302296b8024e61a60ee4cb2ff0d7"
+  revision = "9b5947525af6a4843d2b9576e5943b9931ad535d"
 
 [[projects]]
   branch = "master"
@@ -151,9 +163,21 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/google/go-querystring"
+  packages = ["query"]
+  revision = "53e6ce116135b80d037921a7fdd5138cf32d7a8a"
+
+[[projects]]
+  branch = "master"
   name = "github.com/justinas/nosurf"
   packages = ["."]
   revision = "7182011986c42c33f0a79fd4b07e41edc784532b"
+
+[[projects]]
+  name = "github.com/king-jam/go-pivotaltracker"
+  packages = ["v5/pivotal"]
+  revision = "46083f60193ab53b18d2ffe64d298127652b39ac"
+  version = "v1.4.0"
 
 [[projects]]
   branch = "master"
@@ -181,7 +205,7 @@
   branch = "master"
   name = "github.com/phyber/negroni-gzip"
   packages = ["gzip"]
-  revision = "8118ae63850fee22b2fe43cea81d3bc149774503"
+  revision = "ef6356a5d02936b65ca8e60b604ed6b078aac8d3"
 
 [[projects]]
   name = "github.com/satori/go.uuid"
@@ -202,6 +226,15 @@
   version = "v1.0.0"
 
 [[projects]]
+  name = "github.com/trivago/tgo"
+  packages = [
+    "tcontainer",
+    "treflect"
+  ]
+  revision = "e4d1ddd28c17dd89ed26327cf69fded22060671b"
+  version = "v1.0.1"
+
+[[projects]]
   name = "github.com/tylerb/graceful"
   packages = ["."]
   revision = "4654dfbb6ad53cb5e27f37d99b02e16c1872fbbb"
@@ -217,7 +250,7 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "b3c9a1d25cfbbbab0ff4780b71c4f54e6e92a0de"
+  revision = "13931e22f9e72ea58bb73048bc752b48c6d4d4ac"
 
 [[projects]]
   branch = "master"
@@ -226,7 +259,7 @@
     "context",
     "idna"
   ]
-  revision = "ab555f366c4508dbe0802550b1b20c46c5c18aa0"
+  revision = "5ccada7d0a7ba9aeb5d3aca8d3501b4c2a509fec"
 
 [[projects]]
   branch = "master"
@@ -277,6 +310,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "bb6814fac6719245c7725416e1bf4b92a81547764951b2807f9f1985cd4a1c05"
+  inputs-digest = "d8e1be0b8ef44e87210bf8072dab9a70a146c3ef7162e3cb34fc64f48e7fe8ed"
   solver-name = "gps-cdcl"
   solver-version = 1

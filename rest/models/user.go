@@ -18,7 +18,7 @@ import (
 type User struct {
 
 	// external credentials
-	ExternalCredentials interface{} `json:"externalCredentials,omitempty"`
+	ExternalCredentials *Credentials `json:"externalCredentials,omitempty"`
 
 	// user ID
 	UserID strfmt.UUID4 `json:"userID,omitempty"`
@@ -31,6 +31,11 @@ type User struct {
 func (m *User) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateExternalCredentials(formats); err != nil {
+		// prop
+		res = append(res, err)
+	}
+
 	if err := m.validateUserID(formats); err != nil {
 		// prop
 		res = append(res, err)
@@ -39,6 +44,25 @@ func (m *User) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *User) validateExternalCredentials(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.ExternalCredentials) { // not required
+		return nil
+	}
+
+	if m.ExternalCredentials != nil {
+
+		if err := m.ExternalCredentials.Validate(formats); err != nil {
+			if ve, ok := err.(*errors.Validation); ok {
+				return ve.ValidateName("externalCredentials")
+			}
+			return err
+		}
+	}
+
 	return nil
 }
 
