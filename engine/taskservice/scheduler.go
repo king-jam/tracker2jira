@@ -1,11 +1,15 @@
 package taskservice
 
-// TaskScheduler ...
+// TaskScheduler is the top-level scheduler service class
+// This class wraps the embedded polling service to start and create new synchronizer
+// jobs. This should probably be moved to something more "eventy" in the future
+// but this works for now.
 type TaskScheduler struct {
 	poller Poller
 }
 
-// NewTaskScheduler ...
+// NewTaskScheduler composes all the underlying services to create the task
+// scheduler and synchronization service.
 func NewTaskScheduler() (*TaskScheduler, error) {
 	source, err := NewTaskSource()
 	if err != nil {

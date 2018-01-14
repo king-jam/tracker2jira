@@ -30,6 +30,8 @@ func main() {
 		log.Fatalln("DB Init Failed")
 	}
 
+	// this creates the task scheduler service which monitors the DB for new
+	// synchronization tasks and handles starting and monitoring tasks
 	taskservice.NewTaskScheduler()
 
 	swaggerSpec, err := loads.Analyzed(server.SwaggerJSON, "")

@@ -20,25 +20,31 @@ import (
 // start story.go loop function
 // change state to "running"
 
-// Poller ...
+// Poller interface describes the behavior of a general polling service. It
+// exposes the basic control methods.
 type Poller interface {
 	Start() error
 	Stop() error
 }
 
-// Runner ...
+// Runner interface describes the task runner behavior for controlling active
+// tasks.
 type Runner interface {
 	RunTask(task Task) error
 	CancelTask(task Task) error
 }
 
-// Source ...
+// Source interface describes task source behavior. Implementation is mainly to
+// abstract the backend datastore and returns structs that implement the Task
+// interface.
 type Source interface {
 	GetAllTasks() ([]Task, error)
 	GetPendingTasks() ([]Task, error)
 }
 
-// TaskPoller ...
+// TaskPoller struct holds all the state logic and child structures to watch a
+// backend datastore and schedule tasks to run periodically. This implements the
+// Poller interface.
 type TaskPoller struct {
 	runner    Runner
 	source    Source
@@ -49,7 +55,8 @@ type TaskPoller struct {
 	once      sync.Once
 }
 
-// NewTaskPoller ...
+// NewTaskPoller returns a TaskPoller struct which implements the Poller
+// interface. It is composed of a Runner and Source interface.
 func NewTaskPoller(runner Runner, source Source) (*TaskPoller, error) {
 	return &TaskPoller{
 		started:   false,
@@ -61,7 +68,7 @@ func NewTaskPoller(runner Runner, source Source) (*TaskPoller, error) {
 	}, nil
 }
 
-// Start ...
+// Start implements the Start functionality of the Poller interface.
 func (t *TaskPoller) Start() error {
 	if t.started {
 		return nil
@@ -73,7 +80,7 @@ func (t *TaskPoller) Start() error {
 	return nil
 }
 
-// Stop ...
+// Stop implements the Stop functionality of the Poller interface.
 func (t *TaskPoller) Stop() error {
 	if t.started {
 		close(t.stopCh)
