@@ -4,6 +4,8 @@ import (
 	"errors"
 	"sync"
 	"time"
+
+	log "github.com/sirupsen/logrus"
 )
 
 // Task interface provides the behavior for the runner to periodically execute
@@ -60,6 +62,8 @@ func (t *TaskRunner) RunTask(task Task) error {
 // CancelTask stops a running task and removes its reference from the TaskRunner
 // struct
 func (t *TaskRunner) CancelTask(id string) error {
+	t.mu.Lock()
+	defer t.mu.Unlock()
 	ref, ok := t.tasks[id]
 	if !ok {
 		return errors.New("Could not cancel tasks")
@@ -78,6 +82,7 @@ func (t *TaskRunner) schedule(task Task, delay time.Duration) taskRef {
 	go func() {
 		for {
 			if err := task.Run(); err != nil {
+				log.Errorf("task failed to run: %s", err)
 				task.SetFailed()
 				t.CancelTask(task.ID())
 			}

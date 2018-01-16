@@ -127,9 +127,14 @@ func setupGlobalMiddleware(handler http.Handler) http.Handler {
 // uiMiddleware exposes the UI
 func uiMiddleware(handler http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Serving /
-		if strings.Index(r.URL.Path, "/") == 0 {
-			http.StripPrefix("/", http.FileServer(assetFS())).ServeHTTP(w, r)
+		// Shortcut helpers for swagger-ui
+		if r.URL.Path == "/" || r.URL.Path == "/ui" {
+			http.Redirect(w, r, "/ui/", http.StatusFound)
+			return
+		}
+		// Serving ./swagger-ui/
+		if strings.Index(r.URL.Path, "/ui/") == 0 {
+			http.StripPrefix("/ui/", http.FileServer(assetFS())).ServeHTTP(w, r)
 			return
 		}
 		handler.ServeHTTP(w, r)

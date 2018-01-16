@@ -2,9 +2,8 @@ package synchronizer
 
 import (
 	"fmt"
+	"io"
 
-	"github.com/andygrunwald/go-jira"
-	"github.com/king-jam/go-pivotaltracker/v5/pivotal"
 	"github.com/king-jam/tracker2jira/backend"
 	"github.com/king-jam/tracker2jira/rest/models"
 )
@@ -28,10 +27,8 @@ type Tracker struct {
 
 // Synchronizer ...
 type Synchronizer struct {
-	db         *backend.Backend
-	ptclient   *pivotal.Client
-	jiraclient *jira.Client
-	taskID     string
+	db     *backend.Backend
+	taskID string
 }
 
 // NewSynchronizer ...
@@ -39,13 +36,12 @@ func NewSynchronizer(db *backend.Backend, task *models.Task) *Synchronizer {
 	s := new(Synchronizer)
 	s.db = db
 	s.taskID = task.TaskID.String()
-	// TODO: Add client creation / validation.
 	return s
 }
 
 // Run ...
 func (s *Synchronizer) Run() error {
-	// Get the task with a current state value to determine what we should do
+	// get the current state of the task from the DB
 	dbTask, err := s.db.GetTaskByID(s.taskID)
 	if err != nil {
 		return err
@@ -55,25 +51,43 @@ func (s *Synchronizer) Run() error {
 	if dbTask.Status == models.TaskStatusFailed {
 		return fmt.Errorf("task skipped: already in a failing state already")
 	}
-	// get the master project which should always be Pivotal Tracker in our case
-	masterProject, err := s.db.GetProjectByID(dbTask.Master)
+	// this is where the errors can really start
+	pt, err := NewTrackerClient(s.db, dbTask.Master)
 	if err != nil {
 		return err
 	}
-	// Get the master Project Username/Password Details
-	////masterUser, err := s.db.GetUserByID(masterProject.AdminUserID)
-	_, err = s.db.GetUserByID(masterProject.AdminUserID)
+
+	c, err := pt.UpdateCursor()
 	if err != nil {
-		return err
+		return fmt.Errorf("task failed: unable to get Tracker cursor")
+	}
+	for {
+		activity, err := c.Next()
+		if err != nil {
+			if err == io.EOF {
+				break
+			}
+			return fmt.Errorf("task failed: unable to read activities")
+		}
+		fmt.Printf("\n\n DO ACTION: %+v \n\n", activity)
+		project, err := s.db.GetProjectByID(dbTask.Master)
+		if err != nil {
+			return fmt.Errorf("failed to get the project")
+		}
+		project.ProjectVersion = int64(activity.ProjectVersion)
+		_, err = s.db.PutProject(project)
+		if err != nil {
+			return fmt.Errorf("failed to put the project")
+		}
 	}
 	//masterUser.ExternalCredentials.
 
-	slaveProject, err := s.db.GetProjectByID(dbTask.SLAVE)
-	if err != nil {
-		return err
-	}
-	//slaveUser, err := s.db.GetUserByID(slaveProject.AdminUserID)
-	s.db.GetUserByID(slaveProject.AdminUserID)
+	// slaveProject, err := s.db.GetProjectByID(dbTask.SLAVE)
+	// if err != nil {
+	// 	return err
+	// }
+	// //slaveUser, err := s.db.GetUserByID(slaveProject.AdminUserID)
+	// s.db.GetUserByID(slaveProject.AdminUserID)
 
 	// // /projects/{project_id}/activity long polling using 'since_version'
 	//
@@ -86,7 +100,6 @@ func (s *Synchronizer) Run() error {
 	// // post object ^^
 	// // if success //  bump/store/set project_version to api.get.project_version ( write back to backend to update project version PUT PROJECT from backend)
 	// // if failure retry exponential backoff ( plann error handling around jira going out to lunch)
-	fmt.Printf("HELLO %s\n", s.ID())
 	return nil
 }
 
@@ -126,8 +139,4 @@ func (s *Synchronizer) SetStopped() error {
 	task.Status = models.TaskStatusStopped
 	_, err = s.db.PutTask(task)
 	return err
-}
-
-func (s *Synchronizer) getTrackerClient() {
-
 }
