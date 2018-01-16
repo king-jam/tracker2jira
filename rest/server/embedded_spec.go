@@ -493,7 +493,8 @@ func init() {
             "pending",
             "running",
             "stopped",
-            "failed"
+            "failed",
+            "cancel"
           ]
         },
         "storyFieldMap": {
@@ -1066,7 +1067,8 @@ func init() {
             "pending",
             "running",
             "stopped",
-            "failed"
+            "failed",
+            "cancel"
           ]
         },
         "storyFieldMap": {

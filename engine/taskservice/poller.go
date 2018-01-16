@@ -31,7 +31,7 @@ type Poller interface {
 // tasks.
 type Runner interface {
 	RunTask(task Task) error
-	CancelTask(task Task) error
+	CancelTask(id string) error
 }
 
 // Source interface describes task source behavior. Implementation is mainly to
@@ -40,6 +40,7 @@ type Runner interface {
 type Source interface {
 	GetAllTasks() ([]Task, error)
 	GetPendingTasks() ([]Task, error)
+	GetCancelledTasks() ([]string, error)
 }
 
 // TaskPoller struct holds all the state logic and child structures to watch a
@@ -108,6 +109,7 @@ func (t *TaskPoller) startPoller() chan bool {
 
 func (t *TaskPoller) taskPoller() {
 	t.runPendingTasks()
+	t.stopCancelledTasks()
 }
 
 func (t *TaskPoller) runPendingTasks() {
@@ -116,7 +118,16 @@ func (t *TaskPoller) runPendingTasks() {
 	if err != nil {
 		log.Warnf("Error getting pending Tasks")
 	}
-	t.runTask(tasks)
+	t.runTasks(tasks)
+}
+
+func (t *TaskPoller) stopCancelledTasks() {
+	log.Debugf("STOPPING CANCELLED TASKS")
+	taskIDs, err := t.source.GetCancelledTasks()
+	if err != nil {
+		log.Warnf("Error getting pending Tasks")
+	}
+	t.cancelTasks(taskIDs)
 }
 
 func (t *TaskPoller) runAllTasks() {
@@ -125,12 +136,19 @@ func (t *TaskPoller) runAllTasks() {
 	if err != nil {
 		log.Warnf("DB Access Error for Tasks")
 	}
-	t.runTask(tasks)
+	t.runTasks(tasks)
 }
 
-func (t *TaskPoller) runTask(tasks []Task) {
+func (t *TaskPoller) runTasks(tasks []Task) {
 	for _, task := range tasks {
 		log.Debugf("Scheduling: %+v", task)
 		t.runner.RunTask(task)
+	}
+}
+
+func (t *TaskPoller) cancelTasks(taskIDs []string) {
+	for _, id := range taskIDs {
+		log.Debugf("Cancelling: %+v", id)
+		t.runner.CancelTask(id)
 	}
 }

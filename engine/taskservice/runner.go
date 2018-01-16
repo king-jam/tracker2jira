@@ -14,6 +14,7 @@ type Task interface {
 	ID() string
 	SetRunning() error
 	SetFailed() error
+	SetStopped() error
 }
 
 // defaultDelay is the default time in seconds between runs
@@ -58,13 +59,14 @@ func (t *TaskRunner) RunTask(task Task) error {
 
 // CancelTask stops a running task and removes its reference from the TaskRunner
 // struct
-func (t *TaskRunner) CancelTask(task Task) error {
-	ref, ok := t.tasks[task.ID()]
+func (t *TaskRunner) CancelTask(id string) error {
+	ref, ok := t.tasks[id]
 	if !ok {
 		return errors.New("Could not cancel tasks")
 	}
 	close(ref.stopCh)
-	delete(t.tasks, task.ID())
+	ref.task.SetStopped()
+	delete(t.tasks, id)
 	return nil
 }
 
@@ -77,7 +79,7 @@ func (t *TaskRunner) schedule(task Task, delay time.Duration) taskRef {
 		for {
 			if err := task.Run(); err != nil {
 				task.SetFailed()
-				t.CancelTask(task)
+				t.CancelTask(task.ID())
 			}
 			select {
 			case <-time.After(delay):

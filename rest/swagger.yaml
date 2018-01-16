@@ -375,6 +375,7 @@ definitions:
         - "running"
         - "stopped"
         - "failed"
+        - "cancel"
       currentStateMap:
         type: "object"
       storyTypeMap:

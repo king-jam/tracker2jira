@@ -65,7 +65,7 @@ var taskTypeStatusPropEnum []interface{}
 
 func init() {
 	var res []string
-	if err := json.Unmarshal([]byte(`["pending","running","stopped","failed"]`), &res); err != nil {
+	if err := json.Unmarshal([]byte(`["pending","running","stopped","failed","cancel"]`), &res); err != nil {
 		panic(err)
 	}
 	for _, v := range res {
@@ -82,6 +82,8 @@ const (
 	TaskStatusStopped string = "stopped"
 	// TaskStatusFailed captures enum value "failed"
 	TaskStatusFailed string = "failed"
+	// TaskStatusCancel captures enum value "cancel"
+	TaskStatusCancel string = "cancel"
 )
 
 // prop value enum

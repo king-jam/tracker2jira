@@ -55,3 +55,19 @@ func (s *TaskSource) GetPendingTasks() ([]Task, error) {
 	}
 	return tasks, nil
 }
+
+// GetCancelledTasks provides Synchronizers that implement the Task interface. This
+// is used to get all tasks in a pending state that are awaiting scheduling.
+func (s *TaskSource) GetCancelledTasks() ([]string, error) {
+	taskIDs := []string{}
+	dbTasks, err := s.db.GetTasks()
+	if err != nil {
+		return taskIDs, err
+	}
+	for _, dbTask := range dbTasks {
+		if dbTask.Status == models.TaskStatusCancel {
+			taskIDs = append(taskIDs, dbTask.TaskID.String())
+		}
+	}
+	return taskIDs, nil
+}

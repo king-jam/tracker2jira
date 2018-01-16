@@ -117,6 +117,17 @@ func (s *Synchronizer) SetFailed() error {
 	return err
 }
 
+// SetStopped ...
+func (s *Synchronizer) SetStopped() error {
+	task, err := s.db.GetTaskByID(s.taskID)
+	if err != nil {
+		return err
+	}
+	task.Status = models.TaskStatusStopped
+	_, err = s.db.PutTask(task)
+	return err
+}
+
 func (s *Synchronizer) getTrackerClient() {
 
 }
