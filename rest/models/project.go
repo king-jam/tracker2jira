@@ -6,6 +6,8 @@ package models
 // Editing this file might prove futile when you re-run the swagger generate command
 
 import (
+	"encoding/json"
+
 	strfmt "github.com/go-openapi/strfmt"
 
 	"github.com/go-openapi/errors"
@@ -48,6 +50,11 @@ func (m *Project) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateProjectType(formats); err != nil {
+		// prop
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -61,6 +68,47 @@ func (m *Project) validateProjectID(formats strfmt.Registry) error {
 	}
 
 	if err := validate.FormatOf("projectID", "body", "uuid4", m.ProjectID.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+var projectTypeProjectTypePropEnum []interface{}
+
+func init() {
+	var res []string
+	if err := json.Unmarshal([]byte(`["tracker","jira"]`), &res); err != nil {
+		panic(err)
+	}
+	for _, v := range res {
+		projectTypeProjectTypePropEnum = append(projectTypeProjectTypePropEnum, v)
+	}
+}
+
+const (
+	// ProjectProjectTypeTracker captures enum value "tracker"
+	ProjectProjectTypeTracker string = "tracker"
+	// ProjectProjectTypeJira captures enum value "jira"
+	ProjectProjectTypeJira string = "jira"
+)
+
+// prop value enum
+func (m *Project) validateProjectTypeEnum(path, location string, value string) error {
+	if err := validate.Enum(path, location, value, projectTypeProjectTypePropEnum); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (m *Project) validateProjectType(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.ProjectType) { // not required
+		return nil
+	}
+
+	// value enum
+	if err := m.validateProjectTypeEnum("projectType", "body", m.ProjectType); err != nil {
 		return err
 	}
 

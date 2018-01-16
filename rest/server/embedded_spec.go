@@ -455,7 +455,11 @@ func init() {
           "type": "object"
         },
         "projectType": {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "tracker",
+            "jira"
+          ]
         },
         "projectURL": {
           "type": "string"
@@ -1024,7 +1028,11 @@ func init() {
           "type": "object"
         },
         "projectType": {
-          "type": "string"
+          "type": "string",
+          "enum": [
+            "tracker",
+            "jira"
+          ]
         },
         "projectURL": {
           "type": "string"
