@@ -1,8 +1,4 @@
-// Copyright (c) 2014 Salsita Software
-// Copyright (C) 2015 Scott Devoid
-// Use of this source code is governed by the MIT License.
-// The license can be found in the LICENSE file.
-
+// nolint
 package pivotal
 
 import (
@@ -13,30 +9,43 @@ import (
 	"time"
 )
 
-// Number of items to fetch at once when getting paginated response.
+// PageLimit is ...Number of items to fetch at once when getting paginated response.
 const PageLimit = 10
 
 const (
+	// StoryTypeFeature ...
 	StoryTypeFeature = "feature"
-	StoryTypeBug     = "bug"
-	StoryTypeChore   = "chore"
+	// StoryTypeBug ...
+	StoryTypeBug = "bug"
+	// StoryTypeChore ...
+	StoryTypeChore = "chore"
+	// StoryTypeRelease ...
 	StoryTypeRelease = "release"
 )
 
 const (
+	// StoryStateUnscheduled ...
 	StoryStateUnscheduled = "unscheduled"
-	StoryStatePlanned     = "planned"
-	StoryStateUnstarted   = "unstarted"
-	StoryStateStarted     = "started"
-	StoryStateFinished    = "finished"
-	StoryStateDelivered   = "delivered"
-	StoryStateAccepted    = "accepted"
-	StoryStateRejected    = "rejected"
+	// StoryStatePlanned ...
+	StoryStatePlanned = "planned"
+	// StoryStateUnstarted ..
+	StoryStateUnstarted = "unstarted"
+	// StoryStateStarted ...
+	StoryStateStarted = "started"
+	// StoryStateFinished ...
+	StoryStateFinished = "finished"
+	// StoryStateDelivered ...
+	StoryStateDelivered = "delivered"
+	// StoryStateAccepted ...
+	StoryStateAccepted = "accepted"
+	// StoryStateRejected ...
+	StoryStateRejected = "rejected"
 )
 
+// Story is ..
 type Story struct {
-	Id            int        `json:"id,omitempty"`
-	ProjectId     int        `json:"project_id,omitempty"`
+	ID            int        `json:"id,omitempty"`
+	ProjectID     int        `json:"project_id,omitempty"`
 	Name          string     `json:"name,omitempty"`
 	Description   string     `json:"description,omitempty"`
 	Type          string     `json:"story_type,omitempty"`
@@ -44,7 +53,7 @@ type Story struct {
 	Estimate      *float64   `json:"estimate,omitempty"`
 	AcceptedAt    *time.Time `json:"accepted_at,omitempty"`
 	Deadline      *time.Time `json:"deadline,omitempty"`
-	RequestedById int        `json:"requested_by_id,omitempty"`
+	RequestedByID int        `json:"requested_by_id,omitempty"`
 	OwnerIds      []int      `json:"owner_ids,omitempty"`
 	LabelIds      []int      `json:"label_ids,omitempty"`
 	Labels        []*Label   `json:"labels,omitempty"`
@@ -54,11 +63,12 @@ type Story struct {
 	CommentIds    []int      `json:"comment_ids,omitempty"`
 	CreatedAt     *time.Time `json:"created_at,omitempty"`
 	UpdatedAt     *time.Time `json:"updated_at,omitempty"`
-	IntegrationId int        `json:"integration_id,omitempty"`
-	ExternalId    string     `json:"external_id,omitempty"`
+	IntegrationID int        `json:"integration_id,omitempty"`
+	ExternalID    string     `json:"external_id,omitempty"`
 	URL           string     `json:"url,omitempty"`
 }
 
+// StoryRequest is ..
 type StoryRequest struct {
 	Name        string    `json:"name,omitempty"`
 	Description string    `json:"description,omitempty"`
@@ -74,18 +84,20 @@ type StoryRequest struct {
 	CommentIds  *[]int    `json:"comment_ids,omitempty"`
 }
 
+// Label is
 type Label struct {
-	Id        int        `json:"id,omitempty"`
-	ProjectId int        `json:"project_id,omitempty"`
+	ID        int        `json:"id,omitempty"`
+	ProjectID int        `json:"project_id,omitempty"`
 	Name      string     `json:"name,omitempty"`
 	CreatedAt *time.Time `json:"created_at,omitempty"`
 	UpdatedAt *time.Time `json:"updated_at,omitempty"`
 	Kind      string     `json:"kind,omitempty"`
 }
 
+// Task is a task
 type Task struct {
-	Id          int        `json:"id,omitempty"`
-	StoryId     int        `json:"story_id,omitempty"`
+	ID          int        `json:"id,omitempty"`
+	StoryID     int        `json:"story_id,omitempty"`
 	Description string     `json:"description,omitempty"`
 	Position    int        `json:"position,omitempty"`
 	Complete    bool       `json:"complete,omitempty"`
@@ -93,8 +105,9 @@ type Task struct {
 	UpdatedAt   *time.Time `json:"updated_at,omitempty"`
 }
 
+// Person is
 type Person struct {
-	Id       int    `json:"id,omitempty"`
+	ID       int    `json:"id,omitempty"`
 	Name     string `json:"name,omitempty"`
 	Email    string `json:"email,omitempty"`
 	Initials string `json:"initials,omitempty"`
@@ -102,11 +115,12 @@ type Person struct {
 	Kind     string `json:"kind,omitempty"`
 }
 
+// Comment is
 type Comment struct {
-	Id                  int        `json:"id,omitempty"`
-	StoryId             int        `json:"story_id,omitempty"`
-	EpicId              int        `json:"epic_id,omitempty"`
-	PersonId            int        `json:"person_id,omitempty"`
+	ID                  int        `json:"id,omitempty"`
+	StoryID             int        `json:"story_id,omitempty"`
+	EpicID              int        `json:"epic_id,omitempty"`
+	PersonID            int        `json:"person_id,omitempty"`
 	Text                string     `json:"text,omitempty"`
 	FileAttachmentIds   []int      `json:"file_attachment_ids,omitempty"`
 	GoogleAttachmentIds []int      `json:"google_attachment_ids,omitempty"`
@@ -116,6 +130,22 @@ type Comment struct {
 	UpdatedAt           *time.Time `json:"updated_at,omitempty"`
 }
 
+type Blocker struct {
+	Id          int        `json:"id,omitempty"`
+	StoryId     int        `json:"story_id,omitempty"`
+	PersonId    int        `json:"person_id,omitempty"`
+	Description string     `json:"description,omitempty"`
+	Resolved    bool       `json:"resolved,omitempty"`
+	CreatedAt   *time.Time `json:"created_at,omitempty"`
+	UpdatedAt   *time.Time `json:"updated_at,omitempty"`
+}
+
+type BlockerRequest struct {
+	Description string `json:"description,omitempty"`
+	Resolved    *bool  `json:"resolved,omitempty"`
+}
+
+// StoryService ...
 type StoryService struct {
 	client *Client
 }
@@ -132,8 +162,8 @@ func newStoryService(client *Client) *StoryService {
 // to get the right results. Since the response as generated by Pivotal Tracker
 // is not always sorted when using a filter, this approach is required to get
 // the right data. Not sure whether this is a bug or a feature.
-func (service *StoryService) List(projectId int, filter string) ([]*Story, error) {
-	reqFunc := newStoriesRequestFunc(service.client, projectId, filter)
+func (service *StoryService) List(projectID int, filter string) ([]*Story, error) {
+	reqFunc := newStoriesRequestFunc(service.client, projectID, filter)
 	cursor, err := newCursor(service.client, reqFunc, 0)
 	if err != nil {
 		return nil, err
@@ -146,9 +176,9 @@ func (service *StoryService) List(projectId int, filter string) ([]*Story, error
 	return stories, nil
 }
 
-func newStoriesRequestFunc(client *Client, projectId int, filter string) func() *http.Request {
+func newStoriesRequestFunc(client *Client, projectID int, filter string) func() *http.Request {
 	return func() *http.Request {
-		u := fmt.Sprintf("projects/%v/stories", projectId)
+		u := fmt.Sprintf("projects/%v/stories", projectID)
 		if filter != "" {
 			u += "?filter=" + url.QueryEscape(filter)
 		}
@@ -157,6 +187,7 @@ func newStoriesRequestFunc(client *Client, projectId int, filter string) func() 
 	}
 }
 
+// StoryCursor is
 type StoryCursor struct {
 	*cursor
 	buff []*Story
@@ -183,8 +214,8 @@ func (c *StoryCursor) Next() (s *Story, err error) {
 
 // Iterate returns a cursor that can be used to iterate over the stories specified
 // by the filter. More stories are fetched on demand as needed.
-func (service *StoryService) Iterate(projectId int, filter string) (c *StoryCursor, err error) {
-	reqFunc := newStoriesRequestFunc(service.client, projectId, filter)
+func (service *StoryService) Iterate(projectID int, filter string) (c *StoryCursor, err error) {
+	reqFunc := newStoriesRequestFunc(service.client, projectID, filter)
 	cursor, err := newCursor(service.client, reqFunc, PageLimit)
 	if err != nil {
 		return nil, err
@@ -192,8 +223,35 @@ func (service *StoryService) Iterate(projectId int, filter string) (c *StoryCurs
 	return &StoryCursor{cursor, make([]*Story, 0)}, nil
 }
 
-func (service *StoryService) Get(projectId, storyId int) (*Story, *http.Response, error) {
-	u := fmt.Sprintf("projects/%v/stories/%v", projectId, storyId)
+// Create is ..
+func (service *StoryService) Create(projectID int, story *StoryRequest) (*Story, *http.Response, error) {
+	if projectID == 0 {
+		return nil, nil, &ErrFieldNotSet{"project_id"}
+	}
+
+	if story.Name == "" {
+		return nil, nil, &ErrFieldNotSet{"name"}
+	}
+
+	u := fmt.Sprintf("projects/%v/stories", projectID)
+	req, err := service.client.NewRequest("POST", u, story)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var newStory Story
+
+	resp, err := service.client.Do(req, &newStory)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return &newStory, resp, nil
+}
+
+// Get is ..
+func (service *StoryService) Get(projectID, storyID int) (*Story, *http.Response, error) {
+	u := fmt.Sprintf("projects/%v/stories/%v", projectID, storyID)
 	req, err := service.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
@@ -208,8 +266,9 @@ func (service *StoryService) Get(projectId, storyId int) (*Story, *http.Response
 	return &story, resp, err
 }
 
-func (service *StoryService) Update(projectId, storyId int, story *StoryRequest) (*Story, *http.Response, error) {
-	u := fmt.Sprintf("projects/%v/stories/%v", projectId, storyId)
+// Update is ..
+func (service *StoryService) Update(projectID, storyID int, story *StoryRequest) (*Story, *http.Response, error) {
+	u := fmt.Sprintf("projects/%v/stories/%v", projectID, storyID)
 	req, err := service.client.NewRequest("PUT", u, story)
 	if err != nil {
 		return nil, nil, err
@@ -225,8 +284,9 @@ func (service *StoryService) Update(projectId, storyId int, story *StoryRequest)
 
 }
 
-func (service *StoryService) ListTasks(projectId, storyId int) ([]*Task, *http.Response, error) {
-	u := fmt.Sprintf("projects/%v/stories/%v/tasks", projectId, storyId)
+// ListTasks is ..
+func (service *StoryService) ListTasks(projectID, storyID int) ([]*Task, *http.Response, error) {
+	u := fmt.Sprintf("projects/%v/stories/%v/tasks", projectID, storyID)
 	req, err := service.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
@@ -241,12 +301,13 @@ func (service *StoryService) ListTasks(projectId, storyId int) ([]*Task, *http.R
 	return tasks, resp, err
 }
 
-func (service *StoryService) AddTask(projectId, storyId int, task *Task) (*http.Response, error) {
+// AddTask IS ..
+func (service *StoryService) AddTask(projectID, storyID int, task *Task) (*http.Response, error) {
 	if task.Description == "" {
 		return nil, &ErrFieldNotSet{"description"}
 	}
 
-	u := fmt.Sprintf("projects/%v/stories/%v/tasks", projectId, storyId)
+	u := fmt.Sprintf("projects/%v/stories/%v/tasks", projectID, storyID)
 	req, err := service.client.NewRequest("POST", u, task)
 	if err != nil {
 		return nil, err
@@ -255,8 +316,9 @@ func (service *StoryService) AddTask(projectId, storyId int, task *Task) (*http.
 	return service.client.Do(req, nil)
 }
 
-func (service *StoryService) ListOwners(projectId, storyId int) ([]*Person, *http.Response, error) {
-	u := fmt.Sprintf("projects/%d/stories/%d/owners", projectId, storyId)
+// ListOwners IS ..
+func (service *StoryService) ListOwners(projectID, storyID int) ([]*Person, *http.Response, error) {
+	u := fmt.Sprintf("projects/%d/stories/%d/owners", projectID, storyID)
 	req, err := service.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
@@ -271,13 +333,14 @@ func (service *StoryService) ListOwners(projectId, storyId int) ([]*Person, *htt
 	return owners, resp, err
 }
 
+// AddComment is ..
 func (service *StoryService) AddComment(
-	projectId int,
-	storyId int,
+	projectID int,
+	storyID int,
 	comment *Comment,
 ) (*Comment, *http.Response, error) {
 
-	u := fmt.Sprintf("projects/%v/stories/%v/comments", projectId, storyId)
+	u := fmt.Sprintf("projects/%v/stories/%v/comments", projectID, storyID)
 	req, err := service.client.NewRequest("POST", u, comment)
 	if err != nil {
 		return nil, nil, err
@@ -294,11 +357,11 @@ func (service *StoryService) AddComment(
 
 // ListComments returns the list of Comments in a Story.
 func (service *StoryService) ListComments(
-	projectId int,
-	storyId int,
+	projectID int,
+	storyID int,
 ) ([]*Comment, *http.Response, error) {
 
-	u := fmt.Sprintf("projects/%v/stories/%v/comments", projectId, storyId)
+	u := fmt.Sprintf("projects/%v/stories/%v/comments", projectID, storyID)
 	req, err := service.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
@@ -311,4 +374,61 @@ func (service *StoryService) ListComments(
 	}
 
 	return comments, resp, nil
+}
+
+// ListBlockers returns the list of Blockers in a Story.
+func (service *StoryService) ListBlockers(
+	projectId int,
+	storyId int,
+) ([]*Blocker, *http.Response, error) {
+
+	u := fmt.Sprintf("projects/%v/stories/%v/blockers", projectId, storyId)
+	req, err := service.client.NewRequest("GET", u, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var blockers []*Blocker
+	resp, err := service.client.Do(req, &blockers)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return blockers, resp, nil
+}
+
+// AddBlocker ...
+func (service *StoryService) AddBlocker(projectId int, storyId int, description string) (*Blocker, *http.Response, error) {
+	u := fmt.Sprintf("projects/%v/stories/%v/blockers", projectId, storyId)
+	req, err := service.client.NewRequest("POST", u, BlockerRequest{
+		Description: description,
+	})
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var blocker Blocker
+	resp, err := service.client.Do(req, &blocker)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return &blocker, resp, nil
+}
+
+// UpdateBlocker ...
+func (service *StoryService) UpdateBlocker(projectId, stroyId, blockerId int, blocker *BlockerRequest) (*Blocker, *http.Response, error) {
+	u := fmt.Sprintf("projects/%v/stories/%v/blockers/%v", projectId, stroyId, blockerId)
+	req, err := service.client.NewRequest("PUT", u, blocker)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var blockerResp Blocker
+	resp, err := service.client.Do(req, &blockerResp)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return &blockerResp, resp, nil
 }

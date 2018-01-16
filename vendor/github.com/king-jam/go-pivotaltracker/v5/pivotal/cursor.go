@@ -1,9 +1,3 @@
-/*
-
-   Copyright (C) 2015 Scott Devoid
-   Copyright (C) 2015 Salsita Software
-
-*/
 package pivotal
 
 import (

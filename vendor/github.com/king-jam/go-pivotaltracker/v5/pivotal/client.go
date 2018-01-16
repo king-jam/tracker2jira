@@ -1,7 +1,3 @@
-// Copyright (c) 2014 Salsita Software
-// Use of this source code is governed by the MIT License.
-// The license can be found in the LICENSE file.
-
 package pivotal
 
 import (
@@ -13,14 +9,17 @@ import (
 )
 
 const (
+	// LibraryVersion is ..
 	LibraryVersion = "0.0.1"
 
 	defaultBaseURL   = "https://www.pivotaltracker.com/services/v5/"
 	defaultUserAgent = "go-pivotaltracker/" + LibraryVersion
 )
 
+// ErrNoTrailingSlash is ...
 var ErrNoTrailingSlash = errors.New("trailing slash missing")
 
+// Client is the client
 type Client struct {
 	// Pivotal Tracker access token to be used to authenticate API requests.
 	token string
@@ -42,8 +41,12 @@ type Client struct {
 
 	// Story service
 	Stories *StoryService
+	
+	// Activity Service
+	Activity *ActivityService
 }
 
+// NewClient gets you a new client
 func NewClient(apiToken string) *Client {
 	baseURL, _ := url.Parse(defaultBaseURL)
 	client := &Client{
@@ -55,9 +58,11 @@ func NewClient(apiToken string) *Client {
 	client.Me = newMeService(client)
 	client.Projects = newProjectService(client)
 	client.Stories = newStoryService(client)
+	client.Activity = newActivitiesService(client)
 	return client
 }
 
+// SetBaseURL is ..
 func (c *Client) SetBaseURL(baseURL string) error {
 	u, err := url.Parse(baseURL)
 	if err != nil {
@@ -72,10 +77,12 @@ func (c *Client) SetBaseURL(baseURL string) error {
 	return nil
 }
 
+// SetUserAgent is ..
 func (c *Client) SetUserAgent(agent string) {
 	c.userAgent = agent
 }
 
+// NewRequest is ..
 func (c *Client) NewRequest(method, urlPath string, body interface{}) (*http.Request, error) {
 	path, err := url.Parse(urlPath)
 	if err != nil {
@@ -86,8 +93,8 @@ func (c *Client) NewRequest(method, urlPath string, body interface{}) (*http.Req
 
 	buf := new(bytes.Buffer)
 	if body != nil {
-		if err := json.NewEncoder(buf).Encode(body); err != nil {
-			return nil, err
+		if error := json.NewEncoder(buf).Encode(body); error != nil {
+			return nil, error
 		}
 	}
 
@@ -102,6 +109,7 @@ func (c *Client) NewRequest(method, urlPath string, body interface{}) (*http.Req
 	return req, nil
 }
 
+// Do ... does things that do does
 func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 	resp, err := c.client.Do(req)
 	if err != nil {
@@ -112,7 +120,7 @@ func (c *Client) Do(req *http.Request, v interface{}) (*http.Response, error) {
 
 	if resp.StatusCode > 299 {
 		var errObject Error
-		if err := json.NewDecoder(resp.Body).Decode(&errObject); err != nil {
+		if error := json.NewDecoder(resp.Body).Decode(&errObject); error != nil {
 			return resp, &ErrAPI{Response: resp}
 		}
 

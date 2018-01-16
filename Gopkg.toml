@@ -65,8 +65,8 @@
   name = "github.com/go-openapi/validate"
 
 [[constraint]]
+  branch = "master"
   name = "github.com/king-jam/go-pivotaltracker"
-  version = "1.4.0"
 
 [[constraint]]
   name = "github.com/satori/go.uuid"

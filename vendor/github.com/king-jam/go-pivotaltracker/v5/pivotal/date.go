@@ -5,14 +5,16 @@ import (
 	"time"
 )
 
+// Date is a date
 type Date time.Time
 
-func (date *Date) UnmarshalJSON(content []byte) error {
+// UnMarshallJSON unmarshall ALL THE THINGS
+func (date *Date) UnMarshallJSON(content []byte) error {
 	s := string(content)
 
 	parsingError := func() error {
 		return fmt.Errorf(
-			"pivotal.Date.UnmarshalJSON: invalid date string: %s", content)
+			"pivotal.Date.UnMarshallJSON: invalid date string: %s", content)
 	}
 
 	// Check whether the leading and trailing " is there.
@@ -33,6 +35,7 @@ func (date *Date) UnmarshalJSON(content []byte) error {
 	return nil
 }
 
-func (date Date) MarshalJson() ([]byte, error) {
+// MarshallJSON MARSHALL ALL THE THINGS
+func (date Date) MarshallJSON() ([]byte, error) {
 	return []byte((time.Time)(date).Format("2006-01-02")), nil
 }

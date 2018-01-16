@@ -174,10 +174,10 @@
   revision = "7182011986c42c33f0a79fd4b07e41edc784532b"
 
 [[projects]]
+  branch = "master"
   name = "github.com/king-jam/go-pivotaltracker"
   packages = ["v5/pivotal"]
-  revision = "46083f60193ab53b18d2ffe64d298127652b39ac"
-  version = "v1.4.0"
+  revision = "2d6c25f05173be07b4350f4e0d0eeca14414674b"
 
 [[projects]]
   branch = "master"
@@ -310,6 +310,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d7f6c67fa4b7c127d9e8ecae56d20aed7bca6646ae0a7b0a75b6a04f31eea15b"
+  inputs-digest = "609ab43b41eea80759ceb95c3dcba40b56ca9e0760a28111ac0caeb13b6c661a"
   solver-name = "gps-cdcl"
   solver-version = 1

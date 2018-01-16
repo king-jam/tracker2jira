@@ -9,8 +9,7 @@ import (
 	"net/http"
 )
 
-// ErrAPI ----------------------------------------------------------------------
-
+// Error ----------------------------------------------------------------------
 type Error struct {
 	Code             string `json:"code"`
 	Error            string `json:"error"`
@@ -23,6 +22,7 @@ type Error struct {
 	} `json:"validation_errors"`
 }
 
+// ErrAPI is ...
 type ErrAPI struct {
 	Response *http.Response
 	Err      *Error
@@ -39,11 +39,10 @@ func (err *ErrAPI) Error() string {
 }
 
 // ErrFieldNotSet --------------------------------------------------------------
-
 type ErrFieldNotSet struct {
 	fieldName string
 }
 
 func (err *ErrFieldNotSet) Error() string {
-	return fmt.Sprintf("Required field '%s' is not set")
+	return fmt.Sprintf("Required field '%s' is not set", err.fieldName)
 }

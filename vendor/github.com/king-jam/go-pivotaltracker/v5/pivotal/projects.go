@@ -1,7 +1,3 @@
-// Copyright (c) 2014 Salsita Software
-// Copyright (C) 2015 Scott Devoid
-// Use of this source code is governed by the MIT License.
-// The license can be found in the LICENSE file.
 package pivotal
 
 import (
@@ -10,34 +6,50 @@ import (
 	"time"
 )
 
+// Day is a dat
 type Day string
 
 const (
-	DayMonday    Day = "Monday"
-	DayTuesday   Day = "Tuesday"
+	// DayMonday is ..
+	DayMonday Day = "Monday"
+	// DayTuesday is ..
+	DayTuesday Day = "Tuesday"
+	// DayWednesday is ..
 	DayWednesday Day = "Wednesday"
-	DayThursday  Day = "Thursday"
-	DayFriday    Day = "Friday"
-	DaySaturday  Day = "Saturday"
-	DaySunday    Day = "Sunday"
+	// DayThursday is ..
+	DayThursday Day = "Thursday"
+	// DayFriday is ..
+	DayFriday Day = "Friday"
+	// DaySaturday is ..
+	DaySaturday Day = "Saturday"
+	// DaySunday is ..
+	DaySunday Day = "Sunday"
 )
 
 const (
-	ProjectTypePublic  = "public"
+	// ProjectTypePublic is ..
+	ProjectTypePublic = "public"
+	// ProjectTypePrivate is ..
 	ProjectTypePrivate = "private"
-	ProjectTypeDemo    = "demo"
+	// ProjectTypeDemo is ..
+	ProjectTypeDemo = "demo"
 )
 
+// AccountingType is ..
 type AccountingType string
 
 const (
+	// AccountingTypeUnbillable is ..
 	AccountingTypeUnbillable AccountingType = "unbillable"
-	AccountingTypeBillable   AccountingType = "billable"
-	AccountingTypeOverhead   AccountingType = "overhead"
+	// AccountingTypeBillable is ..
+	AccountingTypeBillable AccountingType = "billable"
+	// AccountingTypeOverhead is ..
+	AccountingTypeOverhead AccountingType = "overhead"
 )
 
+// Project is a project
 type Project struct {
-	Id                           int            `json:"id"`
+	ID                           int            `json:"id"`
 	Name                         string         `json:"name"`
 	Version                      int            `json:"version"`
 	IterationLength              int            `json:"iteration_length"`
@@ -64,7 +76,7 @@ type Project struct {
 	CurrentIterationNumber       int            `json:"current_iteration_number"`
 	CurrentVelocity              int            `json:"current_velocity"`
 	CurrentVolatility            float64        `json:"current_volatility"`
-	AccountId                    int            `json:"account_id"`
+	AccountID                    int            `json:"account_id"`
 	AccountingType               AccountingType `json:"accounting_type"`
 	Featured                     bool           `json:"featured"`
 	StoryIds                     []int          `json:"story_ids"`
@@ -77,6 +89,7 @@ type Project struct {
 	UpdatedAt                    *time.Time     `json:"updated_at"`
 }
 
+// ProjectService is ..
 type ProjectService struct {
 	client *Client
 }
@@ -101,8 +114,9 @@ func (service *ProjectService) List() ([]*Project, *http.Response, error) {
 	return projects, resp, err
 }
 
-func (service *ProjectService) Get(projectId int) (*Project, *http.Response, error) {
-	u := fmt.Sprintf("projects/%v", projectId)
+// Get is ..
+func (service *ProjectService) Get(projectID int) (*Project, *http.Response, error) {
+	u := fmt.Sprintf("projects/%v", projectID)
 	req, err := service.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err

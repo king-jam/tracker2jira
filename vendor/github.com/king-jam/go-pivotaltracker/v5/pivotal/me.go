@@ -9,13 +9,14 @@ import (
 	"time"
 )
 
+// Me is...
 type Me struct {
-	Id                         int        `json:"id"`
+	ID                         int        `json:"id"`
 	Name                       string     `json:"name"`
 	Initials                   string     `json:"initials"`
 	Username                   string     `json:"username"`
 	TimeZone                   *TimeZone  `json:"time_zone"`
-	ApiToken                   string     `json:"api_token"`
+	APIToken                   string     `json:"api_token"`
 	HasGoogleIdentity          bool       `json:"has_google_identity"`
 	ProjectIds                 *[]int     `json:"project_ids"`
 	WorkspaceIds               *[]int     `json:"workspace_ids"`
@@ -25,6 +26,7 @@ type Me struct {
 	UpdatedAt                  *time.Time `json:"updated_at"`
 }
 
+// MeService is ..
 type MeService struct {
 	client *Client
 }
@@ -33,6 +35,7 @@ func newMeService(client *Client) *MeService {
 	return &MeService{client}
 }
 
+// Get gets things
 func (service *MeService) Get() (*Me, *http.Response, error) {
 	req, err := service.client.NewRequest("GET", "me", nil)
 	if err != nil {
