@@ -14,12 +14,6 @@
   revision = "de5bf2ad457846296e2031421a34e2568e304e35"
 
 [[projects]]
-  name = "github.com/andygrunwald/go-jira"
-  packages = ["."]
-  revision = "acbc88d59582a4885dbd82fd775caa7c15245171"
-  version = "v1.0.0"
-
-[[projects]]
   name = "github.com/asaskevich/govalidator"
   packages = ["."]
   revision = "521b25f4b05fd26bec69d9dedeb8f9c9a83939a8"
@@ -73,12 +67,6 @@
   name = "github.com/elazarl/go-bindata-assetfs"
   packages = ["."]
   revision = "30f82fa23fd844bd5bb1e5f216db87fd77b5eb43"
-
-[[projects]]
-  name = "github.com/fatih/structs"
-  packages = ["."]
-  revision = "a720dfa8df582c51dee1b36feabb906bde1588bd"
-  version = "v1.0"
 
 [[projects]]
   name = "github.com/go-martini/martini"
@@ -163,12 +151,6 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/google/go-querystring"
-  packages = ["query"]
-  revision = "53e6ce116135b80d037921a7fdd5138cf32d7a8a"
-
-[[projects]]
-  branch = "master"
   name = "github.com/justinas/nosurf"
   packages = ["."]
   revision = "7182011986c42c33f0a79fd4b07e41edc784532b"
@@ -177,7 +159,7 @@
   branch = "master"
   name = "github.com/king-jam/go-pivotaltracker"
   packages = ["v5/pivotal"]
-  revision = "2d6c25f05173be07b4350f4e0d0eeca14414674b"
+  revision = "83c4fa08ce58b287ac83ea624db99dc98b1aa29d"
 
 [[projects]]
   branch = "master"
@@ -224,15 +206,6 @@
   packages = ["."]
   revision = "e57e3eeb33f795204c1ca35f56c44f83227c6e66"
   version = "v1.0.0"
-
-[[projects]]
-  name = "github.com/trivago/tgo"
-  packages = [
-    "tcontainer",
-    "treflect"
-  ]
-  revision = "e4d1ddd28c17dd89ed26327cf69fded22060671b"
-  version = "v1.0.1"
 
 [[projects]]
   name = "github.com/tylerb/graceful"
@@ -310,6 +283,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "609ab43b41eea80759ceb95c3dcba40b56ca9e0760a28111ac0caeb13b6c661a"
+  inputs-digest = "1cb5e4b7ff2acd834cd9709754d05bdfaddfd957962ae79fec1d0bef774bdc50"
   solver-name = "gps-cdcl"
   solver-version = 1
