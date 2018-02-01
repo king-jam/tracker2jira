@@ -6,11 +6,21 @@ import (
 	"github.com/king-jam/tracker2jira/rest/models"
 )
 
+// TODO: IDs should be returned from the backing store or "appear" to be
+
 const usersPath = "users"
+
+// UserBackend interface encapsulates all the implementations of the task peristence
+type UserBackend interface {
+	GetUsers() ([]*models.User, error)
+	GetUserByID(userid string) (*models.User, error)
+	PutUser(user *models.User) (*models.User, error)
+	DeleteUser(userid string) error
+}
 
 // GetUsers is ...
 func (b *Backend) GetUsers() ([]*models.User, error) {
-	key := b.GetUserBase()
+	key := b.getUserBase()
 	values, err := b.store.List(key)
 	if len(values) == 0 {
 		return []*models.User{}, nil
@@ -32,7 +42,7 @@ func (b *Backend) GetUsers() ([]*models.User, error) {
 
 // GetUserByID ...
 func (b *Backend) GetUserByID(userid string) (*models.User, error) {
-	key := b.GetUserBase() + userid
+	key := b.getUserBase() + userid
 	pair, err := b.store.Get(key)
 	if err != nil {
 		log.Printf("no version")
@@ -45,9 +55,9 @@ func (b *Backend) GetUserByID(userid string) (*models.User, error) {
 	return user, nil
 }
 
-// PutUser ...
+// PutUser stores a fully formed user model into the DB
 func (b *Backend) PutUser(user *models.User) (*models.User, error) {
-	key := b.GetUserBase() + user.UserID.String()
+	key := b.getUserBase() + user.UserID.String()
 	value, err := user.MarshalBinary()
 	if err != nil {
 		return nil, err
@@ -59,9 +69,9 @@ func (b *Backend) PutUser(user *models.User) (*models.User, error) {
 	return user, nil
 }
 
-// DeleteUser ...
+// DeleteUser removes a User entry from the DB by ID
 func (b *Backend) DeleteUser(userid string) error {
-	key := b.GetUserBase() + userid
+	key := b.getUserBase() + userid
 	err := b.store.Delete(key)
 	if err != nil {
 		return err
@@ -69,7 +79,7 @@ func (b *Backend) DeleteUser(userid string) error {
 	return nil
 }
 
-// GetUserBase returns the user base path
-func (b *Backend) GetUserBase() string {
+// getUserBase returns the user base path
+func (b *Backend) getUserBase() string {
 	return b.instanceID + "/" + usersPath + "/"
 }

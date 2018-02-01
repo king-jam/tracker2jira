@@ -8,9 +8,18 @@ import (
 
 const tasksPath = "tasks"
 
-// GetTasks is ...
+// TaskBackend interface encapsulates all the implementations of the task peristence
+type TaskBackend interface {
+	GetTasks() ([]*models.Task, error)
+	GetTaskByID(taskid string) (*models.Task, error)
+	PutTask(task *models.Task) (*models.Task, error)
+	DeleteTask(taskid string) error
+}
+
+// GetTasks is returns an array of all tasks, this may need an accessor method
+// at some point (probably never) based on scale
 func (b *Backend) GetTasks() ([]*models.Task, error) {
-	key := b.GetTaskBase()
+	key := b.getTaskBase()
 	values, err := b.store.List(key)
 	if len(values) == 0 {
 		return []*models.Task{}, nil
@@ -30,9 +39,9 @@ func (b *Backend) GetTasks() ([]*models.Task, error) {
 	return tasks, nil
 }
 
-// GetTaskByID ...
+// GetTaskByID returns a Task by ID
 func (b *Backend) GetTaskByID(taskid string) (*models.Task, error) {
-	key := b.GetTaskBase() + taskid
+	key := b.getTaskBase() + taskid
 	pair, err := b.store.Get(key)
 	if err != nil {
 		log.Printf("no version")
@@ -45,9 +54,9 @@ func (b *Backend) GetTaskByID(taskid string) (*models.Task, error) {
 	return task, nil
 }
 
-// PutTask ...
+// PutTask will persist a full formed task model
 func (b *Backend) PutTask(task *models.Task) (*models.Task, error) {
-	key := b.GetTaskBase() + task.TaskID.String()
+	key := b.getTaskBase() + task.TaskID.String()
 	value, err := task.MarshalBinary()
 	if err != nil {
 		return nil, err
@@ -59,9 +68,9 @@ func (b *Backend) PutTask(task *models.Task) (*models.Task, error) {
 	return task, nil
 }
 
-// DeleteTask ...
+// DeleteTask removes a task from the database by ID
 func (b *Backend) DeleteTask(taskid string) error {
-	key := b.GetTaskBase() + taskid
+	key := b.getTaskBase() + taskid
 	err := b.store.Delete(key)
 	if err != nil {
 		return err
@@ -69,7 +78,7 @@ func (b *Backend) DeleteTask(taskid string) error {
 	return nil
 }
 
-// GetTaskBase returns the user base path
-func (b *Backend) GetTaskBase() string {
+// getTaskBase returns the task base path
+func (b *Backend) getTaskBase() string {
 	return b.instanceID + "/" + tasksPath + "/"
 }

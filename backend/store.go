@@ -16,24 +16,19 @@ const (
 	baseString = "t2j"
 )
 
-// DB ...
-var DB *Backend
-
 // Backend ...
 type Backend struct {
 	store      store.Store
 	instanceID string
 }
 
-// GetDB ...
-func GetDB() (*Backend, error) {
-	if DB != nil {
-		return DB, nil
-	}
+// InitializeDB takes the DB configuration and returns a Backend struct which
+// implements the database access models
+func InitializeDB(path string) (*Backend, error) {
 	instanceID := "1"
 	kv, err := libkv.NewStore(
 		store.BOLTDB,
-		[]string{"/tmp/not_exist_dir/__boltdbtest"}, // make this a config object
+		[]string{path}, // make this a config object
 		&store.Config{
 			Bucket: baseString,
 		},
@@ -41,9 +36,8 @@ func GetDB() (*Backend, error) {
 	if err != nil {
 		log.Fatalf("DEAD")
 	}
-	DB = &Backend{
+	return &Backend{
 		store:      kv,
 		instanceID: instanceID,
-	}
-	return DB, nil
+	}, nil
 }
