@@ -1,16 +1,16 @@
 package backend
 
 import (
-	log "github.com/sirupsen/logrus"
-
 	"github.com/king-jam/tracker2jira/rest/models"
 )
 
-// TODO: IDs should be returned from the backing store or "appear" to be
+const (
+	// this is the key prefix for storage of all user objects, the format will be
+	// /<storage prefix - should be t2j>/<t2j instance ID>/users/<user ID>/<User Object>
+	usersPath = "users"
+)
 
-const usersPath = "users"
-
-// UserBackend interface encapsulates all the implementations of the task peristence
+// UserBackend interface encapsulates all the implementations of the user peristence
 type UserBackend interface {
 	GetUsers() ([]*models.User, error)
 	GetUserByID(userid string) (*models.User, error)
@@ -18,36 +18,36 @@ type UserBackend interface {
 	DeleteUser(userid string) error
 }
 
-// GetUsers is ...
+// GetUsers returns an array of User objects to the caller
 func (b *Backend) GetUsers() ([]*models.User, error) {
+	users := []*models.User{}
 	key := b.getUserBase()
 	values, err := b.store.List(key)
 	if len(values) == 0 {
-		return []*models.User{}, nil
+		return users, nil
 	}
 	if err != nil {
-		return []*models.User{}, err
+		return users, err
 	}
-	users := []*models.User{}
 	for _, v := range values {
 		user := &models.User{}
 		err = user.UnmarshalBinary(v.Value)
 		if err != nil {
-			return []*models.User{}, err
+			return users, err
 		}
 		users = append(users, user)
 	}
 	return users, nil
 }
 
-// GetUserByID ...
+// GetUserByID returns a User object by ID
 func (b *Backend) GetUserByID(userid string) (*models.User, error) {
+	user := &models.User{}
 	key := b.getUserBase() + userid
 	pair, err := b.store.Get(key)
 	if err != nil {
-		log.Printf("no version")
+		return user, err
 	}
-	user := &models.User{}
 	err = user.UnmarshalBinary(pair.Value)
 	if err != nil {
 		return user, err
@@ -60,11 +60,11 @@ func (b *Backend) PutUser(user *models.User) (*models.User, error) {
 	key := b.getUserBase() + user.UserID.String()
 	value, err := user.MarshalBinary()
 	if err != nil {
-		return nil, err
+		return user, err
 	}
 	err = b.store.Put(key, value, nil)
 	if err != nil {
-		return nil, err
+		return user, err
 	}
 	return user, nil
 }

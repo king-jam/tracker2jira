@@ -25,9 +25,10 @@ func init() {
 // Make sure not to overwrite this file after you generated it because all your edits would be lost!
 
 func main() {
-	_, err := backend.GetDB()
+	// this initializes the global database object to be injected into all underlying components
+	db, err := backend.InitializeDB(".")
 	if err != nil {
-		log.Fatalln("DB Init Failed")
+		log.Fatalf("DB Init Failed: %+v\n", err)
 	}
 
 	// this creates the task scheduler service which monitors the DB for new
