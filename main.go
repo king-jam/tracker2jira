@@ -26,7 +26,7 @@ func init() {
 
 func main() {
 	// this initializes the global database object to be injected into all underlying components
-	db, err := backend.InitializeDB(".")
+	db, err := backend.InitializeDB("/tmp/trackerdb")
 	if err != nil {
 		log.Fatalf("DB Init Failed: %+v\n", err)
 	}
@@ -40,8 +40,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	var httpServer *server.Server
-	//var httpServer *server.Server // make sure init is called
+	var httpServer *server.Server // make sure init is called
 
 	flag.Usage = func() {
 		fmt.Fprint(os.Stderr, "Usage:\n")
