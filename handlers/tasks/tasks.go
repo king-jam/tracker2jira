@@ -12,7 +12,7 @@ import (
 const defaultTaskState = models.TaskStatusPending
 
 // GetTask ...
-func GetTask(db *backend.Backend, params tasks.GetTaskByIDParams) middleware.Responder {
+func GetTask(db backend.Database, params tasks.GetTaskByIDParams) middleware.Responder {
 	value, err := db.GetTaskByID(params.TaskID)
 	if err != nil {
 		return &tasks.GetTaskByIDNotFound{}
@@ -23,7 +23,7 @@ func GetTask(db *backend.Backend, params tasks.GetTaskByIDParams) middleware.Res
 }
 
 // GetTasks ...
-func GetTasks(db *backend.Backend, params tasks.GetTasksParams) middleware.Responder {
+func GetTasks(db backend.Database, params tasks.GetTasksParams) middleware.Responder {
 	values, err := db.GetTasks()
 	if err != nil {
 		return &tasks.GetTasksBadRequest{}
@@ -34,7 +34,7 @@ func GetTasks(db *backend.Backend, params tasks.GetTasksParams) middleware.Respo
 }
 
 // PostTask ...
-func PostTask(db *backend.Backend, params tasks.PostTaskParams) middleware.Responder {
+func PostTask(db backend.Database, params tasks.PostTaskParams) middleware.Responder {
 	uuid := uuid.NewV4()
 	params.Body.TaskID = strfmt.UUID4(uuid.String())
 	params.Body.Status = defaultTaskState // set the status to default until scheduled
@@ -48,7 +48,7 @@ func PostTask(db *backend.Backend, params tasks.PostTaskParams) middleware.Respo
 }
 
 // DeleteTask ...
-func DeleteTask(db *backend.Backend, params tasks.DeleteTaskByIDParams) middleware.Responder {
+func DeleteTask(db backend.Database, params tasks.DeleteTaskByIDParams) middleware.Responder {
 	err := db.DeleteTask(params.TaskID)
 	if err != nil {
 		return &tasks.DeleteTaskByIDNotFound{}

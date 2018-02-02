@@ -11,7 +11,7 @@ import (
 const defaultProjectVersion = 0
 
 // GetProject ...
-func GetProject(db *backend.Backend, params projects.GetProjectByIDParams) middleware.Responder {
+func GetProject(db backend.Database, params projects.GetProjectByIDParams) middleware.Responder {
 	value, err := db.GetProjectByID(params.ProjectID)
 	if err != nil {
 		return &projects.GetProjectByIDNotFound{}
@@ -22,7 +22,7 @@ func GetProject(db *backend.Backend, params projects.GetProjectByIDParams) middl
 }
 
 // GetProjects ...
-func GetProjects(db *backend.Backend, params projects.GetProjectsParams) middleware.Responder {
+func GetProjects(db backend.Database, params projects.GetProjectsParams) middleware.Responder {
 	values, err := db.GetProjects()
 	if err != nil {
 		return &projects.GetProjectsBadRequest{}
@@ -33,7 +33,7 @@ func GetProjects(db *backend.Backend, params projects.GetProjectsParams) middlew
 }
 
 // PostProject ...// init to 0 for post create
-func PostProject(db *backend.Backend, params projects.PostProjectParams) middleware.Responder {
+func PostProject(db backend.Database, params projects.PostProjectParams) middleware.Responder {
 	uuid := uuid.NewV4()
 	params.Body.ProjectID = strfmt.UUID4(uuid.String())
 	params.Body.ProjectVersion = defaultProjectVersion
@@ -47,7 +47,7 @@ func PostProject(db *backend.Backend, params projects.PostProjectParams) middlew
 }
 
 // DeleteProject ...
-func DeleteProject(db *backend.Backend, params projects.DeleteProjectByIDParams) middleware.Responder {
+func DeleteProject(db backend.Database, params projects.DeleteProjectByIDParams) middleware.Responder {
 	err := db.DeleteProject(params.ProjectID)
 	if err != nil {
 		return &projects.DeleteProjectByIDNotFound{}

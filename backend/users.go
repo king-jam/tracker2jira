@@ -1,43 +1,53 @@
 package backend
 
 import (
-	log "github.com/sirupsen/logrus"
-
 	"github.com/king-jam/tracker2jira/rest/models"
 )
 
-const usersPath = "users"
+const (
+	// this is the key prefix for storage of all user objects, the format will be
+	// /<storage prefix - should be t2j>/<t2j instance ID>/users/<user ID>/<User Object>
+	usersPath = "users"
+)
 
-// GetUsers is ...
+// UserBackend interface encapsulates all the implementations of the user peristence
+type UserBackend interface {
+	GetUsers() ([]*models.User, error)
+	GetUserByID(userid string) (*models.User, error)
+	PutUser(user *models.User) (*models.User, error)
+	DeleteUser(userid string) error
+}
+
+// GetUsers returns an array of User objects to the caller
 func (b *Backend) GetUsers() ([]*models.User, error) {
-	key := b.GetUserBase()
+	users := []*models.User{}
+	key := b.getUserBase()
 	values, err := b.store.List(key)
 	if len(values) == 0 {
-		return []*models.User{}, nil
+		return users, nil
 	}
 	if err != nil {
-		return []*models.User{}, err
+		return users, err
 	}
-	users := []*models.User{}
 	for _, v := range values {
 		user := &models.User{}
 		err = user.UnmarshalBinary(v.Value)
 		if err != nil {
-			return []*models.User{}, err
+			return users, err
 		}
 		users = append(users, user)
 	}
 	return users, nil
 }
 
-// GetUserByID ...
+// GetUserByID returns a User object by ID
 func (b *Backend) GetUserByID(userid string) (*models.User, error) {
-	key := b.GetUserBase() + userid
+	user := &models.User{}
+	key := b.getUserBase() + userid
 	pair, err := b.store.Get(key)
 	if err != nil {
-		log.Printf("no version")
+		return user, err
 	}
-	user := &models.User{}
 	err = user.UnmarshalBinary(pair.Value)
 	if err != nil {
 		return user, err
@@ -45,23 +55,23 @@ func (b *Backend) GetUserByID(userid string) (*models.User, error) {
 	return user, nil
 }
 
-// PutUser ...
+// PutUser stores a fully formed user model into the DB
 func (b *Backend) PutUser(user *models.User) (*models.User, error) {
-	key := b.GetUserBase() + user.UserID.String()
+	key := b.getUserBase() + user.UserID.String()
 	value, err := user.MarshalBinary()
 	if err != nil {
-		return nil, err
+		return user, err
 	}
 	err = b.store.Put(key, value, nil)
 	if err != nil {
-		return nil, err
+		return user, err
 	}
 	return user, nil
 }
 
-// DeleteUser ...
+// DeleteUser removes a User entry from the DB by ID
 func (b *Backend) DeleteUser(userid string) error {
-	key := b.GetUserBase() + userid
+	key := b.getUserBase() + userid
 	err := b.store.Delete(key)
 	if err != nil {
 		return err
@@ -69,7 +79,7 @@ func (b *Backend) DeleteUser(userid string) error {
 	return nil
 }
 
-// GetUserBase returns the user base path
-func (b *Backend) GetUserBase() string {
+// getUserBase returns the user base path
+func (b *Backend) getUserBase() string {
 	return b.instanceID + "/" + usersPath + "/"
 }

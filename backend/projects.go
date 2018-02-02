@@ -1,43 +1,53 @@
 package backend
 
 import (
-	log "github.com/sirupsen/logrus"
-
 	"github.com/king-jam/tracker2jira/rest/models"
 )
 
-const projectsPath = "projects"
+const (
+	// this is the key prefix for storage of all project objects, the format will be
+	// /<storage prefix - should be t2j>/<t2j instance ID>/projects/<project ID>/<Project Object>
+	projectsPath = "projects"
+)
 
-// GetProjects is ...
+// ProjectBackend interface encapsulates all the implementations of the project peristence
+type ProjectBackend interface {
+	GetProjects() ([]*models.Project, error)
+	GetProjectByID(projectid string) (*models.Project, error)
+	PutProject(project *models.Project) (*models.Project, error)
+	DeleteProject(projectid string) error
+}
+
+// GetProjects is returns an array of all Projects
 func (b *Backend) GetProjects() ([]*models.Project, error) {
-	key := b.GetProjectsBase()
+	projects := []*models.Project{}
+	key := b.getProjectsBase()
 	values, err := b.store.List(key)
 	if len(values) == 0 {
-		return []*models.Project{}, nil
+		return projects, nil
 	}
 	if err != nil {
-		return []*models.Project{}, err
+		return projects, err
 	}
-	projects := []*models.Project{}
 	for _, v := range values {
 		project := &models.Project{}
 		err = project.UnmarshalBinary(v.Value)
 		if err != nil {
-			return []*models.Project{}, err
+			return projects, err
 		}
 		projects = append(projects, project)
 	}
 	return projects, nil
 }
 
-// GetProjectByID ...
+// GetProjectByID returns a project object by ID
 func (b *Backend) GetProjectByID(projectid string) (*models.Project, error) {
-	key := b.GetProjectsBase() + projectid
+	project := &models.Project{}
+	key := b.getProjectsBase() + projectid
 	pair, err := b.store.Get(key)
 	if err != nil {
-		log.Printf("no version")
+		return project, err
 	}
-	project := &models.Project{}
 	err = project.UnmarshalBinary(pair.Value)
 	if err != nil {
 		return project, err
@@ -47,21 +57,21 @@ func (b *Backend) GetProjectByID(projectid string) (*models.Project, error) {
 
 // PutProject ...
 func (b *Backend) PutProject(project *models.Project) (*models.Project, error) {
-	key := b.GetProjectsBase() + project.ProjectID.String()
+	key := b.getProjectsBase() + project.ProjectID.String()
 	value, err := project.MarshalBinary()
 	if err != nil {
-		return nil, err
+		return project, err
 	}
 	err = b.store.Put(key, value, nil)
 	if err != nil {
-		return nil, err
+		return project, err
 	}
 	return project, nil
 }
 
 // DeleteProject ...
 func (b *Backend) DeleteProject(projectid string) error {
-	key := b.GetProjectsBase() + projectid
+	key := b.getProjectsBase() + projectid
 	err := b.store.Delete(key)
 	if err != nil {
 		return err
@@ -69,7 +79,7 @@ func (b *Backend) DeleteProject(projectid string) error {
 	return nil
 }
 
-// GetProjectsBase returns the user base path
-func (b *Backend) GetProjectsBase() string {
+// getProjectsBase returns the user base path
+func (b *Backend) getProjectsBase() string {
 	return b.instanceID + "/" + projectsPath + "/"
 }
