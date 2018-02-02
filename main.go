@@ -33,7 +33,7 @@ func main() {
 
 	// this creates the task scheduler service which monitors the DB for new
 	// synchronization tasks and handles starting and monitoring tasks
-	taskservice.NewTaskScheduler()
+	taskservice.NewTaskScheduler(db)
 
 	swaggerSpec, err := loads.Analyzed(server.SwaggerJSON, "")
 	if err != nil {
@@ -61,10 +61,10 @@ func main() {
 	api := operations.NewT2jAPI(swaggerSpec)
 	// get server with flag values filled out
 	httpServer = server.NewServer(api)
-
 	defer httpServer.Shutdown()
 
-	httpServer.ConfigureAPI()
+	httpServer.ConfigureAPIWithDependencies(db)
+
 	if err := httpServer.Serve(); err != nil {
 		log.Fatalln(err)
 	}

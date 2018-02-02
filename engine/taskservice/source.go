@@ -10,15 +10,11 @@ import (
 // implementation that provides implementation of the synchronization jobs to the
 // task scheduler & runner services.
 type TaskSource struct {
-	db *backend.Backend
+	db backend.Database
 }
 
 // NewTaskSource composes a TaskSource object that implements the Source interface
-func NewTaskSource() (*TaskSource, error) {
-	db, err := backend.GetDB()
-	if err != nil {
-		return &TaskSource{}, err
-	}
+func NewTaskSource(db backend.Database) (*TaskSource, error) {
 	return &TaskSource{
 		db: db,
 	}, nil

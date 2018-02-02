@@ -1,5 +1,7 @@
 package taskservice
 
+import "github.com/king-jam/tracker2jira/backend"
+
 // TaskScheduler is the top-level scheduler service class
 // This class wraps the embedded polling service to start and create new synchronizer
 // jobs. This should probably be moved to something more "eventy" in the future
@@ -10,8 +12,8 @@ type TaskScheduler struct {
 
 // NewTaskScheduler composes all the underlying services to create the task
 // scheduler and synchronization service.
-func NewTaskScheduler() (*TaskScheduler, error) {
-	source, err := NewTaskSource()
+func NewTaskScheduler(db backend.Database) (*TaskScheduler, error) {
+	source, err := NewTaskSource(db)
 	if err != nil {
 		return &TaskScheduler{}, err
 	}

@@ -27,12 +27,12 @@ type Tracker struct {
 
 // Synchronizer ...
 type Synchronizer struct {
-	db     *backend.Backend
+	db     backend.Database
 	taskID string
 }
 
 // NewSynchronizer ...
-func NewSynchronizer(db *backend.Backend, task *models.Task) *Synchronizer {
+func NewSynchronizer(db backend.Database, task *models.Task) *Synchronizer {
 	s := new(Synchronizer)
 	s.db = db
 	s.taskID = task.TaskID.String()

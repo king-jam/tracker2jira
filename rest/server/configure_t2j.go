@@ -29,17 +29,25 @@ import (
 
 //go:generate swagger generate server --target .. --name t2j --spec ../swagger.yaml --server-package server --exclude-main
 
+// ConfigureAPIWithDependencies adds a new method to server.go to configure the API and handlers while injecting
+// our dependencies for the runtime environment.
+func (s *Server) ConfigureAPIWithDependencies(db backend.Database) {
+	if s.api != nil {
+		s.handler = configureAPIWithDependencies(s.api, db)
+	}
+}
+
 func configureFlags(api *operations.T2jAPI) {
 	// api.CommandLineOptionsGroups = []swag.CommandLineOptionsGroup{ ... }
 }
 
+// this is left to ensure the existing functions in server.go aren't broken
+// TODO: Make this cause some error on compile if it is ever used
 func configureAPI(api *operations.T2jAPI) http.Handler {
-	// our DB initialization custom sauce
-	db, err := backend.GetDB()
-	if err != nil {
-		log.Fatalln(err)
-	}
+	return nil
+}
 
+func configureAPIWithDependencies(api *operations.T2jAPI, db backend.Database) http.Handler {
 	// configure the api here
 	api.ServeError = errors.ServeError
 

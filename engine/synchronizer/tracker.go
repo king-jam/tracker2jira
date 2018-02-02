@@ -15,7 +15,7 @@ type PivotalTracker struct {
 }
 
 // NewTrackerClient ...
-func NewTrackerClient(db *backend.Backend, projectID string) (*PivotalTracker, error) {
+func NewTrackerClient(db backend.Database, projectID string) (*PivotalTracker, error) {
 	// get the master project which should always be Pivotal Tracker in our case
 	tracker := new(PivotalTracker)
 	masterProject, err := db.GetProjectByID(projectID)
