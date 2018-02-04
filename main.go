@@ -12,9 +12,9 @@ import (
 	flag "github.com/spf13/pflag"
 
 	"github.com/king-jam/tracker2jira/backend"
-	"github.com/king-jam/tracker2jira/engine/taskservice"
 	"github.com/king-jam/tracker2jira/rest/server"
 	"github.com/king-jam/tracker2jira/rest/server/operations"
+	"github.com/king-jam/tracker2jira/synchronizer/taskservice"
 )
 
 func init() {

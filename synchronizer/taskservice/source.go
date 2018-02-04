@@ -2,8 +2,8 @@ package taskservice
 
 import (
 	"github.com/king-jam/tracker2jira/backend"
-	"github.com/king-jam/tracker2jira/engine/synchronizer"
 	"github.com/king-jam/tracker2jira/rest/models"
+	"github.com/king-jam/tracker2jira/synchronizer/synchronizer"
 )
 
 // TaskSource implements the Source interface. This is a DB/backend specific

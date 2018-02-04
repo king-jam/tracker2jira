@@ -19,8 +19,8 @@ V = 0
 Q = $(if $(filter 1,$V),,@)
 M = $(shell printf "\033[34;1m▶\033[0m")
 
-LDFLAGS = -ldflags '-X $(PACKAGE)/handlers/version.BuildDate=$(DATE) \
-		-X $(PACKAGE)/handlers/version.CommitHash=$(COMMITHASH)' \
+LDFLAGS = -ldflags '-X $(PACKAGE)/rest/handlers/version.BuildDate=$(DATE) \
+		-X $(PACKAGE)/rest/handlers/version.CommitHash=$(COMMITHASH)' \
 
 SWAGGER_SERVER_DIR =
 
