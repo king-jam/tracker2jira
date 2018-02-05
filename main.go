@@ -26,6 +26,7 @@ func init() {
 
 func main() {
 	// this initializes the global database object to be injected into all underlying components
+	// TODO: Make this more dynamic from configuration
 	db, err := backend.InitializeDB("/tmp/trackerdb")
 	if err != nil {
 		log.Fatalf("DB Init Failed: %+v\n", err)

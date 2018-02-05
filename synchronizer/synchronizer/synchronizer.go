@@ -8,23 +8,6 @@ import (
 	"github.com/king-jam/tracker2jira/rest/models"
 )
 
-// ExternalCredentials ...
-type ExternalCredentials struct {
-	Jira    Jira
-	Tracker Tracker
-}
-
-// Jira ...
-type Jira struct {
-	Password string
-	Username string
-}
-
-// Tracker ..
-type Tracker struct {
-	Token string
-}
-
 // Synchronizer ...
 type Synchronizer struct {
 	db     backend.Database
@@ -69,7 +52,15 @@ func (s *Synchronizer) Run() error {
 			}
 			return fmt.Errorf("task failed: unable to read activities")
 		}
-		fmt.Printf("\n\n DO ACTION: %+v \n\n", activity)
+		handler, exist := handlers[activity.Kind]
+		if !exist {
+			return fmt.Errorf("update failed: no valid handler for activity type")
+		}
+		err = handler.Synchronize(activity, s)
+		if err != nil {
+			return fmt.Errorf("update activity failed in handler function")
+		}
+		// get and update the project version
 		project, err := s.db.GetProjectByID(dbTask.Master)
 		if err != nil {
 			return fmt.Errorf("failed to get the project")

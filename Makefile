@@ -154,9 +154,13 @@ swagger-client: $(BASE) $(SWAGGER) ; $(info $(M) generating swagger client...) @
 
 # UI controls
 .PHONY: ui
-ui: $(BASE) $(GO_BINDATA_ASSETFS) ; $(info $(M) generating ui assets...) @ ## Generates client
+ui: $(BASE) $(GO_BINDATA_ASSETFS) ; $(info $(M) generating ui assets...) @ ## Generates UI assets
 	$Q cd $(BASE)/ui && $(GO_BINDATA_ASSETFS) -pkg server dist/ && mv bindata_assetfs.go $(BASE)/rest/server/
 
+.PHONY: swagger-ui
+swagger-ui: $(BASE) $(GO_BINDATA_ASSETFS) ; $(info $(M) generating swagger ui assets...) @ ## Generates Swagger UI assets
+	$Q cd $(BASE) && git clone https://github.com/swagger-api/swagger-ui.git
+	$Q cd $(BASE)/swagger-ui && $(GO_BINDATA_ASSETFS) -pkg server dist/ && mv bindata_assetfs.go $(BASE)/rest/server/
 
 # Misc
 
