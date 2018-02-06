@@ -7,6 +7,8 @@ import (
 	"github.com/king-jam/tracker2jira/backend"
 )
 
+// TODO: make these less coupled to the DB backend
+
 // PivotalTracker ...
 type PivotalTracker struct {
 	client    *pivotal.Client

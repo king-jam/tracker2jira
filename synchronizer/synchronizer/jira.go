@@ -7,6 +7,8 @@ import (
 	jira "gopkg.in/andygrunwald/go-jira.v1"
 )
 
+// TODO: make these less coupled to the DB backend
+
 // Jira ...
 type Jira struct {
 	client    *jira.Client

@@ -40,6 +40,11 @@ func (s *Synchronizer) Run() error {
 		return err
 	}
 
+	j, err := NewJiraClient(s.db, dbTask.SLAVE)
+	if err != nil {
+		return err
+	}
+
 	c, err := pt.UpdateCursor()
 	if err != nil {
 		return fmt.Errorf("task failed: unable to get Tracker cursor")
@@ -56,7 +61,7 @@ func (s *Synchronizer) Run() error {
 		if !exist {
 			return fmt.Errorf("update failed: no valid handler for activity type")
 		}
-		err = handler.Synchronize(activity, s)
+		err = handler.Synchronize(activity, pt, j)
 		if err != nil {
 			return fmt.Errorf("update activity failed in handler function")
 		}
