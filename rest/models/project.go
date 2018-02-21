@@ -26,6 +26,7 @@ type Project struct {
 	ExternalID string `json:"externalID,omitempty"`
 
 	// project ID
+	// Read Only: true
 	ProjectID strfmt.UUID4 `json:"projectID,omitempty"`
 
 	// project overrides
@@ -36,19 +37,11 @@ type Project struct {
 
 	// project URL
 	ProjectURL string `json:"projectURL,omitempty"`
-
-	// project version
-	ProjectVersion int64 `json:"projectVersion,omitempty"`
 }
 
 // Validate validates this project
 func (m *Project) Validate(formats strfmt.Registry) error {
 	var res []error
-
-	if err := m.validateProjectID(formats); err != nil {
-		// prop
-		res = append(res, err)
-	}
 
 	if err := m.validateProjectType(formats); err != nil {
 		// prop
@@ -58,19 +51,6 @@ func (m *Project) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
-	return nil
-}
-
-func (m *Project) validateProjectID(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.ProjectID) { // not required
-		return nil
-	}
-
-	if err := validate.FormatOf("projectID", "body", "uuid4", m.ProjectID.String(), formats); err != nil {
-		return err
-	}
-
 	return nil
 }
 

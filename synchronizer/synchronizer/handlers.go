@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/king-jam/go-pivotaltracker/v5/pivotal"
+	jira "gopkg.in/andygrunwald/go-jira.v1"
 )
 
 var handlers map[string]ActivityHandler
@@ -53,7 +54,7 @@ func init() {
 // ActivityHandler wraps the functionality to have a class factory for handling
 // activity events from Pivotal Tracker
 type ActivityHandler interface {
-	Synchronize(*pivotal.Activity, *PivotalTracker, *Jira) error
+	Synchronize(*pivotal.Activity, *pivotal.Client, *jira.Client) error
 }
 
 // DefaultActivityHandler is a fill in for types we do not want to handle
@@ -61,7 +62,7 @@ type DefaultActivityHandler struct {
 }
 
 // Synchronize is the null handler function for synchronizing activities
-func (d DefaultActivityHandler) Synchronize(activity *pivotal.Activity, pt *PivotalTracker, j *Jira) error {
+func (d DefaultActivityHandler) Synchronize(activity *pivotal.Activity, pt *pivotal.Client, j *jira.Client) error {
 	// Default activity is to do nothing
 	return nil
 }
@@ -71,7 +72,7 @@ type EpicActivityHandler struct {
 }
 
 // Synchronize is the general handler function for synchronizing epic activities
-func (e EpicActivityHandler) Synchronize(activity *pivotal.Activity, pt *PivotalTracker, j *Jira) error {
+func (e EpicActivityHandler) Synchronize(activity *pivotal.Activity, pt *pivotal.Client, j *jira.Client) error {
 	switch kind := activity.Kind; kind {
 	case "epic_create_activity":
 		// 1. Get the Epic details from the activity
@@ -103,7 +104,7 @@ type StoryActivityHandler struct {
 }
 
 // Synchronize is the general handler function for synchronizing story activities
-func (sa StoryActivityHandler) Synchronize(activity *pivotal.Activity, pt *PivotalTracker, j *Jira) error {
+func (sa StoryActivityHandler) Synchronize(activity *pivotal.Activity, pt *pivotal.Client, j *jira.Client) error {
 	switch kind := activity.Kind; kind {
 	case "story_create_activity":
 		// 1. Get story details from the activity

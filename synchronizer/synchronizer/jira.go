@@ -19,21 +19,21 @@ type Jira struct {
 func NewJiraClient(db backend.Database, projectID string) (*Jira, error) {
 	// get the master project which should always be Pivotal Tracker in our case
 	j := new(Jira)
-	slaveProject, err := db.GetProjectByID(projectID)
+	dstProject, err := db.GetProjectByID(projectID)
 	if err != nil {
 		return j, err
 	}
 	// Get the slave Project Username/Password Details
-	slaveUser, err := db.GetUserByID(slaveProject.AdminUserID)
+	dstUser, err := db.GetUserByID(dstProject.AdminUserID)
 	if err != nil {
 		return j, err
 	}
-	j.client, err = jira.NewClient(nil, slaveProject.ProjectURL)
+	j.client, err = jira.NewClient(nil, dstProject.ProjectURL)
 	if err != nil {
 		return j, err
 	}
-	j.client.Authentication.SetBasicAuth(slaveUser.ExternalCredentials.Username, slaveUser.ExternalCredentials.Password)
-	id, err := strconv.Atoi(slaveProject.ExternalID)
+	j.client.Authentication.SetBasicAuth(dstUser.ExternalCredentials.Username, dstUser.ExternalCredentials.Password.String())
+	id, err := strconv.Atoi(dstProject.ExternalID)
 	if err != nil {
 		return j, err
 	}

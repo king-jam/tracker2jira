@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	models "github.com/king-jam/tracker2jira/rest/models"
+	"github.com/king-jam/tracker2jira/rest/models"
 )
 
 // GetTasksOKCode is the HTTP code returned for type GetTasksOK

@@ -17,15 +17,19 @@ import (
 type Version struct {
 
 	// build date
+	// Read Only: true
 	BuildDate string `json:"buildDate,omitempty"`
 
 	// commit hash
+	// Read Only: true
 	CommitHash string `json:"commitHash,omitempty"`
 
 	// release version
+	// Read Only: true
 	ReleaseVersion string `json:"releaseVersion,omitempty"`
 
 	// runtime
+	// Read Only: true
 	Runtime string `json:"runtime,omitempty"`
 }
 

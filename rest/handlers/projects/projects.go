@@ -8,8 +8,6 @@ import (
 	uuid "github.com/satori/go.uuid"
 )
 
-const defaultProjectVersion = 0
-
 // GetProject ...
 func GetProject(db backend.Database, params projects.GetProjectByIDParams) middleware.Responder {
 	value, err := db.GetProjectByID(params.ProjectID)
@@ -36,7 +34,6 @@ func GetProjects(db backend.Database, params projects.GetProjectsParams) middlew
 func PostProject(db backend.Database, params projects.PostProjectParams) middleware.Responder {
 	uuid := uuid.NewV4()
 	params.Body.ProjectID = strfmt.UUID4(uuid.String())
-	params.Body.ProjectVersion = defaultProjectVersion
 	value, err := db.PutProject(params.Body)
 	if err != nil {
 		return &projects.PostProjectBadRequest{}

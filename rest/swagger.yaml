@@ -270,14 +270,6 @@ responses:
     schema:
       $ref: "#/definitions/Error"
 definitions:
-  LoginRequest:
-    description: "Login Request Body"
-    type: "object"
-    properties:
-      name:
-        type: "string"
-      password:
-        type: "string"
   # Schema for error response body
   Error:
     type: object
@@ -297,6 +289,7 @@ definitions:
     type: "object"
     properties:
       projectID:
+        readOnly: true
         format: "uuid4"
         type: "string"
       projectType:
@@ -320,6 +313,7 @@ definitions:
     type: "object"
     properties:
       taskID:
+        readOnly: true
         format: "uuid4"
         type: "string"
       source:
@@ -340,7 +334,12 @@ definitions:
         type: "object"
       storyFieldMap:
         type: "object"
+      lastSynchronizedVersion:
+        readOnly: true
+        type: "integer"
       createdAt:
+        readOnly: true
+        format: "datetime"
         type: "string"
   Users:
     type: "array"
@@ -350,6 +349,7 @@ definitions:
     type: "object"
     properties:
       userID:
+        readOnly: true
         format: "uuid4"
         type: "string"
       username:
@@ -368,17 +368,23 @@ definitions:
       username:
         type: "string"
       password:
+        format: "password"
         type: "string"
       token:
+        format: "password"
         type: "string"
   Version:
     type: "object"
     properties:
       buildDate:
+        readOnly: true
         type: "string"
       commitHash:
+        readOnly: true
         type: "string"
       releaseVersion:
+        readOnly: true
         type: "string"
       runtime:
+        readOnly: true
         type: "string"
