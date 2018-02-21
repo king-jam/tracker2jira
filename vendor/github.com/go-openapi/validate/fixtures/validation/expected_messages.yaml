@@ -366,6 +366,9 @@ fixture-342.yaml:
   - message: 'paths./get_main_object.get.parameters.$ref in body is a forbidden property'
     withContinueOnErrors: false
     isRegexp: false
+  - message: 'invalid definition for parameter sid in body in operation ""'
+    withContinueOnErrors: true
+    isRegexp: false
   - message: 'paths./get_main_object.get.parameters.in in body should be one of [header]'
     withContinueOnErrors: false
     isRegexp: false
@@ -375,20 +378,68 @@ fixture-342.yaml:
   - message: '"paths./get_main_object.get.parameters" must validate one and only one schema (oneOf). Found none valid'
     withContinueOnErrors: false
     isRegexp: false
-  - message: 'invalid definition as Schema for parameter sid in body in operation ""'
+  - message: 'invalid ref "nowhere.yaml#/definitions/sample_info/properties/sid"'
     withContinueOnErrors: true
     isRegexp: false
-  - message: 'resolved reference is not a parameter: "#/definitions/sample_info/properties/sid"'
+  - message: 'invalid definition as Schema for parameter  in  in operation ""'
     withContinueOnErrors: true
-    isRegeexp: false
-  - message: 'some parameters definitions are broken in "/get_main_object".GET. Cannot carry on full checks on parameters for operation'
+    isRegexp: false
+  - message: 'invalid definition for parameter  in  in operation ""'
     withContinueOnErrors: true
+    isRegexp: false
+  - message: 'could not resolve reference in "/get_main_object".GET to $ref nowhere.yaml#/definitions/sample_info/properties/sid: open fixtures/validation/nowhere.yaml: no such file or directory'
+    withContinueOnErrors: true
+    isRegexp: false
+  - message: '"parameters.wrong" must validate one and only one schema (oneOf). Found none valid'
+    withContinueOnErrors: false
+    isRegexp: false
+  - message: 'parameters.wrong.theName in body is a forbidden property'
+    withContinueOnErrors: false
+    isRegexp: false
+  - message: 'parameters.wrong.theType in body is a forbidden property'
+    withContinueOnErrors: false
+    isRegexp: false
+  - message: 'parameters.wrong.name in body is required'
+    withContinueOnErrors: false
+    isRegexp: false
+  - message: 'parameters.wrong.in in body is required'
+    withContinueOnErrors: false
+    isRegexp: false
+  - message: 'parameters.wrong.type in body is required'
+    withContinueOnErrors: false
+    isRegexp: false
+  - message: '"parameters.notbetter" must validate one and only one schema (oneOf). Found none valid'
+    withContinueOnErrors: false
+    isRegexp: false
+  - message: 'parameters.notbetter.properties in body is a forbidden property'
+    withContinueOnErrors: false
+    isRegexp: false
+  - message: 'parameters.notbetter.type in body should be one of [string number boolean integer array]'
+    withContinueOnErrors: false
+    isRegexp: false
+  - message: 'parameters.notbetter.name in body is required'
+    withContinueOnErrors: false
+    isRegexp: false
+  - message: 'parameters.notbetter.in in body is required'
+    withContinueOnErrors: false
+    isRegexp: false
+  - message: '"parameters.stillnogood" must validate one and only one schema (oneOf). Found none valid'
+    withContinueOnErrors: false
+    isRegexp: false
+  - message: 'parameters.stillnogood.name in body is required'
+    withContinueOnErrors: false
+    isRegexp: false
+  - message: 'parameters.stillnogood.in in body is required'
+    withContinueOnErrors: false
     isRegexp: false
   expectedWarnings:
   - message: 'definition "#/definitions/sample_info" is not used anywhere'
     withContinueOnErrors: true
     isRegexp: false
   - message: $ref property should have no sibling in "".sid
+    withContinueOnErrors: true
+    isRegexp: false
+  - message: $ref property should have no sibling in "".
     withContinueOnErrors: true
     isRegexp: false
 fixture-581-good-numbers.yaml:
@@ -592,7 +643,7 @@ fixture-859-good.yaml:
 fixture-859.yaml:
   comment: 'Issue#859: clear message on unresolved $ref. First scenario for messages
     Supplement for items, arrays and other nested structures in fixture-859-2.yaml'
-  todo: would love to have all missing references in one shot. This works only for parameters as for now.
+  todo: would love to have all missing references in one shot.
   expectedLoadError: false
   expectedValid: false
   expectedMessages:
@@ -605,18 +656,21 @@ fixture-859.yaml:
   - message: 'some references could not be resolved in spec\. First found: object has no key ".*"'
     withContinueOnErrors: true
     isRegexp: true
-  - message: 'invalid reference: "#/parameters/rateLimit"'
-    withContinueOnErrors: true
-    isRegexp: true
+    #- message: 'invalid reference: "#/parameters/rateLimit"'
+    #withContinueOnErrors: true
+    #isRegexp: true
   - message: 'could not resolve reference in "/".GET to $ref #/parameters/rateLimit: object has no key "rateLimit"'
     withContinueOnErrors: true
     isRegexp: false
-  - message: some parameters definitions are broken in "/".POST. Cannot carry on full checks on parameters for operation
+  - message: 'could not resolve reference in / to $ref : object has no key "record"'
     withContinueOnErrors: true
     isRegexp: false
-  - message: some parameters definitions are broken in "/".GET. Cannot carry on full checks on parameters for operation
-    withContinueOnErrors: true
-    isRegexp: false
+    #- message: some parameters definitions are broken in "/".POST. Cannot carry on full checks on parameters for operation
+    #withContinueOnErrors: true
+    #isRegexp: false
+    #- message: some parameters definitions are broken in "/".GET. Cannot carry on full checks on parameters for operation
+    #withContinueOnErrors: true
+    #isRegexp: false
   - message: 'could not resolve reference in "/".POST to $ref #/parameters/rateLimit: object has no key "rateLimit"'
     withContinueOnErrors: true
     isRegexp: false
@@ -1293,11 +1347,7 @@ fixture-bad-response.yaml:
   expectedMessages:
   - message: '"paths./fixture.get.responses.200" must validate one and only one schema (oneOf). Found none valid'
   - message: 'paths./fixture.get.responses.200.$ref in body is a forbidden property'
-  - message: 'invalid definition as Schema for response /fixture in responses'
-    withContinueOnErrors: true
   expectedWarnings:
-  - message: '$ref property should have no sibling in "responses"./fixture'
-    withContinueOnErrors: true
   - message: 'definition "#/definitions/someIds" is not used anywhere'
     withContinueOnErrors: true
 

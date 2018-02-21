@@ -3,9 +3,12 @@ package synchronizer
 import (
 	"fmt"
 	"io"
+	"strconv"
 
+	"github.com/king-jam/go-pivotaltracker/v5/pivotal"
 	"github.com/king-jam/tracker2jira/backend"
 	"github.com/king-jam/tracker2jira/rest/models"
+	jira "gopkg.in/andygrunwald/go-jira.v1"
 )
 
 // Synchronizer ...
@@ -35,15 +38,48 @@ func (s *Synchronizer) Run() error {
 		return fmt.Errorf("task skipped: already in a failing state already")
 	}
 	// this is where the errors can really start
-	pt, err := NewTrackerClient(s.db, dbTask.Master)
+	srcProject, err := s.db.GetProjectByID(dbTask.Source)
 	if err != nil {
 		return err
 	}
+	// Get the source Project Username/Password Details
+	sourceUser, err := s.db.GetUserByID(srcProject.AdminUserID)
+	if err != nil {
+		return err
+	}
+	// create a new pivotal tracker client
+	ptclient := pivotal.NewClient(sourceUser.ExternalCredentials.Token.String())
+	trackerProjectID, err := strconv.Atoi(srcProject.ExternalID)
+	if err != nil {
+		return err
+	}
+	// if this is the first run, initialize a default version state
+	if dbTask.LastSynchronizedVersion == 0 {
 
-	c, err := pt.UpdateCursor()
+	}
+	// create the activity iterator based on the synchronization version
+	c, err := ptclient.Activity.Iterate(trackerProjectID, int(dbTask.LastSynchronizedVersion), true)
 	if err != nil {
 		return fmt.Errorf("task failed: unable to get Tracker cursor")
 	}
+	// get the destination project details
+	dstProject, err := s.db.GetProjectByID(dbTask.Destination)
+	if err != nil {
+		return err
+	}
+	// Get the destination Project Username/Password Details
+	dstUser, err := s.db.GetUserByID(dstProject.AdminUserID)
+	if err != nil {
+		return err
+	}
+	// create a new empty JIRA client
+	j, err := jira.NewClient(nil, dstProject.ProjectURL)
+	if err != nil {
+		return err
+	}
+	// setup the authentication
+	j.Authentication.SetBasicAuth(dstUser.ExternalCredentials.Username, dstUser.ExternalCredentials.Password.String())
+
 	for {
 		activity, err := c.Next()
 		if err != nil {
@@ -56,41 +92,17 @@ func (s *Synchronizer) Run() error {
 		if !exist {
 			return fmt.Errorf("update failed: no valid handler for activity type")
 		}
-		err = handler.Synchronize(activity, s)
+		err = handler.Synchronize(activity, ptclient, j)
 		if err != nil {
 			return fmt.Errorf("update activity failed in handler function")
 		}
-		// get and update the project version
-		project, err := s.db.GetProjectByID(dbTask.Master)
-		if err != nil {
-			return fmt.Errorf("failed to get the project")
-		}
-		project.ProjectVersion = int64(activity.ProjectVersion)
-		_, err = s.db.PutProject(project)
+		// update the dbTask version
+		dbTask.LastSynchronizedVersion = int64(activity.ProjectVersion)
+		_, err = s.db.PutTask(dbTask)
 		if err != nil {
 			return fmt.Errorf("failed to put the project")
 		}
 	}
-	//masterUser.ExternalCredentials.
-
-	// slaveProject, err := s.db.GetProjectByID(dbTask.SLAVE)
-	// if err != nil {
-	// 	return err
-	// }
-	// //slaveUser, err := s.db.GetUserByID(slaveProject.AdminUserID)
-	// s.db.GetUserByID(slaveProject.AdminUserID)
-
-	// // /projects/{project_id}/activity long polling using 'since_version'
-	//
-	// // interval for loop to call api
-	// // get current project data ()
-	// // call api with ?since_version=<value from project.version ^^>
-	// // for range to read responses and handle posting to jira
-	// // iterating through array of responses
-	// // translate each array index object to corresponding jira api client object
-	// // post object ^^
-	// // if success //  bump/store/set project_version to api.get.project_version ( write back to backend to update project version PUT PROJECT from backend)
-	// // if failure retry exponential backoff ( plann error handling around jira going out to lunch)
 	return nil
 }
 

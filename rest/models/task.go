@@ -19,14 +19,22 @@ import (
 // swagger:model Task
 type Task struct {
 
+	// created at
+	// Read Only: true
+	CreatedAt strfmt.DateTime `json:"createdAt,omitempty"`
+
 	// current state map
 	CurrentStateMap interface{} `json:"currentStateMap,omitempty"`
 
-	// master
-	Master string `json:"master,omitempty"`
+	// destination
+	Destination string `json:"destination,omitempty"`
 
-	// slave
-	SLAVE string `json:"slave,omitempty"`
+	// last synchronized version
+	// Read Only: true
+	LastSynchronizedVersion int64 `json:"lastSynchronizedVersion,omitempty"`
+
+	// source
+	Source string `json:"source,omitempty"`
 
 	// status
 	Status string `json:"status,omitempty"`
@@ -38,6 +46,7 @@ type Task struct {
 	StoryTypeMap interface{} `json:"storyTypeMap,omitempty"`
 
 	// task ID
+	// Read Only: true
 	TaskID strfmt.UUID4 `json:"taskID,omitempty"`
 }
 
@@ -46,11 +55,6 @@ func (m *Task) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateStatus(formats); err != nil {
-		// prop
-		res = append(res, err)
-	}
-
-	if err := m.validateTaskID(formats); err != nil {
 		// prop
 		res = append(res, err)
 	}
@@ -102,19 +106,6 @@ func (m *Task) validateStatus(formats strfmt.Registry) error {
 
 	// value enum
 	if err := m.validateStatusEnum("status", "body", m.Status); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (m *Task) validateTaskID(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.TaskID) { // not required
-		return nil
-	}
-
-	if err := validate.FormatOf("taskID", "body", "uuid4", m.TaskID.String(), formats); err != nil {
 		return err
 	}
 

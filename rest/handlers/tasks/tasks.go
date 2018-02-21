@@ -1,6 +1,8 @@
 package tasks
 
 import (
+	"time"
+
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/go-openapi/strfmt"
 	"github.com/king-jam/tracker2jira/backend"
@@ -10,6 +12,7 @@ import (
 )
 
 const defaultTaskState = models.TaskStatusPending
+const defaultVersion = 0
 
 // GetTask ...
 func GetTask(db backend.Database, params tasks.GetTaskByIDParams) middleware.Responder {
@@ -38,6 +41,13 @@ func PostTask(db backend.Database, params tasks.PostTaskParams) middleware.Respo
 	uuid := uuid.NewV4()
 	params.Body.TaskID = strfmt.UUID4(uuid.String())
 	params.Body.Status = defaultTaskState // set the status to default until scheduled
+	params.Body.LastSynchronizedVersion = defaultVersion
+	createTime, err := strfmt.ParseDateTime(time.Now().String())
+	if err != nil {
+		// TODO: make this a better error
+		return &tasks.PostTaskBadRequest{}
+	}
+	params.Body.CreatedAt = createTime
 	value, err := db.PutTask(params.Body)
 	if err != nil {
 		return &tasks.PostTaskBadRequest{}

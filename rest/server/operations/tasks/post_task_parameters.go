@@ -13,7 +13,7 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
-	models "github.com/king-jam/tracker2jira/rest/models"
+	"github.com/king-jam/tracker2jira/rest/models"
 )
 
 // NewPostTaskParams creates a new PostTaskParams object

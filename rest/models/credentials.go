@@ -20,10 +20,10 @@ import (
 type Credentials struct {
 
 	// password
-	Password string `json:"password,omitempty"`
+	Password strfmt.Password `json:"password,omitempty"`
 
 	// token
-	Token string `json:"token,omitempty"`
+	Token strfmt.Password `json:"token,omitempty"`
 
 	// type
 	Type string `json:"type,omitempty"`

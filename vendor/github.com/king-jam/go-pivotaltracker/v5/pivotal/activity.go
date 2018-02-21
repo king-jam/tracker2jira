@@ -9,18 +9,31 @@ import (
 	"time"
 )
 
+// Changes is ...
+type Changes struct {
+	Kind           string      `json:"kind,omitempty"`
+	GUID           string      `json:"id,omitempty"`
+	Name           string      `json:"name,omitempty"`
+	ChangeType     string      `json:"change_type,omitempty"`
+	StoryType      string      `json:"story_type,omitempty"`
+	OriginalValues interface{} `json:"original_values,omitempty"`
+	NewValues      interface{} `json:"new_values,omitempty"`
+	URL            string      `json:"url,omitempty"`
+}
+
 // Activity is ...
 type Activity struct {
-	Kind             string        `json:"kind"`
-	GUID             string        `json:"guid"`
-	ProjectVersion   int           `json:"project_version"`
-	Message          string        `json:"message"`
-	Highlight        string        `json:"highlight"`
-	Changes          []interface{} `json:"changes"`
-	PrimaryResources []interface{} `json:"primary_resources"`
-	Project          interface{}   `json:"project"`
-	PerformedBy      interface{}   `json:"performed_by"`
-	OccurredAt       time.Time     `json:"occurred_at"`
+	Kind               string        `json:"kind,omitempty"`
+	GUID               string        `json:"guid,omitempty"`
+	ProjectVersion     int           `json:"project_version,omitempty"`
+	Message            string        `json:"message,omitempty"`
+	Highlight          string        `json:"highlight,omitempty"`
+	Changes            []Changes     `json:"changes,omitempty"`
+	PrimaryResources   []interface{} `json:"primary_resources,omitempty"`
+	SecondaryResources []interface{} `json:"secondary_resources,omitempty"`
+	Project            Project       `json:"project,omitempty"`
+	PerformedBy        Person        `json:"performed_by,omitempty"`
+	OccurredAt         time.Time     `json:"occurred_at,omitempty"`
 }
 
 // ActivityService is ...
@@ -37,7 +50,7 @@ func newActivitiesService(client *Client) *ActivityService {
 // List actually sends 2 HTTP requests - one to get the total number of activities,
 // another to retrieve the activities using the right pagination setup. The reason
 // for this is that the filter might require to fetch all the activities at once
-// to get the right results. The response is default sorted in DESCENDING order so 
+// to get the right results. The response is default sorted in DESCENDING order so
 // leverage the sortAsc variable to control sort order.
 func (service *ActivityService) List(projectID int, version int, sortAsc bool) ([]*Activity, error) {
 	reqFunc := newActivitiesRequestFunc(service.client, projectID, version, sortAsc)

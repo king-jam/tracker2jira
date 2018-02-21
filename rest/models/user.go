@@ -10,7 +10,6 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
-	"github.com/go-openapi/validate"
 )
 
 // User user
@@ -21,6 +20,7 @@ type User struct {
 	ExternalCredentials *Credentials `json:"externalCredentials,omitempty"`
 
 	// user ID
+	// Read Only: true
 	UserID strfmt.UUID4 `json:"userID,omitempty"`
 
 	// username
@@ -32,11 +32,6 @@ func (m *User) Validate(formats strfmt.Registry) error {
 	var res []error
 
 	if err := m.validateExternalCredentials(formats); err != nil {
-		// prop
-		res = append(res, err)
-	}
-
-	if err := m.validateUserID(formats); err != nil {
 		// prop
 		res = append(res, err)
 	}
@@ -61,19 +56,6 @@ func (m *User) validateExternalCredentials(formats strfmt.Registry) error {
 			}
 			return err
 		}
-	}
-
-	return nil
-}
-
-func (m *User) validateUserID(formats strfmt.Registry) error {
-
-	if swag.IsZero(m.UserID) { // not required
-		return nil
-	}
-
-	if err := validate.FormatOf("userID", "body", "uuid4", m.UserID.String(), formats); err != nil {
-		return err
 	}
 
 	return nil

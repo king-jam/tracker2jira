@@ -9,7 +9,6 @@ info:
   license:
     name: "Mozilla Public License 2.0"
     url: "https://www.mozilla.org/en-US/MPL/2.0/"
-#basePath: "/"
 tags:
 - name: "general"
   description: "General Application Information & Settings"
@@ -38,45 +37,6 @@ paths:
           description: "The current version of the service"
           schema:
             $ref: "#/definitions/Version"
-  # /login:
-  #   post:
-  #     tags:
-  #     - "general"
-  #     summary: "Logs in and returns authentication type based on parameters"
-  #     description: ""
-  #     operationId: "login"
-  #     consumes:
-  #     - "application/json"
-  #     parameters:
-  #     - in: "body"
-  #       name: "loginRequest"
-  #       required: true
-  #       description: "A JSON obect containing the login and password"
-  #       schema:
-  #         $ref: "#/definitions/LoginRequest"
-  #     responses:
-  #       200:
-  #         description: "Successful Login"
-  #       400:
-  #         description: "Invalid username/password"
-
-#  /logout: #stubbed out for now
-  # /config:
-  #   get:
-  #     tags:
-  #     - "general"
-  #     summary: "Get the current running configuration"
-  #     responses:
-  #       200:
-  #         description: "The current configuration"
-  #   patch:
-  #     tags:
-  #     - "general"
-  #     summary: "Update the current running configuration"
-  #     responses:
-  #       200:
-  #         description: "Configuration Changed"
-
   /projects:
     get:
       tags:
@@ -310,14 +270,6 @@ responses:
     schema:
       $ref: "#/definitions/Error"
 definitions:
-  LoginRequest:
-    description: "Login Request Body"
-    type: "object"
-    properties:
-      name:
-        type: "string"
-      password:
-        type: "string"
   # Schema for error response body
   Error:
     type: object
@@ -337,6 +289,7 @@ definitions:
     type: "object"
     properties:
       projectID:
+        readOnly: true
         format: "uuid4"
         type: "string"
       projectType:
@@ -352,8 +305,6 @@ definitions:
         type: "string"
       projectOverrides:
         type: "object"
-      projectVersion:
-        type: "integer"
   Tasks:
     type: "array"
     items:
@@ -362,11 +313,12 @@ definitions:
     type: "object"
     properties:
       taskID:
+        readOnly: true
         format: "uuid4"
         type: "string"
-      master:
+      source:
         type: "string"
-      slave:
+      destination:
         type: "string"
       status:
         type: "string"
@@ -382,6 +334,13 @@ definitions:
         type: "object"
       storyFieldMap:
         type: "object"
+      lastSynchronizedVersion:
+        readOnly: true
+        type: "integer"
+      createdAt:
+        readOnly: true
+        format: "datetime"
+        type: "string"
   Users:
     type: "array"
     items:
@@ -390,6 +349,7 @@ definitions:
     type: "object"
     properties:
       userID:
+        readOnly: true
         format: "uuid4"
         type: "string"
       username:
@@ -408,17 +368,23 @@ definitions:
       username:
         type: "string"
       password:
+        format: "password"
         type: "string"
       token:
+        format: "password"
         type: "string"
   Version:
     type: "object"
     properties:
       buildDate:
+        readOnly: true
         type: "string"
       commitHash:
+        readOnly: true
         type: "string"
       releaseVersion:
+        readOnly: true
         type: "string"
       runtime:
+        readOnly: true
         type: "string"
