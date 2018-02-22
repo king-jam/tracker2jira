@@ -36,6 +36,8 @@ type Activity struct {
 	OccurredAt         time.Time     `json:"occurred_at,omitempty"`
 }
 
+var validSortOrder map[string]struct{}
+
 // ActivityService is ...
 type ActivityService struct {
 	client *Client
@@ -52,8 +54,8 @@ func newActivitiesService(client *Client) *ActivityService {
 // for this is that the filter might require to fetch all the activities at once
 // to get the right results. The response is default sorted in DESCENDING order so
 // leverage the sortAsc variable to control sort order.
-func (service *ActivityService) List(projectID int, version int, sortAsc bool) ([]*Activity, error) {
-	reqFunc := newActivitiesRequestFunc(service.client, projectID, version, sortAsc)
+func (service *ActivityService) List(projectID int, sortOrder *string, limit *int, offset *int, occurredBefore *time.Time, occurredAfter *time.Time, sinceVersion *int) ([]*Activity, error) {
+	reqFunc := newActivitiesRequestFunc(service.client, projectID, sortOrder, limit, offset, occurredBefore, occurredAfter, sinceVersion)
 	cursor, err := newCursor(service.client, reqFunc, 0)
 	if err != nil {
 		return nil, err
@@ -66,18 +68,26 @@ func (service *ActivityService) List(projectID int, version int, sortAsc bool) (
 	return activities, nil
 }
 
-func newActivitiesRequestFunc(client *Client, projectID int, version int, sortAsc bool) func() *http.Request {
+func newActivitiesRequestFunc(client *Client, projectID int, sortOrder *string, limit *int, offset *int, occurredBefore *time.Time, occurredAfter *time.Time, sinceVersion *int) func() *http.Request {
 	return func() *http.Request {
-		v := strconv.Itoa(version)
 		u := fmt.Sprintf("projects/%v/activity", projectID)
-		if v != "" {
-			u += "?since_version=" + url.QueryEscape(v)
+		if sortOrder != nil {
+			u += "&sort_order=" + url.QueryEscape(*sortOrder)
 		}
-		u += "&sort_order="
-		if sortAsc {
-			u += url.QueryEscape("asc")
-		} else {
-			u += url.QueryEscape("desc")
+		if limit != nil {
+			u += "&limit=" + url.QueryEscape(strconv.Itoa(*limit))
+		}
+		if offset != nil {
+			u += "&limit=" + url.QueryEscape(strconv.Itoa(*offset))
+		}
+		if occurredBefore != nil {
+			u += "&limit=" + url.QueryEscape(occurredBefore.String())
+		}
+		if occurredAfter != nil {
+			u += "&limit=" + url.QueryEscape(occurredAfter.String())
+		}
+		if sinceVersion != nil {
+			u += "?since_version=" + url.QueryEscape(strconv.Itoa(*sinceVersion))
 		}
 		req, _ := client.NewRequest("GET", u, nil)
 		return req
@@ -111,11 +121,21 @@ func (c *ActivityCursor) Next() (s *Activity, err error) {
 
 // Iterate returns a cursor that can be used to iterate over the activities specified
 // by the filter. More stories are fetched on demand as needed.
-func (service *ActivityService) Iterate(projectID int, version int, sortAsc bool) (c *ActivityCursor, err error) {
-	reqFunc := newActivitiesRequestFunc(service.client, projectID, version, sortAsc)
+func (service *ActivityService) Iterate(projectID int, sortOrder *string, limit *int, offset *int, occurredBefore *time.Time, occurredAfter *time.Time, sinceVersion *int) (c *ActivityCursor, err error) {
+	reqFunc := newActivitiesRequestFunc(service.client, projectID, sortOrder, limit, offset, occurredBefore, occurredAfter, sinceVersion)
 	cursor, err := newCursor(service.client, reqFunc, PageLimit)
 	if err != nil {
 		return nil, err
 	}
 	return &ActivityCursor{cursor, make([]*Activity, 0)}, nil
+}
+
+func (service *ActivityService) validateSortOrder(order string) error {
+	validValues := []string{"asc", "desc"}
+	for _, value := range validValues {
+		if value == order {
+			return nil
+		}
+	}
+	return fmt.Errorf("%s is not a valid sort_order", order)
 }
