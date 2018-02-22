@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"time"
 
 	"github.com/king-jam/go-pivotaltracker/v5/pivotal"
 	"github.com/king-jam/tracker2jira/backend"
@@ -53,11 +54,27 @@ func (s *Synchronizer) Run() error {
 	if err != nil {
 		return err
 	}
+	// this is our default sort order
+	sortOrder := "asc"
 	// if this is the first run, initialize a default version state
 	if dbTask.LastSynchronizedVersion == 0 {
+		limit := 1
+		createTime := time.Time(dbTask.CreatedAt)
+		var tActivity []*pivotal.Activity
+		tActivity, err = ptclient.Activity.List(trackerProjectID, &sortOrder, &limit, nil, &createTime, nil, nil)
+		if err != nil {
+			return err
+		}
+		if len(tActivity) > 1 {
+			return fmt.Errorf("task failed: initializing sync version didn't work")
+		}
+		dbTask.LastSynchronizedVersion = int64(tActivity[1].ProjectVersion)
+		_, err = s.db.PutTask(dbTask)
+		if err != nil {
+			return fmt.Errorf("task failed: failed to put the project")
+		}
 	}
 	// create the activity iterator based on the synchronization version
-	sortOrder := "asc"
 	currVersion := int(dbTask.LastSynchronizedVersion)
 	c, err := ptclient.Activity.Iterate(trackerProjectID, &sortOrder, nil, nil, nil, nil, &currVersion)
 	if err != nil {
