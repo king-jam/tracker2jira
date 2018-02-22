@@ -36,8 +36,6 @@ type Activity struct {
 	OccurredAt         time.Time     `json:"occurred_at,omitempty"`
 }
 
-var validSortOrder map[string]struct{}
-
 // ActivityService is ...
 type ActivityService struct {
 	client *Client
@@ -68,28 +66,35 @@ func (service *ActivityService) List(projectID int, sortOrder *string, limit *in
 	return activities, nil
 }
 
+// newActivitiesRequestFunc takes in pointers to a bunch of types, there reason for this is so we can pass in nil values and create a query string accordingly
+// this could be wrapped a different way to accomplish a similar goal but the nil value is the desired behavior
 func newActivitiesRequestFunc(client *Client, projectID int, sortOrder *string, limit *int, offset *int, occurredBefore *time.Time, occurredAfter *time.Time, sinceVersion *int) func() *http.Request {
 	return func() *http.Request {
-		u := fmt.Sprintf("projects/%v/activity", projectID)
+		activityPath := fmt.Sprintf("projects/%v/activity", projectID)
+		queryParams := url.Values{}
 		if sortOrder != nil {
-			u += "&sort_order=" + url.QueryEscape(*sortOrder)
+			queryParams.Add("sort_order", url.QueryEscape(*sortOrder))
 		}
 		if limit != nil {
-			u += "&limit=" + url.QueryEscape(strconv.Itoa(*limit))
+			queryParams.Add("limit", url.QueryEscape(strconv.Itoa(*limit)))
 		}
 		if offset != nil {
-			u += "&limit=" + url.QueryEscape(strconv.Itoa(*offset))
+			queryParams.Add("offset", url.QueryEscape(strconv.Itoa(*offset)))
 		}
 		if occurredBefore != nil {
-			u += "&limit=" + url.QueryEscape(occurredBefore.String())
+			queryParams.Add("occurred_before", url.QueryEscape(occurredBefore.String()))
 		}
 		if occurredAfter != nil {
-			u += "&limit=" + url.QueryEscape(occurredAfter.String())
+			queryParams.Add("occurred_after", url.QueryEscape(occurredAfter.String()))
 		}
 		if sinceVersion != nil {
-			u += "?since_version=" + url.QueryEscape(strconv.Itoa(*sinceVersion))
+			queryParams.Add("since_version", url.QueryEscape(strconv.Itoa(*sinceVersion)))
 		}
-		req, _ := client.NewRequest("GET", u, nil)
+		if len(queryParams) > 0 {
+			activityPath += "?"
+			activityPath += queryParams.Encode()
+		}
+		req, _ := client.NewRequest("GET", activityPath, nil)
 		return req
 	}
 }
