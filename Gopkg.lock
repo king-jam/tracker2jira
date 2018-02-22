@@ -155,7 +155,7 @@
   branch = "master"
   name = "github.com/king-jam/go-pivotaltracker"
   packages = ["v5/pivotal"]
-  revision = "030d5116dbff595f0b6040211884c4923a11aab8"
+  revision = "48e08b35bf3eb1c92673b24fdd0926a3f0942580"
 
 [[projects]]
   branch = "master"
