@@ -55,10 +55,11 @@ func (s *Synchronizer) Run() error {
 	}
 	// if this is the first run, initialize a default version state
 	if dbTask.LastSynchronizedVersion == 0 {
-
 	}
 	// create the activity iterator based on the synchronization version
-	c, err := ptclient.Activity.Iterate(trackerProjectID, int(dbTask.LastSynchronizedVersion), true)
+	sortOrder := "asc"
+	currVersion := int(dbTask.LastSynchronizedVersion)
+	c, err := ptclient.Activity.Iterate(trackerProjectID, &sortOrder, nil, nil, nil, nil, &currVersion)
 	if err != nil {
 		return fmt.Errorf("task failed: unable to get Tracker cursor")
 	}
@@ -77,9 +78,8 @@ func (s *Synchronizer) Run() error {
 	if err != nil {
 		return err
 	}
-	// setup the authentication
+	// setup the authentication for jira
 	j.Authentication.SetBasicAuth(dstUser.ExternalCredentials.Username, dstUser.ExternalCredentials.Password.String())
-
 	for {
 		activity, err := c.Next()
 		if err != nil {
