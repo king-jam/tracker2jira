@@ -9,10 +9,10 @@ import (
 	"time"
 )
 
-// Changes is ...
-type Changes struct {
+// Change is ...
+type Change struct {
 	Kind           string      `json:"kind,omitempty"`
-	GUID           string      `json:"id,omitempty"`
+	ID             int         `json:"id,omitempty"`
 	Name           string      `json:"name,omitempty"`
 	ChangeType     string      `json:"change_type,omitempty"`
 	StoryType      string      `json:"story_type,omitempty"`
@@ -28,7 +28,7 @@ type Activity struct {
 	ProjectVersion     int           `json:"project_version,omitempty"`
 	Message            string        `json:"message,omitempty"`
 	Highlight          string        `json:"highlight,omitempty"`
-	Changes            []Changes     `json:"changes,omitempty"`
+	Changes            []Change      `json:"changes,omitempty"`
 	PrimaryResources   []interface{} `json:"primary_resources,omitempty"`
 	SecondaryResources []interface{} `json:"secondary_resources,omitempty"`
 	Project            Project       `json:"project,omitempty"`
@@ -51,8 +51,11 @@ func newActivitiesService(client *Client) *ActivityService {
 // another to retrieve the activities using the right pagination setup. The reason
 // for this is that the filter might require to fetch all the activities at once
 // to get the right results. The response is default sorted in DESCENDING order so
-// leverage the sortAsc variable to control sort order.
+// leverage the sortOrder variable to control sort order.
 func (service *ActivityService) List(projectID int, sortOrder *string, limit *int, offset *int, occurredBefore *time.Time, occurredAfter *time.Time, sinceVersion *int) ([]*Activity, error) {
+	if err := validateSortOrder(sortOrder); err != nil {
+		return nil, err
+	}
 	reqFunc := newActivitiesRequestFunc(service.client, projectID, sortOrder, limit, offset, occurredBefore, occurredAfter, sinceVersion)
 	cursor, err := newCursor(service.client, reqFunc, 0)
 	if err != nil {
@@ -73,22 +76,22 @@ func newActivitiesRequestFunc(client *Client, projectID int, sortOrder *string, 
 		activityPath := fmt.Sprintf("projects/%v/activity", projectID)
 		queryParams := url.Values{}
 		if sortOrder != nil {
-			queryParams.Add("sort_order", url.QueryEscape(*sortOrder))
+			queryParams.Add("sort_order", *sortOrder)
 		}
 		if limit != nil {
-			queryParams.Add("limit", url.QueryEscape(strconv.Itoa(*limit)))
+			queryParams.Add("limit", strconv.Itoa(*limit))
 		}
 		if offset != nil {
-			queryParams.Add("offset", url.QueryEscape(strconv.Itoa(*offset)))
+			queryParams.Add("offset", strconv.Itoa(*offset))
 		}
 		if occurredBefore != nil {
-			queryParams.Add("occurred_before", url.QueryEscape(occurredBefore.String()))
+			queryParams.Add("occurred_before", occurredBefore.Format(time.RFC3339))
 		}
 		if occurredAfter != nil {
-			queryParams.Add("occurred_after", url.QueryEscape(occurredAfter.String()))
+			queryParams.Add("occurred_after", occurredAfter.Format(time.RFC3339))
 		}
 		if sinceVersion != nil {
-			queryParams.Add("since_version", url.QueryEscape(strconv.Itoa(*sinceVersion)))
+			queryParams.Add("since_version", strconv.Itoa(*sinceVersion))
 		}
 		if len(queryParams) > 0 {
 			activityPath += "?"
@@ -126,8 +129,11 @@ func (c *ActivityCursor) Next() (s *Activity, err error) {
 
 // Iterate returns a cursor that can be used to iterate over the activities specified
 // by the filter. More stories are fetched on demand as needed.
-func (service *ActivityService) Iterate(projectID int, sortOrder *string, limit *int, offset *int, occurredBefore *time.Time, occurredAfter *time.Time, sinceVersion *int) (c *ActivityCursor, err error) {
-	reqFunc := newActivitiesRequestFunc(service.client, projectID, sortOrder, limit, offset, occurredBefore, occurredAfter, sinceVersion)
+func (service *ActivityService) Iterate(projectID int, sortOrder *string, occurredBefore *time.Time, occurredAfter *time.Time, sinceVersion *int) (c *ActivityCursor, err error) {
+	if err = validateSortOrder(sortOrder); err != nil {
+		return nil, err
+	}
+	reqFunc := newActivitiesRequestFunc(service.client, projectID, sortOrder, nil, nil, occurredBefore, occurredAfter, sinceVersion)
 	cursor, err := newCursor(service.client, reqFunc, PageLimit)
 	if err != nil {
 		return nil, err
@@ -135,12 +141,16 @@ func (service *ActivityService) Iterate(projectID int, sortOrder *string, limit 
 	return &ActivityCursor{cursor, make([]*Activity, 0)}, nil
 }
 
-func (service *ActivityService) validateSortOrder(order string) error {
+// helper function to ensure we use a valid sort order
+func validateSortOrder(order *string) error {
+	if order == nil {
+		return nil
+	}
 	validValues := []string{"asc", "desc"}
 	for _, value := range validValues {
-		if value == order {
+		if value == *order {
 			return nil
 		}
 	}
-	return fmt.Errorf("%s is not a valid sort_order", order)
+	return fmt.Errorf("%s is not a valid sort_order", *order)
 }

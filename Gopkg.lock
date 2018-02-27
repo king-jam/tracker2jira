@@ -44,6 +44,12 @@
   version = "v1.0-rc1"
 
 [[projects]]
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
+  revision = "346938d642f2ec3594ed81d874461961cd0faa76"
+  version = "v1.1.0"
+
+[[projects]]
   name = "github.com/docker/go-units"
   packages = ["."]
   revision = "0dadbb0345b35ec7ef35e228dabb8de89a65bf52"
@@ -56,10 +62,10 @@
   version = "v0.2.1"
 
 [[projects]]
+  branch = "master"
   name = "github.com/elazarl/go-bindata-assetfs"
   packages = ["."]
-  revision = "30f82fa23fd844bd5bb1e5f216db87fd77b5eb43"
-  version = "v1.0.0"
+  revision = "38087fe4dafb822e541b3f7955075cc1c30bd294"
 
 [[projects]]
   name = "github.com/fatih/structs"
@@ -125,13 +131,13 @@
   branch = "master"
   name = "github.com/go-openapi/swag"
   packages = ["."]
-  revision = "84f4bee7c0a6db40e3166044c7983c1c32125429"
+  revision = "0d03ad0b6405ada874d59d97c416b5cf4234e154"
 
 [[projects]]
   branch = "master"
   name = "github.com/go-openapi/validate"
   packages = ["."]
-  revision = "1ff04bd4a6c8a4af5813bd5bf3dc24c4756b9ee2"
+  revision = "180bba53b98899f743a112e568bed9e2ef31aa20"
 
 [[projects]]
   branch = "master"
@@ -155,7 +161,7 @@
   branch = "master"
   name = "github.com/king-jam/go-pivotaltracker"
   packages = ["v5/pivotal"]
-  revision = "48e08b35bf3eb1c92673b24fdd0926a3f0942580"
+  revision = "bb540f24574dd7509f667d109ad908047a3749c5"
 
 [[projects]]
   branch = "master"
@@ -221,7 +227,7 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "432090b8f568c018896cd8a0fb0345872bbac6ce"
+  revision = "beaf6a35706e5032ae4c3fcf342c663c069f44d2"
 
 [[projects]]
   branch = "master"
@@ -233,7 +239,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix","windows"]
-  revision = "37707fdb30a5b38865cfb95e5aab41707daec7fd"
+  revision = "f6cff0780e542efa0c8e864dc8fa522808f6a598"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -254,14 +260,14 @@
   revision = "3f83fa5005286a7fe593b055f0d7771a7dce4655"
 
 [[projects]]
-  branch = "v2"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
-  revision = "d670f9405373e636a5a2765eea47fac0c9bc91a4"
+  revision = "7f97868eec74b32b0982dd158a51a446d1da7eb5"
+  version = "v2.1.1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "38115795c7683c3343e4805cffb10189647675528e96fd9dad691addcef77fc0"
+  inputs-digest = "d43ff53f51d9839bae2986e6b5a378b3da8ffb0df8e0586a1d0d5ef6f3bc4d7f"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -47,7 +47,7 @@ type EpicService struct {
 	client *Client
 }
 
-func newepicService(client *Client) *EpicService {
+func newEpicService(client *Client) *EpicService {
 	return &EpicService{client}
 }
 
