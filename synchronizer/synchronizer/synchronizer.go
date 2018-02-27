@@ -9,6 +9,7 @@ import (
 	"github.com/king-jam/go-pivotaltracker/v5/pivotal"
 	"github.com/king-jam/tracker2jira/backend"
 	"github.com/king-jam/tracker2jira/rest/models"
+	log "github.com/sirupsen/logrus"
 	jira "gopkg.in/andygrunwald/go-jira.v1"
 )
 
@@ -58,25 +59,35 @@ func (s *Synchronizer) Run() error {
 	sortOrder := "asc"
 	// if this is the first run, initialize a default version state
 	if dbTask.LastSynchronizedVersion == 0 {
-		limit := 1
-		createTime := time.Time(dbTask.CreatedAt)
-		var tActivity []*pivotal.Activity
-		tActivity, err = ptclient.Activity.List(trackerProjectID, &sortOrder, &limit, nil, &createTime, nil, nil)
+		tSortOrder := "desc"
+		var createTime time.Time
+		createTime, err = time.Parse(time.RFC3339, dbTask.CreatedAt.String())
 		if err != nil {
 			return err
 		}
-		if len(tActivity) > 1 {
-			return fmt.Errorf("task failed: initializing sync version didn't work")
+		var tCursor *pivotal.ActivityCursor
+		tCursor, err = ptclient.Activity.Iterate(trackerProjectID, &tSortOrder, &createTime, nil, nil)
+		if err != nil {
+			return fmt.Errorf("task failed: unable to get Tracker cursor")
 		}
-		dbTask.LastSynchronizedVersion = int64(tActivity[1].ProjectVersion)
-		_, err = s.db.PutTask(dbTask)
+		var tActivity *pivotal.Activity
+		tActivity, err = tCursor.Next()
+		if err != nil {
+			return fmt.Errorf("task failed: unable to read activities")
+		}
+		task, err := s.db.GetTaskByID(dbTask.TaskID.String())
+		if err != nil {
+			return err
+		}
+		task.LastSynchronizedVersion = int64(tActivity.ProjectVersion)
+		_, err = s.db.PutTask(task)
 		if err != nil {
 			return fmt.Errorf("task failed: failed to put the project")
 		}
 	}
 	// create the activity iterator based on the synchronization version
 	currVersion := int(dbTask.LastSynchronizedVersion)
-	c, err := ptclient.Activity.Iterate(trackerProjectID, &sortOrder, nil, nil, nil, nil, &currVersion)
+	c, err := ptclient.Activity.Iterate(trackerProjectID, &sortOrder, nil, nil, &currVersion)
 	if err != nil {
 		return fmt.Errorf("task failed: unable to get Tracker cursor")
 	}
@@ -97,6 +108,13 @@ func (s *Synchronizer) Run() error {
 	}
 	// setup the authentication for jira
 	j.Authentication.SetBasicAuth(dstUser.ExternalCredentials.Username, dstUser.ExternalCredentials.Password.String())
+	authenticated, err := j.Authentication.AcquireSessionCookie(dstUser.ExternalCredentials.Username, dstUser.ExternalCredentials.Password.String())
+	if err != nil {
+		return err
+	}
+	if !authenticated {
+		return fmt.Errorf("failure to authenticate to Jira")
+	}
 	for {
 		activity, err := c.Next()
 		if err != nil {
@@ -105,19 +123,26 @@ func (s *Synchronizer) Run() error {
 			}
 			return fmt.Errorf("task failed: unable to read activities")
 		}
-		handler, exist := handlers[activity.Kind]
+		log.Debugf("\n%+v\n", activity.Kind)
+		handler, exist := activityHandlers[activity.Kind]
 		if !exist {
 			return fmt.Errorf("update failed: no valid handler for activity type")
 		}
+		log.Debugf("\n%+v\v", activity)
 		err = handler.Synchronize(activity, ptclient, j)
 		if err != nil {
-			return fmt.Errorf("update activity failed in handler function")
+			return fmt.Errorf("update activity failed in handler function: %v", err)
 		}
 		// update the dbTask version
-		dbTask.LastSynchronizedVersion = int64(activity.ProjectVersion)
-		_, err = s.db.PutTask(dbTask)
+		// get a new version just in case
+		task, err := s.db.GetTaskByID(dbTask.TaskID.String())
 		if err != nil {
-			return fmt.Errorf("failed to put the project")
+			return err
+		}
+		task.LastSynchronizedVersion = int64(activity.ProjectVersion)
+		_, err = s.db.PutTask(task)
+		if err != nil {
+			return err
 		}
 	}
 	return nil

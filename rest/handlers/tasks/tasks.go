@@ -42,7 +42,10 @@ func PostTask(db backend.Database, params tasks.PostTaskParams) middleware.Respo
 	params.Body.TaskID = strfmt.UUID4(uuid.String())
 	params.Body.Status = defaultTaskState // set the status to default until scheduled
 	params.Body.LastSynchronizedVersion = defaultVersion
-	createTime := strfmt.DateTime(time.Now())
+	createTime, err := strfmt.ParseDateTime(time.Now().UTC().Format(time.RFC3339))
+	if err != nil {
+		return &tasks.PostTaskBadRequest{}
+	}
 	params.Body.CreatedAt = createTime
 	value, err := db.PutTask(params.Body)
 	if err != nil {
