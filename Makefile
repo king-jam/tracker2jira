@@ -141,10 +141,9 @@ endif
 	@touch vendor
 
 # Code Generation
-
 .PHONY: swagger-server
 swagger-server: $(BASE) $(SWAGGER) ; $(info $(M) generating swagger server...) @ ## Generates server
-	$Q cd $(BASE)/rest && $(SWAGGER) generate server --flag-strategy=pflag --exclude-main -A t2j -s server -f swagger.yaml
+	$Q cd $(BASE)/rest && $(SWAGGER) generate server --exclude-main -A t2j -s server -f swagger.yaml
 
 .PHONY: swagger-client
 swagger-client: $(BASE) $(SWAGGER) ; $(info $(M) generating swagger client...) @ ## Generates client
