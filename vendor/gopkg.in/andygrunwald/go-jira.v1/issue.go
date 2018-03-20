@@ -97,18 +97,18 @@ type IssueFields struct {
 	//      * "aggregatetimeestimate": null,
 	//      * "environment": null,
 	Expand               string        `json:"expand,omitempty" structs:"expand,omitempty"`
-	Type                 IssueType     `json:"issuetype" structs:"issuetype"`
+	Type                 IssueType     `json:"issuetype,omitempty" structs:"issuetype,omitempty"`
 	Project              Project       `json:"project,omitempty" structs:"project,omitempty"`
 	Resolution           *Resolution   `json:"resolution,omitempty" structs:"resolution,omitempty"`
 	Priority             *Priority     `json:"priority,omitempty" structs:"priority,omitempty"`
-	Resolutiondate       string        `json:"resolutiondate,omitempty" structs:"resolutiondate,omitempty"`
-	Created              string        `json:"created,omitempty" structs:"created,omitempty"`
-	Duedate              string        `json:"duedate,omitempty" structs:"duedate,omitempty"`
+	Resolutiondate       Time          `json:"resolutiondate,omitempty" structs:"resolutiondate,omitempty"`
+	Created              Time          `json:"created,omitempty" structs:"created,omitempty"`
+	Duedate              Date          `json:"duedate,omitempty" structs:"duedate,omitempty"`
 	Watches              *Watches      `json:"watches,omitempty" structs:"watches,omitempty"`
 	Assignee             *User         `json:"assignee,omitempty" structs:"assignee,omitempty"`
-	Updated              string        `json:"updated,omitempty" structs:"updated,omitempty"`
+	Updated              Time          `json:"updated,omitempty" structs:"updated,omitempty"`
 	Description          string        `json:"description,omitempty" structs:"description,omitempty"`
-	Summary              string        `json:"summary" structs:"summary"`
+	Summary              string        `json:"summary,omitempty" structs:"summary,omitempty"`
 	Creator              *User         `json:"Creator,omitempty" structs:"Creator,omitempty"`
 	Reporter             *User         `json:"reporter,omitempty" structs:"reporter,omitempty"`
 	Components           []*Component  `json:"components,omitempty" structs:"components,omitempty"`
@@ -225,11 +225,20 @@ type Priority struct {
 	ID      string `json:"id,omitempty" structs:"id,omitempty"`
 }
 
-// Watches represents a type of how many user are "observing" a JIRA issue to track the status / updates.
+// Watches represents a type of how many and which user are "observing" a JIRA issue to track the status / updates.
 type Watches struct {
-	Self       string `json:"self,omitempty" structs:"self,omitempty"`
-	WatchCount int    `json:"watchCount,omitempty" structs:"watchCount,omitempty"`
-	IsWatching bool   `json:"isWatching,omitempty" structs:"isWatching,omitempty"`
+	Self       string     `json:"self,omitempty" structs:"self,omitempty"`
+	WatchCount int        `json:"watchCount,omitempty" structs:"watchCount,omitempty"`
+	IsWatching bool       `json:"isWatching,omitempty" structs:"isWatching,omitempty"`
+	Watchers   []*Watcher `json:"watchers,omitempty" structs:"watchers,omitempty"`
+}
+
+// Watcher represents a simplified user that "observes" the issue
+type Watcher struct {
+	Self        string `json:"self,omitempty" structs:"self,omitempty"`
+	Name        string `json:"name,omitempty" structs:"name,omitempty"`
+	DisplayName string `json:"displayName,omitempty" structs:"displayName,omitempty"`
+	Active      bool   `json:"active,omitempty" structs:"active,omitempty"`
 }
 
 // AvatarUrls represents different dimensions of avatars / images
@@ -285,6 +294,9 @@ type Parent struct {
 // Time represents the Time definition of JIRA as a time.Time of go
 type Time time.Time
 
+// Date represents the Date definition of JIRA as a time.Time of go
+type Date time.Time
+
 // Wrapper struct for search result
 type transitionResult struct {
 	Transitions []Transition `json:"transitions" structs:"transitions"`
@@ -294,6 +306,7 @@ type transitionResult struct {
 type Transition struct {
 	ID     string                     `json:"id" structs:"id"`
 	Name   string                     `json:"name" structs:"name"`
+	To     Status                     `json:"to" structs:"status"`
 	Fields map[string]TransitionField `json:"fields" structs:"fields"`
 }
 
@@ -304,12 +317,18 @@ type TransitionField struct {
 
 // CreateTransitionPayload is used for creating new issue transitions
 type CreateTransitionPayload struct {
-	Transition TransitionPayload `json:"transition" structs:"transition"`
+	Transition TransitionPayload       `json:"transition" structs:"transition"`
+	Fields     TransitionPayloadFields `json:"fields" structs:"fields"`
 }
 
 // TransitionPayload represents the request payload of Transition calls like DoTransition
 type TransitionPayload struct {
 	ID string `json:"id" structs:"id"`
+}
+
+// TransitionPayloadFields represents the fields that can be set when executing a transition
+type TransitionPayloadFields struct {
+	Resolution *Resolution `json:"resolution,omitempty" structs:"resolution,omitempty"`
 }
 
 // Option represents an option value in a SelectList or MultiSelect
@@ -321,12 +340,39 @@ type Option struct {
 // UnmarshalJSON will transform the JIRA time into a time.Time
 // during the transformation of the JIRA JSON response
 func (t *Time) UnmarshalJSON(b []byte) error {
+	// Ignore null, like in the main JSON package.
+	if string(b) == "null" {
+		return nil
+	}
 	ti, err := time.Parse("\"2006-01-02T15:04:05.999-0700\"", string(b))
 	if err != nil {
 		return err
 	}
 	*t = Time(ti)
 	return nil
+}
+
+// UnmarshalJSON will transform the JIRA date into a time.Time
+// during the transformation of the JIRA JSON response
+func (t *Date) UnmarshalJSON(b []byte) error {
+	// Ignore null, like in the main JSON package.
+	if string(b) == "null" {
+		return nil
+	}
+	ti, err := time.Parse("\"2006-01-02\"", string(b))
+	if err != nil {
+		return err
+	}
+	*t = Date(ti)
+	return nil
+}
+
+// MarshalJSON will transform the Date object into a short
+// date string as JIRA expects during the creation of a
+// JIRA request
+func (t Date) MarshalJSON() ([]byte, error) {
+	time := time.Time(t)
+	return []byte(time.Format("\"2006-01-02\"")), nil
 }
 
 // Worklog represents the work log of a JIRA issue.
@@ -341,17 +387,17 @@ type Worklog struct {
 
 // WorklogRecord represents one entry of a Worklog
 type WorklogRecord struct {
-	Self             string `json:"self" structs:"self"`
-	Author           User   `json:"author" structs:"author"`
-	UpdateAuthor     User   `json:"updateAuthor" structs:"updateAuthor"`
-	Comment          string `json:"comment" structs:"comment"`
-	Created          Time   `json:"created" structs:"created"`
-	Updated          Time   `json:"updated" structs:"updated"`
-	Started          Time   `json:"started" structs:"started"`
-	TimeSpent        string `json:"timeSpent" structs:"timeSpent"`
-	TimeSpentSeconds int    `json:"timeSpentSeconds" structs:"timeSpentSeconds"`
-	ID               string `json:"id" structs:"id"`
-	IssueID          string `json:"issueId" structs:"issueId"`
+	Self             string `json:"self,omitempty" structs:"self,omitempty"`
+	Author           *User  `json:"author,omitempty" structs:"author,omitempty"`
+	UpdateAuthor     *User  `json:"updateAuthor,omitempty" structs:"updateAuthor,omitempty"`
+	Comment          string `json:"comment,omitempty" structs:"comment,omitempty"`
+	Created          *Time  `json:"created,omitempty" structs:"created,omitempty"`
+	Updated          *Time  `json:"updated,omitempty" structs:"updated,omitempty"`
+	Started          *Time  `json:"started,omitempty" structs:"started,omitempty"`
+	TimeSpent        string `json:"timeSpent,omitempty" structs:"timeSpent,omitempty"`
+	TimeSpentSeconds int    `json:"timeSpentSeconds,omitempty" structs:"timeSpentSeconds,omitempty"`
+	ID               string `json:"id,omitempty" structs:"id,omitempty"`
+	IssueID          string `json:"issueId,omitempty" structs:"issueId,omitempty"`
 }
 
 // TimeTracking represents the timetracking fields of a JIRA issue.
@@ -462,8 +508,9 @@ type GetQueryOptions struct {
 	// Properties is the list of properties to return for the issue. By default no properties are returned.
 	Properties string `url:"properties,omitempty"`
 	// FieldsByKeys if true then fields in issues will be referenced by keys instead of ids
-	FieldsByKeys  bool `url:"fieldsByKeys,omitempty"`
-	UpdateHistory bool `url:"updateHistory,omitempty"`
+	FieldsByKeys  bool   `url:"fieldsByKeys,omitempty"`
+	UpdateHistory bool   `url:"updateHistory,omitempty"`
+	ProjectKeys   string `url:"projectKeys,omitempty"`
 }
 
 // CustomFields represents custom fields of JIRA
@@ -496,7 +543,8 @@ func (s *IssueService) Get(issueID string, options *GetQueryOptions) (*Issue, *R
 	issue := new(Issue)
 	resp, err := s.client.Do(req, issue)
 	if err != nil {
-		return nil, resp, err
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
 	}
 
 	return issue, resp, nil
@@ -515,7 +563,8 @@ func (s *IssueService) DownloadAttachment(attachmentID string) (*Response, error
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return resp, err
+		jerr := NewJiraError(resp, err)
+		return resp, jerr
 	}
 
 	return resp, nil
@@ -552,10 +601,28 @@ func (s *IssueService) PostAttachment(issueID string, r io.Reader, attachmentNam
 	attachment := new([]Attachment)
 	resp, err := s.client.Do(req, attachment)
 	if err != nil {
-		return nil, resp, err
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
 	}
 
 	return attachment, resp, nil
+}
+
+// GetWorklogs gets all the worklogs for an issue.
+// This method is especially important if you need to read all the worklogs, not just the first page.
+//
+// https://docs.atlassian.com/jira/REST/cloud/#api/2/issue/{issueIdOrKey}/worklog-getIssueWorklog
+func (s *IssueService) GetWorklogs(issueID string) (*Worklog, *Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/worklog", issueID)
+
+	req, err := s.client.NewRequest("GET", apiEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	v := new(Worklog)
+	resp, err := s.client.Do(req, v)
+	return v, resp, err
 }
 
 // Create creates an issue or a sub-task from a JSON representation.
@@ -599,7 +666,8 @@ func (s *IssueService) Update(issue *Issue) (*Issue, *Response, error) {
 	}
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return nil, resp, err
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
 	}
 
 	// This is just to follow the rest of the API's convention of returning an issue.
@@ -608,11 +676,11 @@ func (s *IssueService) Update(issue *Issue) (*Issue, *Response, error) {
 	return &ret, resp, nil
 }
 
-// Update updates an issue from a JSON representation. The issue is found by key.
+// UpdateIssue updates an issue from a JSON representation. The issue is found by key.
 //
 // https://docs.atlassian.com/jira/REST/7.4.0/#api/2/issue-editIssue
-func (s *IssueService) UpdateIssue(jiraId string, data map[string]interface{}) (*Response, error) {
-	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", jiraId)
+func (s *IssueService) UpdateIssue(jiraID string, data map[string]interface{}) (*Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%v", jiraID)
 	req, err := s.client.NewRequest("PUT", apiEndpoint, data)
 	if err != nil {
 		return nil, err
@@ -640,10 +708,55 @@ func (s *IssueService) AddComment(issueID string, comment *Comment) (*Comment, *
 	responseComment := new(Comment)
 	resp, err := s.client.Do(req, responseComment)
 	if err != nil {
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
+	}
+
+	return responseComment, resp, nil
+}
+
+// UpdateComment updates the body of a comment, identified by comment.ID, on the issueID.
+//
+// JIRA API docs: https://docs.atlassian.com/jira/REST/cloud/#api/2/issue/{issueIdOrKey}/comment-updateComment
+func (s *IssueService) UpdateComment(issueID string, comment *Comment) (*Comment, *Response, error) {
+	reqBody := struct {
+		Body string `json:"body"`
+	}{
+		Body: comment.Body,
+	}
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/comment/%s", issueID, comment.ID)
+	req, err := s.client.NewRequest("POST", apiEndpoint, reqBody)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	responseComment := new(Comment)
+	resp, err := s.client.Do(req, responseComment)
+	if err != nil {
 		return nil, resp, err
 	}
 
 	return responseComment, resp, nil
+}
+
+// AddWorklogRecord adds a new worklog record to issueID.
+//
+// https://developer.atlassian.com/cloud/jira/platform/rest/#api-api-2-issue-issueIdOrKey-worklog-post
+func (s *IssueService) AddWorklogRecord(issueID string, record *WorklogRecord) (*WorklogRecord, *Response, error) {
+	apiEndpoint := fmt.Sprintf("rest/api/2/issue/%s/worklog", issueID)
+	req, err := s.client.NewRequest("POST", apiEndpoint, record)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	responseRecord := new(WorklogRecord)
+	resp, err := s.client.Do(req, responseRecord)
+	if err != nil {
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
+	}
+
+	return responseRecord, resp, nil
 }
 
 // AddLink adds a link between two issues.
@@ -657,6 +770,10 @@ func (s *IssueService) AddLink(issueLink *IssueLink) (*Response, error) {
 	}
 
 	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		err = NewJiraError(resp, err)
+	}
+
 	return resp, err
 }
 
@@ -679,7 +796,50 @@ func (s *IssueService) Search(jql string, options *SearchOptions) ([]Issue, *Res
 
 	v := new(searchResult)
 	resp, err := s.client.Do(req, v)
+	if err != nil {
+		err = NewJiraError(resp, err)
+	}
 	return v.Issues, resp, err
+}
+
+// SearchPages will get issues from all pages in a search
+//
+// JIRA API docs: https://developer.atlassian.com/jiradev/jira-apis/jira-rest-apis/jira-rest-api-tutorials/jira-rest-api-example-query-issues
+func (s *IssueService) SearchPages(jql string, options *SearchOptions, f func(Issue) error) error {
+	if options == nil {
+		options = &SearchOptions{
+			StartAt:    0,
+			MaxResults: 50,
+		}
+	}
+
+	if options.MaxResults == 0 {
+		options.MaxResults = 50
+	}
+
+	issues, resp, err := s.Search(jql, options)
+	if err != nil {
+		return err
+	}
+
+	for {
+		for _, issue := range issues {
+			err = f(issue)
+			if err != nil {
+				return err
+			}
+		}
+
+		if resp.StartAt+resp.MaxResults >= resp.Total {
+			return nil
+		}
+
+		options.StartAt += resp.MaxResults
+		issues, resp, err = s.Search(jql, options)
+		if err != nil {
+			return err
+		}
+	}
 }
 
 // GetCustomFields returns a map of customfield_* keys with string values
@@ -693,7 +853,8 @@ func (s *IssueService) GetCustomFields(issueID string) (CustomFields, *Response,
 	issue := new(map[string]interface{})
 	resp, err := s.client.Do(req, issue)
 	if err != nil {
-		return nil, resp, err
+		jerr := NewJiraError(resp, err)
+		return nil, resp, jerr
 	}
 
 	m := *issue
@@ -731,6 +892,9 @@ func (s *IssueService) GetTransitions(id string) ([]Transition, *Response, error
 
 	result := new(transitionResult)
 	resp, err := s.client.Do(req, result)
+	if err != nil {
+		err = NewJiraError(resp, err)
+	}
 	return result.Transitions, resp, err
 }
 
@@ -761,10 +925,10 @@ func (s *IssueService) DoTransitionWithPayload(ticketID, payload interface{}) (*
 
 	resp, err := s.client.Do(req, nil)
 	if err != nil {
-		return nil, err
+		err = NewJiraError(resp, err)
 	}
 
-	return resp, nil
+	return resp, err
 }
 
 // InitIssueWithMetaAndFields returns Issue with with values from fieldsConfig properly set.
@@ -787,7 +951,7 @@ func InitIssueWithMetaAndFields(metaProject *MetaProject, metaIssuetype *MetaIss
 	for key, value := range fieldsConfig {
 		jiraKey, found := allFields[key]
 		if !found {
-			return nil, fmt.Errorf("Key %s is not found in the list of fields.", key)
+			return nil, fmt.Errorf("key %s is not found in the list of fields", key)
 		}
 
 		valueType, err := metaIssuetype.Fields.String(jiraKey + "/schema/type")
@@ -803,6 +967,8 @@ func InitIssueWithMetaAndFields(metaProject *MetaProject, metaIssuetype *MetaIss
 			switch elemType {
 			case "component":
 				issueFields.Unknowns[jiraKey] = []Component{{Name: value}}
+			case "option":
+				issueFields.Unknowns[jiraKey] = []map[string]string{{"value": value}}
 			default:
 				issueFields.Unknowns[jiraKey] = []string{value}
 			}
@@ -859,5 +1025,73 @@ func (s *IssueService) Delete(issueID string) (*Response, error) {
 	}
 
 	resp, err := s.client.Do(req, nil)
+	return resp, err
+}
+
+// GetWatchers wil return all the users watching/observing the given issue
+//
+// JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-getIssueWatchers
+func (s *IssueService) GetWatchers(issueID string) (*[]User, *Response, error) {
+	watchesAPIEndpoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
+
+	req, err := s.client.NewRequest("GET", watchesAPIEndpoint, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	watches := new(Watches)
+	resp, err := s.client.Do(req, watches)
+	if err != nil {
+		return nil, nil, NewJiraError(resp, err)
+	}
+
+	result := []User{}
+	user := new(User)
+	for _, watcher := range watches.Watchers {
+		user, resp, err = s.client.User.Get(watcher.Name)
+		if err != nil {
+			return nil, resp, NewJiraError(resp, err)
+		}
+		result = append(result, *user)
+	}
+
+	return &result, resp, nil
+}
+
+// AddWatcher adds watcher to the given issue
+//
+// JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-addWatcher
+func (s *IssueService) AddWatcher(issueID string, userName string) (*Response, error) {
+	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
+
+	req, err := s.client.NewRequest("POST", apiEndPoint, userName)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		err = NewJiraError(resp, err)
+	}
+
+	return resp, err
+}
+
+// RemoveWatcher removes given user from given issue
+//
+// JIRA API docs: https://docs.atlassian.com/software/jira/docs/api/REST/latest/#api/2/issue-removeWatcher
+func (s *IssueService) RemoveWatcher(issueID string, userName string) (*Response, error) {
+	apiEndPoint := fmt.Sprintf("rest/api/2/issue/%s/watchers", issueID)
+
+	req, err := s.client.NewRequest("DELETE", apiEndPoint, userName)
+	if err != nil {
+		return nil, err
+	}
+
+	resp, err := s.client.Do(req, nil)
+	if err != nil {
+		err = NewJiraError(resp, err)
+	}
+
 	return resp, err
 }
