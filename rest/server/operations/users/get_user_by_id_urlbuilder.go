@@ -48,6 +48,7 @@ func (o *GetUserByIDURL) Build() (*url.URL, error) {
 	} else {
 		return nil, errors.New("UserID is required on GetUserByIDURL")
 	}
+
 	_basePath := o._basePath
 	result.Path = golangswaggerpaths.Join(_basePath, _path)
 

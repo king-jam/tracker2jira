@@ -15,9 +15,9 @@ import (
 )
 
 // NewGetTaskByIDParams creates a new GetTaskByIDParams object
-// with the default values initialized.
+// no default values defined in spec.
 func NewGetTaskByIDParams() GetTaskByIDParams {
-	var ()
+
 	return GetTaskByIDParams{}
 }
 
@@ -38,9 +38,12 @@ type GetTaskByIDParams struct {
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
-// for simple values it will use straight method calls
+// for simple values it will use straight method calls.
+//
+// To ensure default values, the struct must have been initialized with NewGetTaskByIDParams() beforehand.
 func (o *GetTaskByIDParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
 	var res []error
+
 	o.HTTPRequest = r
 
 	rTaskID, rhkTaskID, _ := route.Params.GetOK("taskID")
@@ -59,6 +62,9 @@ func (o *GetTaskByIDParams) bindTaskID(rawData []string, hasKey bool, formats st
 	if len(rawData) > 0 {
 		raw = rawData[len(rawData)-1]
 	}
+
+	// Required: true
+	// Parameter is provided by construction from the route
 
 	o.TaskID = raw
 

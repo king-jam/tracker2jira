@@ -54,7 +54,17 @@ type Task struct {
 func (m *Task) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateCreatedAt(formats); err != nil {
+		// prop
+		res = append(res, err)
+	}
+
 	if err := m.validateStatus(formats); err != nil {
+		// prop
+		res = append(res, err)
+	}
+
+	if err := m.validateTaskID(formats); err != nil {
 		// prop
 		res = append(res, err)
 	}
@@ -62,6 +72,19 @@ func (m *Task) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *Task) validateCreatedAt(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.CreatedAt) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("createdAt", "body", "datetime", m.CreatedAt.String(), formats); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -78,14 +101,19 @@ func init() {
 }
 
 const (
+
 	// TaskStatusPending captures enum value "pending"
 	TaskStatusPending string = "pending"
+
 	// TaskStatusRunning captures enum value "running"
 	TaskStatusRunning string = "running"
+
 	// TaskStatusStopped captures enum value "stopped"
 	TaskStatusStopped string = "stopped"
+
 	// TaskStatusFailed captures enum value "failed"
 	TaskStatusFailed string = "failed"
+
 	// TaskStatusCancel captures enum value "cancel"
 	TaskStatusCancel string = "cancel"
 )
@@ -106,6 +134,19 @@ func (m *Task) validateStatus(formats strfmt.Registry) error {
 
 	// value enum
 	if err := m.validateStatusEnum("status", "body", m.Status); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Task) validateTaskID(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.TaskID) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("taskID", "body", "uuid4", m.TaskID.String(), formats); err != nil {
 		return err
 	}
 

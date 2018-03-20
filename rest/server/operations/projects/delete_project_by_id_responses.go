@@ -23,6 +23,7 @@ type DeleteProjectByIDNoContent struct {
 
 // NewDeleteProjectByIDNoContent creates DeleteProjectByIDNoContent with default headers values
 func NewDeleteProjectByIDNoContent() *DeleteProjectByIDNoContent {
+
 	return &DeleteProjectByIDNoContent{}
 }
 
@@ -46,6 +47,7 @@ type DeleteProjectByIDNotFound struct {
 
 // NewDeleteProjectByIDNotFound creates DeleteProjectByIDNotFound with default headers values
 func NewDeleteProjectByIDNotFound() *DeleteProjectByIDNotFound {
+
 	return &DeleteProjectByIDNotFound{}
 }
 

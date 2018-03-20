@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"github.com/king-jam/tracker2jira/rest/models"
+	models "github.com/king-jam/tracker2jira/rest/models"
 )
 
 // GetUserByIDOKCode is the HTTP code returned for type GetUserByIDOK
@@ -30,6 +30,7 @@ type GetUserByIDOK struct {
 
 // NewGetUserByIDOK creates GetUserByIDOK with default headers values
 func NewGetUserByIDOK() *GetUserByIDOK {
+
 	return &GetUserByIDOK{}
 }
 
@@ -68,6 +69,7 @@ type GetUserByIDNotFound struct {
 
 // NewGetUserByIDNotFound creates GetUserByIDNotFound with default headers values
 func NewGetUserByIDNotFound() *GetUserByIDNotFound {
+
 	return &GetUserByIDNotFound{}
 }
 

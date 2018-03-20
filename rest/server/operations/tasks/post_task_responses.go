@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"github.com/king-jam/tracker2jira/rest/models"
+	models "github.com/king-jam/tracker2jira/rest/models"
 )
 
 // PostTaskAcceptedCode is the HTTP code returned for type PostTaskAccepted
@@ -30,6 +30,7 @@ type PostTaskAccepted struct {
 
 // NewPostTaskAccepted creates PostTaskAccepted with default headers values
 func NewPostTaskAccepted() *PostTaskAccepted {
+
 	return &PostTaskAccepted{}
 }
 
@@ -68,6 +69,7 @@ type PostTaskBadRequest struct {
 
 // NewPostTaskBadRequest creates PostTaskBadRequest with default headers values
 func NewPostTaskBadRequest() *PostTaskBadRequest {
+
 	return &PostTaskBadRequest{}
 }
 

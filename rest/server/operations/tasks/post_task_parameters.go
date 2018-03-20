@@ -13,13 +13,13 @@ import (
 	"github.com/go-openapi/runtime"
 	"github.com/go-openapi/runtime/middleware"
 
-	"github.com/king-jam/tracker2jira/rest/models"
+	models "github.com/king-jam/tracker2jira/rest/models"
 )
 
 // NewPostTaskParams creates a new PostTaskParams object
-// with the default values initialized.
+// no default values defined in spec.
 func NewPostTaskParams() PostTaskParams {
-	var ()
+
 	return PostTaskParams{}
 }
 
@@ -40,9 +40,12 @@ type PostTaskParams struct {
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
-// for simple values it will use straight method calls
+// for simple values it will use straight method calls.
+//
+// To ensure default values, the struct must have been initialized with NewPostTaskParams() beforehand.
 func (o *PostTaskParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
 	var res []error
+
 	o.HTTPRequest = r
 
 	if runtime.HasBody(r) {
@@ -54,8 +57,9 @@ func (o *PostTaskParams) BindRequest(r *http.Request, route *middleware.MatchedR
 			} else {
 				res = append(res, errors.NewParseError("body", "body", "", err))
 			}
-
 		} else {
+
+			// validate body object
 			if err := body.Validate(route.Formats); err != nil {
 				res = append(res, err)
 			}
@@ -64,11 +68,9 @@ func (o *PostTaskParams) BindRequest(r *http.Request, route *middleware.MatchedR
 				o.Body = &body
 			}
 		}
-
 	} else {
 		res = append(res, errors.Required("body", "body"))
 	}
-
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}

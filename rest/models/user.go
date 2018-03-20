@@ -10,6 +10,7 @@ import (
 
 	"github.com/go-openapi/errors"
 	"github.com/go-openapi/swag"
+	"github.com/go-openapi/validate"
 )
 
 // User user
@@ -36,6 +37,11 @@ func (m *User) Validate(formats strfmt.Registry) error {
 		res = append(res, err)
 	}
 
+	if err := m.validateUserID(formats); err != nil {
+		// prop
+		res = append(res, err)
+	}
+
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
@@ -56,6 +62,20 @@ func (m *User) validateExternalCredentials(formats strfmt.Registry) error {
 			}
 			return err
 		}
+
+	}
+
+	return nil
+}
+
+func (m *User) validateUserID(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.UserID) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("userID", "body", "uuid4", m.UserID.String(), formats); err != nil {
+		return err
 	}
 
 	return nil

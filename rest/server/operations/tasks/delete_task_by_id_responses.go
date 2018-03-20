@@ -23,6 +23,7 @@ type DeleteTaskByIDNoContent struct {
 
 // NewDeleteTaskByIDNoContent creates DeleteTaskByIDNoContent with default headers values
 func NewDeleteTaskByIDNoContent() *DeleteTaskByIDNoContent {
+
 	return &DeleteTaskByIDNoContent{}
 }
 
@@ -46,6 +47,7 @@ type DeleteTaskByIDNotFound struct {
 
 // NewDeleteTaskByIDNotFound creates DeleteTaskByIDNotFound with default headers values
 func NewDeleteTaskByIDNotFound() *DeleteTaskByIDNotFound {
+
 	return &DeleteTaskByIDNotFound{}
 }
 

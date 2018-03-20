@@ -36,6 +36,7 @@ func (m Projects) Validate(formats strfmt.Registry) error {
 				}
 				return err
 			}
+
 		}
 
 	}

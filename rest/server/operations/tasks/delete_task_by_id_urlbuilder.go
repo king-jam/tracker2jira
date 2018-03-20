@@ -48,6 +48,7 @@ func (o *DeleteTaskByIDURL) Build() (*url.URL, error) {
 	} else {
 		return nil, errors.New("TaskID is required on DeleteTaskByIDURL")
 	}
+
 	_basePath := o._basePath
 	result.Path = golangswaggerpaths.Join(_basePath, _path)
 

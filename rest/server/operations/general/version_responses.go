@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"github.com/king-jam/tracker2jira/rest/models"
+	models "github.com/king-jam/tracker2jira/rest/models"
 )
 
 // VersionOKCode is the HTTP code returned for type VersionOK
@@ -30,6 +30,7 @@ type VersionOK struct {
 
 // NewVersionOK creates VersionOK with default headers values
 func NewVersionOK() *VersionOK {
+
 	return &VersionOK{}
 }
 

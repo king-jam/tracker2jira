@@ -43,6 +43,11 @@ type Project struct {
 func (m *Project) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validateProjectID(formats); err != nil {
+		// prop
+		res = append(res, err)
+	}
+
 	if err := m.validateProjectType(formats); err != nil {
 		// prop
 		res = append(res, err)
@@ -51,6 +56,19 @@ func (m *Project) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *Project) validateProjectID(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.ProjectID) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("projectID", "body", "uuid4", m.ProjectID.String(), formats); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -67,8 +85,10 @@ func init() {
 }
 
 const (
+
 	// ProjectProjectTypeTracker captures enum value "tracker"
 	ProjectProjectTypeTracker string = "tracker"
+
 	// ProjectProjectTypeJira captures enum value "jira"
 	ProjectProjectTypeJira string = "jira"
 )

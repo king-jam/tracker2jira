@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"github.com/king-jam/tracker2jira/rest/models"
+	models "github.com/king-jam/tracker2jira/rest/models"
 )
 
 // GetTasksOKCode is the HTTP code returned for type GetTasksOK
@@ -30,6 +30,7 @@ type GetTasksOK struct {
 
 // NewGetTasksOK creates GetTasksOK with default headers values
 func NewGetTasksOK() *GetTasksOK {
+
 	return &GetTasksOK{}
 }
 
@@ -71,6 +72,7 @@ type GetTasksBadRequest struct {
 
 // NewGetTasksBadRequest creates GetTasksBadRequest with default headers values
 func NewGetTasksBadRequest() *GetTasksBadRequest {
+
 	return &GetTasksBadRequest{}
 }
 

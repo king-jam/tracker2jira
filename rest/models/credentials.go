@@ -36,6 +36,16 @@ type Credentials struct {
 func (m *Credentials) Validate(formats strfmt.Registry) error {
 	var res []error
 
+	if err := m.validatePassword(formats); err != nil {
+		// prop
+		res = append(res, err)
+	}
+
+	if err := m.validateToken(formats); err != nil {
+		// prop
+		res = append(res, err)
+	}
+
 	if err := m.validateType(formats); err != nil {
 		// prop
 		res = append(res, err)
@@ -44,6 +54,32 @@ func (m *Credentials) Validate(formats strfmt.Registry) error {
 	if len(res) > 0 {
 		return errors.CompositeValidationError(res...)
 	}
+	return nil
+}
+
+func (m *Credentials) validatePassword(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Password) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("password", "body", "password", m.Password.String(), formats); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (m *Credentials) validateToken(formats strfmt.Registry) error {
+
+	if swag.IsZero(m.Token) { // not required
+		return nil
+	}
+
+	if err := validate.FormatOf("token", "body", "password", m.Token.String(), formats); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -60,10 +96,13 @@ func init() {
 }
 
 const (
+
 	// CredentialsTypeJiraBasic captures enum value "jira_basic"
 	CredentialsTypeJiraBasic string = "jira_basic"
+
 	// CredentialsTypeJiraOauth captures enum value "jira_oauth"
 	CredentialsTypeJiraOauth string = "jira_oauth"
+
 	// CredentialsTypeTrackerToken captures enum value "tracker_token"
 	CredentialsTypeTrackerToken string = "tracker_token"
 )

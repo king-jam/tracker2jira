@@ -48,6 +48,7 @@ func (o *DeleteProjectByIDURL) Build() (*url.URL, error) {
 	} else {
 		return nil, errors.New("ProjectID is required on DeleteProjectByIDURL")
 	}
+
 	_basePath := o._basePath
 	result.Path = golangswaggerpaths.Join(_basePath, _path)
 

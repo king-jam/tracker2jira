@@ -9,14 +9,14 @@ var changeHandlers map[string]ChangeHandler
 
 func init() {
 	changeHandlers = map[string]ChangeHandler{
-	// "blocker_create_activity":  DefaultActivityHandler{}, // don't care
-	// "blocker_delete_activity":  DefaultActivityHandler{}, // don't care
-	// "blocker_update_activity":  DefaultActivityHandler{}, // don't care
-	// "blocking_create_activity": DefaultActivityHandler{}, // don't care
-	// "blocking_delete_activity": DefaultActivityHandler{}, // don't care
-	// "branch_create_activity":   DefaultActivityHandler{}, // don't care
-	// "branch_delete_activity":   DefaultActivityHandler{}, // don't care
-	// "comment_create_activity":  DefaultActivityHandler{}, // don't care
+		// "blocker_create_activity":  DefaultActivityHandler{}, // don't care
+		// "blocker_delete_activity":  DefaultActivityHandler{}, // don't care
+		// "blocker_update_activity":  DefaultActivityHandler{}, // don't care
+		// "blocking_create_activity": DefaultActivityHandler{}, // don't care
+		// "blocking_delete_activity": DefaultActivityHandler{}, // don't care
+		// "branch_create_activity":   DefaultActivityHandler{}, // don't care
+		// "branch_delete_activity":   DefaultActivityHandler{}, // don't care
+		// "comment_create_activity":  DefaultActivityHandler{}, // don't care
 	}
 }
 

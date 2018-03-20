@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"github.com/king-jam/tracker2jira/rest/models"
+	models "github.com/king-jam/tracker2jira/rest/models"
 )
 
 // GetProjectsOKCode is the HTTP code returned for type GetProjectsOK
@@ -30,6 +30,7 @@ type GetProjectsOK struct {
 
 // NewGetProjectsOK creates GetProjectsOK with default headers values
 func NewGetProjectsOK() *GetProjectsOK {
+
 	return &GetProjectsOK{}
 }
 
@@ -71,6 +72,7 @@ type GetProjectsBadRequest struct {
 
 // NewGetProjectsBadRequest creates GetProjectsBadRequest with default headers values
 func NewGetProjectsBadRequest() *GetProjectsBadRequest {
+
 	return &GetProjectsBadRequest{}
 }
 

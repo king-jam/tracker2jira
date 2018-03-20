@@ -10,7 +10,7 @@ import (
 
 	"github.com/go-openapi/runtime"
 
-	"github.com/king-jam/tracker2jira/rest/models"
+	models "github.com/king-jam/tracker2jira/rest/models"
 )
 
 // PostUserCreatedCode is the HTTP code returned for type PostUserCreated
@@ -30,6 +30,7 @@ type PostUserCreated struct {
 
 // NewPostUserCreated creates PostUserCreated with default headers values
 func NewPostUserCreated() *PostUserCreated {
+
 	return &PostUserCreated{}
 }
 
@@ -68,6 +69,7 @@ type PostUserBadRequest struct {
 
 // NewPostUserBadRequest creates PostUserBadRequest with default headers values
 func NewPostUserBadRequest() *PostUserBadRequest {
+
 	return &PostUserBadRequest{}
 }
 

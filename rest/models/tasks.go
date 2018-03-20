@@ -36,6 +36,7 @@ func (m Tasks) Validate(formats strfmt.Registry) error {
 				}
 				return err
 			}
+
 		}
 
 	}

@@ -15,9 +15,9 @@ import (
 )
 
 // NewDeleteTaskByIDParams creates a new DeleteTaskByIDParams object
-// with the default values initialized.
+// no default values defined in spec.
 func NewDeleteTaskByIDParams() DeleteTaskByIDParams {
-	var ()
+
 	return DeleteTaskByIDParams{}
 }
 
@@ -38,9 +38,12 @@ type DeleteTaskByIDParams struct {
 }
 
 // BindRequest both binds and validates a request, it assumes that complex things implement a Validatable(strfmt.Registry) error interface
-// for simple values it will use straight method calls
+// for simple values it will use straight method calls.
+//
+// To ensure default values, the struct must have been initialized with NewDeleteTaskByIDParams() beforehand.
 func (o *DeleteTaskByIDParams) BindRequest(r *http.Request, route *middleware.MatchedRoute) error {
 	var res []error
+
 	o.HTTPRequest = r
 
 	rTaskID, rhkTaskID, _ := route.Params.GetOK("taskID")
@@ -59,6 +62,9 @@ func (o *DeleteTaskByIDParams) bindTaskID(rawData []string, hasKey bool, formats
 	if len(rawData) > 0 {
 		raw = rawData[len(rawData)-1]
 	}
+
+	// Required: true
+	// Parameter is provided by construction from the route
 
 	o.TaskID = raw
 
