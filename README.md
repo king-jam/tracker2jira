@@ -5,7 +5,7 @@ You can obtain one at http://mozilla.org/MPL/2.0/.
 
 Copyright (c) 2017, MPL James R. King james.r.king4[at]gmail.com
 -->
-## TODO: Work in progress.
+## TODO: Work in progress. I do not recommend using this in production at all.
 
 # **Tracker 2 Jira** [![Build Status](https://travis-ci.org/king-jam/tracker2jira.svg?branch=master)](https://travis-ci.org/king-jam/tracker2jira)  [![Go Report Card](https://goreportcard.com/badge/github.com/king-jam/tracker2jira)](https://goreportcard.com/report/github.com/king-jam/tracker2jira)
 
